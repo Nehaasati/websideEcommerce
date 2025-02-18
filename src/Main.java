@@ -1,5 +1,6 @@
 import controller.CustomerController;
 //import controller.ProductController;
+import controller.CategoryController;
 
 import java.sql.*;
 
@@ -7,7 +8,7 @@ public class Main {
     public static void main(String[] args) throws SQLException {
 
         // JDBC URL för SQLite
-        String url = "jdbc:sqlite:C:/Users/nehaa/IdeaProjects/ecomerce_webshop1/webbutiken.db";
+        String url = "";
 
         /*try (Connection connection = SqliteConnection.getConnection();
              Statement stmt = connection.createStatement(URL);
@@ -30,10 +31,13 @@ public class Main {
         //CustomerService service = new CustomerService();
         //service.showAllCustomers();
 
-        CustomerController customerController = new CustomerController();
-        customerController.run();
+       // CustomerController customerController = new CustomerController();
+       // customerController.run();
         //ProductController productController = new ProductController();
         //productController.run();
+
+        CategoryController categoryController = new CategoryController();
+        categoryController.displayCategories();
     }
 
 
