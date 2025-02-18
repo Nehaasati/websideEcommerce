@@ -27,7 +27,7 @@ public class ProductRepository {
                 System.out.println(products.toString());
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("❌ Database error while checking product existence:" +e.getMessage());
         }
 
         return products;
@@ -82,8 +82,21 @@ public class ProductRepository {
                 ));
             }
         } catch (SQLException e) {
-            System.out.println("Error fetching products: " + e.getMessage());
+            System.out.println("Error fetching products or Database error while checking product existence: : " + e.getMessage());
         }
         return products;
+    }
+    public boolean productExists(int productId) {
+        String sql = "SELECT 1 FROM products WHERE product_id = ?";
+
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, productId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println("❌ Database error while checking product existence: " + e.getMessage());
+            return false;
+        }
     }
 }
