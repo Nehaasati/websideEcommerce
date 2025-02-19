@@ -5,15 +5,30 @@ public class Manufacturers {
     private String name;
 
 
+    public Manufacturers() {}
+
     public Manufacturers(int manufacturerId, String name) {
+        if (manufacturerId < 0) {
+            throw new IllegalArgumentException(
+                    "ManufacturerId must be greater than 0."
+            );
+        }
+        if (name == null || name.trim(). isEmpty()) {
+            throw new IllegalArgumentException("ManufacturerName cannot be null or empty.");
+        }
         this.manufacturerId = manufacturerId;
         this.name = name;
     }
+
+
 
     public int getManufacturerId() {
         return manufacturerId;
     }
     public void setManufacturerId(int manufacturerId) {
+       if (manufacturerId < 0) {
+           throw new IllegalArgumentException("ManufacturerId must be greater than 0.");
+       }
         this.manufacturerId = manufacturerId;
     }
 
@@ -21,6 +36,9 @@ public class Manufacturers {
         return name;
     }
     public void setName(String name) {
+        if (name == null || name.trim(). isEmpty()) {
+            throw new IllegalArgumentException("ManufacturerName cannot be null or empty.");
+        }
         this.name = name;
     }
 

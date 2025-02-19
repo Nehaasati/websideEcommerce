@@ -1,9 +1,10 @@
 import controller.CustomerController;
-//import controller.ProductController;
+import controller.ProductController;
 import controller.CategoryController;
 import controller.ManufacturerController;
 
 import java.sql.*;
+
 
 public class Main {
     public static void main(String[] args) throws SQLException {
@@ -32,17 +33,20 @@ public class Main {
         //CustomerService service = new CustomerService();
         //service.showAllCustomers();
 
-       // CustomerController customerController = new CustomerController();
-       // customerController.run();
+        // CustomerController customerController = new CustomerController();
+        // customerController.run();
         //ProductController productController = new ProductController();
         //productController.run();
 
         //CategoryController categoryController = new CategoryController();
-       // categoryController.displayCategories();
+        // categoryController.displayCategories();
 
 
-       ManufacturerController manufacturerController = new ManufacturerController();
+        ManufacturerController manufacturerController = new ManufacturerController();
         manufacturerController.displayManufacturers();
+
+        ProductController productController = new ProductController();
+        productController.getAllProducts();
 
     }
 
@@ -50,7 +54,5 @@ public class Main {
 //customers cs =new customers(9,"neha","31@ngmail.com","232312");
 //CustomerRepository cr = new CustomerRepository();
 //cr.getCustomerById(2);
+
 }
-
-
-
