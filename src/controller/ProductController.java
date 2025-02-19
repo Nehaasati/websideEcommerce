@@ -3,6 +3,7 @@ package controller;
 import model.Product;
 import service.ProductService;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -10,10 +11,13 @@ public class ProductController {
     private ProductService productService;
 
 
-    public ProductController() {
-        this.productService = productService;
+    public ProductController(Connection connection) {
+        if (connection != null) {
+            this.productService = new ProductService(connection);
+        } else {
+            throw new IllegalArgumentException("Database connection cannot be null");
+        }
     }
-
 
     public void getAllProducts() {
         try {
@@ -26,7 +30,7 @@ public class ProductController {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error getting products: " + e.getMessage());
         }
     }
 }

@@ -4,20 +4,31 @@ import controller.CategoryController;
 import controller.ManufacturerController;
 
 import java.sql.*;
+import connect.SqliteConnection;
+import java.sql.Connection;
 
 
 public class Main {
     public static void main(String[] args) throws SQLException {
 
         // JDBC URL för SQLite
-        String url = "";
+        // String url = "";
 
-        /*try (Connection connection = SqliteConnection.getConnection();
-             Statement stmt = connection.createStatement(URL);
-             ResultSet rs = stmt.executeQuery("SELECT * FROM customers")) {
+        Connection connection = SqliteConnection.getConnection();
+        if (connection != null) {
+            System.out.println("Connection established");
 
-             //Loopa genom alla rader i resultatet
-            while (rs.next()) {
+            ProductController productController = new ProductController(connection);
+            productController.getAllProducts();
+        } else {
+            System.out.println("Connection failed");
+        }
+
+        //Statement stmt = connection.createStatement(URL);
+        //  ResultSet rs = stmt.executeQuery("SELECT * FROM customers")) {
+
+        //Loopa genom alla rader i resultatet
+          /*  while (rs.next()) {
                 // Ändra kolumnnamnen nedan till de som finns i din tabell
                 System.out.println(
                        rs.getInt("customer_id") + " | " +
@@ -35,24 +46,20 @@ public class Main {
 
         // CustomerController customerController = new CustomerController();
         // customerController.run();
-        //ProductController productController = new ProductController();
+
         //productController.run();
 
         //CategoryController categoryController = new CategoryController();
         // categoryController.displayCategories();
 
 
-        ManufacturerController manufacturerController = new ManufacturerController();
-        manufacturerController.displayManufacturers();
-
-        ProductController productController = new ProductController();
-        productController.getAllProducts();
-
-    }
+      //  ManufacturerController manufacturerController = new ManufacturerController();
+      //  manufacturerController.displayManufacturers();
 
 
 //customers cs =new customers(9,"neha","31@ngmail.com","232312");
 //CustomerRepository cr = new CustomerRepository();
 //cr.getCustomerById(2);
 
+    }
 }
