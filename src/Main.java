@@ -1,6 +1,7 @@
 import controller.CustomerController;
 //import controller.ProductController;
 import controller.CategoryController;
+import controller.ManufacturerController;
 
 import java.sql.*;
 
@@ -36,8 +37,13 @@ public class Main {
         //ProductController productController = new ProductController();
         //productController.run();
 
-        CategoryController categoryController = new CategoryController();
-        categoryController.displayCategories();
+        //CategoryController categoryController = new CategoryController();
+       // categoryController.displayCategories();
+
+
+       ManufacturerController manufacturerController = new ManufacturerController();
+        manufacturerController.displayManufacturers();
+
     }
 
 
