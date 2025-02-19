@@ -18,13 +18,12 @@ public class ProductRepository {
     public List<Product> getAllProducts() throws SQLException {
         List<Product> productList  = new ArrayList<>();
 
-        String query = "SELECT p.product_id, p.name AS product_name, p.description, p.price, p.stock_quantity, " +
-                "m.manufacturer_id, m.name AS manufacturer_name " +
-                "FROM products p " +
-                "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id";
+        String query  = "SELECT p.product_id, p.name, p.description, p.price, p.stock_quantity, m.name AS manufacturer_name " +
+                "FROM products p JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id";
+
 
         try (Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(query)) {
+             ResultSet resultSet = statement.executeQuery(query)) {
 
             while (resultSet.next()) {
                 Product product = new Product();
@@ -35,13 +34,15 @@ public class ProductRepository {
                 product.setStockQuantity(resultSet.getInt("stock_quantity"));
 
                 Manufacturers manufacturers =  new Manufacturers();
-                manufacturers.setManufacturerId(resultSet.getInt("manufacturer_id"));
-                manufacturers.setName(resultSet.getString("name"));
+              //  manufacturers.setManufacturerId(resultSet.getInt("manufacturer_id"));
+                manufacturers.setName(resultSet.getString("manufacturer_name"));
 
                 product.setManufacturers(manufacturers);
 
                 productList.add(product);
             }
+        } catch (SQLException e) {
+            System.out.println("Error getting products: " + e.getMessage()); // debugging
         }
         return productList;
 
