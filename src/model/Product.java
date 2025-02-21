@@ -6,7 +6,7 @@ public class Product {
     private String description;
     private double price;
     private int stockQuantity;
-    private Manufacturers manufacturers;  // Represents the manufacturer of the product
+    private Manufacturer manufacturers;  // Represents the manufacturer of the product
    // private List<String> Category;          // Categories associated with the product
 
     public Product() {}  // a no-arg constructor needed for the repository
@@ -59,11 +59,11 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    public Manufacturers getManufacturers() {
+    public Manufacturer getManufacturers() {
         return manufacturers;
     }
 
-    public void setManufacturers(Manufacturers manufacturers) {
+    public void setManufacturers(Manufacturer manufacturers) {
         this.manufacturers = manufacturers;
     }
 
@@ -78,6 +78,8 @@ public class Product {
                 '}';
 
     }
+
+
 }
 
 

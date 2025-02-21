@@ -1,6 +1,6 @@
 package controller;
 
-import model.Manufacturers;
+import model.Manufacturer;
 import service.ManufacturerService;
 
 import java.util.List;
@@ -13,11 +13,11 @@ public class ManufacturerController {
     }
 
     public void displayManufacturers() {
-        List<Manufacturers> manufacturers = manufacturerService.getAllManufacturer();
+        List<Manufacturer> manufacturers = manufacturerService.getAllManufacturer();
         if (manufacturers.isEmpty()) {
             System.out.println("No manufacturers found");
         }else{
-            for (Manufacturers manufacturer : manufacturers) {
+            for (Manufacturer manufacturer : manufacturers) {
                 System.out.println(manufacturer);
             }
         }

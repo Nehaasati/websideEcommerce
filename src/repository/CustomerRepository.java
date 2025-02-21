@@ -1,5 +1,5 @@
-package Repository;
-import connect.SqliteConnection;
+package repository;
+import util.SqliteConnection;
 import model.Customer;
 
 import java.sql.*;

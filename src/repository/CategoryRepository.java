@@ -1,6 +1,6 @@
-package Repository;
+package repository;
 
-import connect.SqliteConnection;
+import util.SqliteConnection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

@@ -1,20 +1,29 @@
-import controller.CustomerController;
 import controller.ProductController;
-import controller.CategoryController;
-import controller.ManufacturerController;
+import repository.ProductRepository;
+import repository.impl.ProductRepositoryImpl;
+import service.ProductService;
+import service.impl.ProductServiceImpl;
+import model.Product;
 
 import java.sql.*;
-import connect.SqliteConnection;
+import  java.util.List;
+import util.SqliteConnection;
 import java.sql.Connection;
+import java.util.Optional;
 
 
 public class Main {
     public static void main(String[] args) throws SQLException {
+        ProductRepository productRepository = new ProductRepositoryImpl();
+        ProductService productService = new ProductServiceImpl(productRepository);
+        ProductController productController = new ProductController(productService);
+
+       productController.handleProductOperations();
 
         // JDBC URL för SQLite
         // String url = "";
 
-        Connection connection = SqliteConnection.getConnection();
+       /* Connection connection = SqliteConnection.getConnection();
         if (connection != null) {
             System.out.println("Connection established");
 
@@ -53,8 +62,10 @@ public class Main {
         // categoryController.displayCategories();
 
 
-      //  ManufacturerController manufacturerController = new ManufacturerController();
-      //  manufacturerController.displayManufacturers();
+        //  ManufacturerController manufacturerController = new ManufacturerController();
+        //  manufacturerController.displayManufacturers();
+
+
 
 
 //customers cs =new customers(9,"neha","31@ngmail.com","232312");

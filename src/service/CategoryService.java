@@ -1,6 +1,6 @@
 package service;
 
-import Repository.CategoryRepository;
+import repository.CategoryRepository;
 import model.Category;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package service;
 
-import Repository.ManufacturerRepository;
-import model.Manufacturers;
+import repository.ManufacturerRepository;
+import model.Manufacturer;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class ManufacturerService {
         this.manufacturerRepository = new ManufacturerRepository();
     }
 
-    public List<Manufacturers> getAllManufacturer() {
+    public List<Manufacturer> getAllManufacturer() {
 
         return manufacturerRepository.getAllManufacturers();
     }

@@ -1,13 +1,13 @@
 package model;
 
-public class Manufacturers {
+public class Manufacturer {
     private int manufacturerId;
     private String name;
 
 
-    public Manufacturers() {}
+    public Manufacturer() {}
 
-    public Manufacturers(int manufacturerId, String name) {
+    public Manufacturer(int manufacturerId, String name) {
         if (manufacturerId < 0) {
             throw new IllegalArgumentException(
                     "ManufacturerId must be greater than 0."

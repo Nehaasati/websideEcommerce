@@ -1,16 +1,21 @@
-package Repository;
+package repository;
 
 import model.Product;
-import model.Manufacturers;
 
-import java.sql.*;
-import java.util.ArrayList;
+
+import java.util.Optional;
 import java.util.List;
 
-public class ProductRepository {
-    private Connection connection;
+public interface ProductRepository {
+    Optional<Product> findById(int productId);
+    List<Product> getAllProducts();
+    Product save(Product product);
+    void update(Product product);
+    void delete(int productId);
+}
 
-    public ProductRepository(Connection connection) {
+
+   /* public ProductRepository(Connection connection) {
         this.connection = connection;
     }
 
@@ -47,4 +52,4 @@ public class ProductRepository {
         return productList;
 
     }
-}
+}*/
