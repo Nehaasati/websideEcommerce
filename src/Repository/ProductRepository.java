@@ -5,7 +5,7 @@ import java.util.List;
 
 
 import model.Product;
-import connect.SqliteConnection;
+import util.SqliteConnection;
 
 public class ProductRepository {
     public List<Product> getAllProducts() {
