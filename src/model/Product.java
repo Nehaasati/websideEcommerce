@@ -6,6 +6,10 @@ public class Product {
     private String description;
     private double price;
     private int stockQuantity;
+    private Manufacturer manufacturers;  // Represents the manufacturer of the product
+   // private List<String> Category;          // Categories associated with the product
+
+    public Product() {}  // a no-arg constructor needed for the repository
 
     public Product(int productId, String name, String description, double price, int stockQuantity) {
             this.productId = productId;
@@ -13,6 +17,7 @@ public class Product {
             this.description = description;
             this.price = price;
             this.stockQuantity = stockQuantity;
+            this.manufacturers = manufacturers;
     }
     public int getProductId() {
         return productId;
@@ -54,15 +59,27 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
+    public Manufacturer getManufacturers() {
+        return manufacturers;
+    }
+
+    public void setManufacturers(Manufacturer manufacturers) {
+        this.manufacturers = manufacturers;
+    }
+
     @Override public String toString() {
-        return "Product.Product{" +
+        return "Product{" +
                 "productId=" + productId +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", stockQuantity=" + stockQuantity +
+                ", manufacturer=" + (manufacturers != null ? manufacturers.getName() : "N/A") +
                 '}';
+
     }
+
+
 }
 
 

@@ -2,7 +2,7 @@ package service;
 
 import java.util.List;
 
-import Repository.CustomerRepository;
+import repository.CustomerRepository;
 import model.Customer;
 
 public class CustomerService {

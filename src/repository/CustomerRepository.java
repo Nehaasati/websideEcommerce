@@ -1,4 +1,8 @@
+<<<<<<< HEAD:src/Repository/CustomerRepository.java
 package Repository;
+=======
+package repository;
+>>>>>>> aafc1dc0fd3bf371c936558c20deda52e924846c:src/repository/CustomerRepository.java
 import util.SqliteConnection;
 import model.Customer;
 

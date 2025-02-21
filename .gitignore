@@ -27,3 +27,16 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### SQLite database files ###
+*.db
+webshop.db
+webbutiken.db
+
+### Ignore specefic files ###
+tomer.java
+tomerDAO.java
+tomerService.java
+
+# ignore compiled output #
+out /
