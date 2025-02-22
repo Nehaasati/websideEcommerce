@@ -1,14 +1,21 @@
 package repository;
-import util.SqliteConnection;
+
+
 import model.Order;
+import util.SqliteConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class OrderRepository {
+
+    private final Connection connection = SqliteConnection.getConnection();
+
     public int createOrder(Order order) {
         int generatedId = -1;
         String sql = "INSERT INTO orders (customer_id, order_date) VALUES (?, ?)";
+
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, order.getCustomerId());
@@ -44,6 +51,24 @@ public class OrderRepository {
         }
     }
 
+    public void save(Order order) {
+        String sql = "INSERT INTO orders (customer_id, order_date) VALUES (?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, order.getCustomerId());
+            stmt.setDate(2, order.getOrderDate());
+            stmt.executeUpdate();
+
+            // Set the auto-generated orderId
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    order.setOrderId(rs.getInt(1));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Retrieves a joined view of the order with its products.
      * Returns a list of strings summarizing each row.
@@ -73,6 +98,8 @@ public class OrderRepository {
             System.err.println("Error while retrieving order details: " + e.getMessage());
         }
         return results;
+
+
     }
 
 }

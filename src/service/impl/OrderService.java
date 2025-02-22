@@ -36,7 +36,7 @@ public class OrderService implements IOrderService {
                 System.err.println("Quantity must be greater than zero for product ID: " + op.getProductId());
                 return;
             }
-            if (op.getPrice() < 0) {
+            if (op.getUnitPrice() < 0) {
                 System.err.println("Price cannot be negative for product ID: " + op.getProductId());
                 return;
             }

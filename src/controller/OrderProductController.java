@@ -51,10 +51,10 @@ public class OrderProductController {
         System.out.print("Enter Quantity: ");
         int quantity = scanner.nextInt();
         System.out.print("Enter Price: ");
-        double price = scanner.nextDouble();
+        double unitPrice = scanner.nextDouble();
         scanner.nextLine(); // Consume newline
 
-        OrderProduct op = new OrderProduct(productId, quantity, price);
+        OrderProduct op = new OrderProduct(0,productId, quantity, unitPrice);
         op.setOrderId(orderId);
         boolean success = orderProductService.addOrderProduct(op);
         if (success) {

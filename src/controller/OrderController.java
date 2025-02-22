@@ -1,4 +1,5 @@
 package controller;
+
 import service.IOrderService;
 import service.impl.OrderService;
 import model.Order;
@@ -65,10 +66,11 @@ public class OrderController {
             int productId = scanner.nextInt();
             System.out.print("Quantity: ");
             int quantity = scanner.nextInt();
-            System.out.print("Price: ");
-            double price = scanner.nextDouble();
+            System.out.print("Unit Price: ");
+            double unitPrice = scanner.nextDouble();
             scanner.nextLine(); // Consume newline
-            OrderProduct op = new OrderProduct(productId, quantity, price);
+
+            OrderProduct op = new OrderProduct(0,productId, quantity, unitPrice);
             orderProducts.add(op);
         }
 

@@ -1,8 +1,7 @@
 package service.impl;
+
 import model.OrderProduct;
 import service.IOrderProductService;
-
-
 import repository.OrderProductRepository;
 
 
@@ -27,7 +26,7 @@ public class OrderProductService implements IOrderProductService {
             System.err.println("Quantity must be greater than zero for order product.");
             return false;
         }
-        if (op.getPrice() < 0) {
+        if (op.getUnitPrice() < 0) {
             System.err.println("Price cannot be negative for order product.");
             return false;
         }
