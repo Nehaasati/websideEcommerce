@@ -14,8 +14,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     private final Connection connection = SqliteConnection.getConnection();
 
 
+
     @Override
-    public Optional<Product> findById(int productId) {
+    public Optional<Product> searchProductById(int productId) {
         String sql = "SELECT p.*, m.name AS manufacturer_name FROM products p " +
                 "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id " +
                 "WHERE p.product_id = ?";
@@ -50,6 +51,8 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
         return products;
     }
+
+
 
     @Override
     public Product save(Product product) {
