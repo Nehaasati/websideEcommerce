@@ -9,9 +9,9 @@ import java.util.List;
 public interface ProductRepository {
     Optional<Product> searchProductById(int productId);
     List<Product> getAllProducts();
-    List<Product> searchProductByName(String name);
-    List<Product>searchProductByCategory(String category);
-    List<Product> searchProductByPriceRange(double min, double max);
+  //  List<Product> searchProductByName(String name);
+ //   List<Product>searchProductByCategory(String category);
+  //  List<Product> searchProductByPriceRange(double min, double max);
     Product save(Product product);
     void update(Product product);
     void delete(int productId);

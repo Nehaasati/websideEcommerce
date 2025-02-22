@@ -20,7 +20,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(int productId) {
-        return productRepository.findById(productId)
+        return productRepository.searchProductById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found with ID: " + productId));
     }
 
