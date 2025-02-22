@@ -1,6 +1,8 @@
 package model;
 import java.sql.Date;
 
+import java.sql.Date;
+
 public class Order {
     private int orderId;
     private int customerId;
@@ -48,4 +50,5 @@ public class Order {
                 '}';
     }
 }
+
 
