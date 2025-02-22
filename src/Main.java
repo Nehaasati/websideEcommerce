@@ -18,11 +18,11 @@ import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        //ProductRepository productRepository = new ProductRepositoryImpl();
-       // ProductService productService = new ProductServiceImpl(productRepository);
-       // ProductController productController = new ProductController(productService);
+     /* ProductRepository productRepository = new ProductRepositoryImpl();
+      ProductService productService = new ProductServiceImpl(productRepository);
+      ProductController productController = new ProductController(productService);
 
-        //productController.handleProductOperations();
+        productController.handleProductOperations();*/
 
         OrderController orderController = new OrderController();
         OrderProductController orderProductController = new OrderProductController();

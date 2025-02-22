@@ -6,10 +6,7 @@ import model.OrderProduct;
 import service.IOrderService;
 
 import java.util.List;
-<<<<<<< HEAD
 
-=======
->>>>>>> Neha
 public class OrderService implements IOrderService {
     private final OrderRepository orderRepository = new OrderRepository();
     private final OrderProductRepository orderProductRepository = new OrderProductRepository();
@@ -93,8 +90,4 @@ public class OrderService implements IOrderService {
             details.forEach(System.out::println);
         }
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> Neha
 }

@@ -1,6 +1,7 @@
 package model;
 
-private int orderProductId;
+public class OrderProduct{
+        private int orderProductId;
         private int orderId;
         private int productId;
         private int quantity;
