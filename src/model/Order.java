@@ -1,46 +1,53 @@
 package model;
 
+import java.sql.Date;
+
 public class Order {
     private int orderId;
-    private int customerid;
-    //private String status;
-    //private double price;
-    private int order_date;
+    private int customerId;
+    private Date orderDate;
 
-    public Order(int orderId, int customerid, int order_date) {
-        this.orderId = orderId;
-        this.customerid = customerid;
-        this.order_date= order_date;
-
+    // Constructor for insertion (orderId auto-generated)
+    public Order(int customerId, Date orderDate) {
+        this.customerId = customerId;
+        this.orderDate = orderDate;
     }
 
+    // Constructor for retrieval
+    public Order(int orderId, int customerId, Date orderDate) {
+        this.orderId = orderId;
+        this.customerId = customerId;
+        this.orderDate = orderDate;
+    }
+
+    // Getters and Setters
     public int getOrderId() {
         return orderId;
     }
-
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
-
-    public void setCustomerid(int customerid) {
-        this.customerid = customerid;
+    public int getCustomerId() {
+        return customerId;
     }
-
-    public int getOrder_date() {
-        return order_date;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
-
-    public void setOrder_date(int order_date) {
-        this.order_date = order_date;
+    public Date getOrderDate() {
+        return orderDate;
+    }
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
     }
 
     @Override
     public String toString() {
-        return "Order.order{" +
-                "ordertId=" + orderId +
-                ",customerid='" + customerid + '\'' +
-                ", order_date='" + order_date + '\'' +
+        return "Order{" +
+                "orderId=" + orderId +
+                ", customerId=" + customerId +
+                ", orderDate=" + orderDate +
                 '}';
     }
 }
+
 
