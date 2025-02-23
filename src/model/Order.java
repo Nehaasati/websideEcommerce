@@ -6,19 +6,19 @@ import java.sql.Date;
 public class Order {
     private int orderId;
     private int customerId;
-    private Date orderDate;
+    private Date order_Date;
 
     // Constructor for insertion (orderId auto-generated)
     public Order(int customerId, Date orderDate) {
         this.customerId = customerId;
-        this.orderDate = orderDate;
+        this.order_Date = order_Date;
     }
 
     // Constructor for retrieval
     public Order(int orderId, int customerId, Date orderDate) {
         this.orderId = orderId;
         this.customerId = customerId;
-        this.orderDate = orderDate;
+        this.order_Date = order_Date;
     }
 
     // Getters and Setters
@@ -34,11 +34,11 @@ public class Order {
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
-    public Date getOrderDate() {
-        return orderDate;
+    public Date getOrder_Date() {
+        return order_Date;
     }
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
+    public void setOrder_Date(Date orderDate) {
+        this.order_Date = order_Date;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class Order {
         return "Order{" +
                 "orderId=" + orderId +
                 ", customerId=" + customerId +
-                ", orderDate=" + orderDate +
+                ", order_Date=" + order_Date +
                 '}';
     }
 }

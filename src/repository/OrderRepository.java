@@ -19,7 +19,7 @@ public class OrderRepository {
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, order.getCustomerId());
-            pstmt.setDate(2, order.getOrderDate());
+            pstmt.setDate(2, order.getOrder_Date());
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows == 0) {
                 System.err.println("Creating order failed, no rows affected."); // no row affected print error
@@ -75,9 +75,15 @@ public class OrderRepository {
      */
     public List<String> getOrderWithProducts(int orderId) {
         List<String> results = new ArrayList<>();
+<<<<<<< HEAD
         String sql =  "SELECT o.order_id, o.customer_id, o.order_date, " +
                 "op.order_product_id, op.product_id, op.quantity, op.unit_price " +
                 "FROM orders o JOIN orders_products op ON o.order_id = op.order_id " +
+=======
+        String sql = "SELECT o.order_id, o.customer_id, o.order_date, " +
+                "op.order_product_id, op.product_id, op.quantity, op.unit_price " +
+                "FROM orders o JOIN order_product op ON o.order_id = op.order_id " +
+>>>>>>> Neha
                 "WHERE o.order_id = ?";
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -91,7 +97,11 @@ public class OrderRepository {
                             ", OrderProductID: " + rs.getInt("order_product_id") +
                             ", ProductID: " + rs.getInt("product_id") +
                             ", Quantity: " + rs.getInt("quantity") +
+<<<<<<< HEAD
                             ", Price: " + rs.getDouble("unit_price"));
+=======
+                            ", unit_Price: " + rs.getDouble("unit_price"));
+>>>>>>> Neha
                 }
             }                                //lambda method reference (System.out::println) is used to output each row.
         } catch (SQLException e) {
