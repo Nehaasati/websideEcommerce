@@ -5,10 +5,8 @@ import model.Product;
 import model.ProductCategory;
 import repository.ProductRepository;
 
-import java.util.Map;
-import java.util.HashMap;
-import util.SqliteConnection;
 import java.sql.*;
+import util.SqliteConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,20 +14,29 @@ import java.util.Optional;
 public class ProductRepositoryImpl implements ProductRepository {
     private final Connection connection = SqliteConnection.getConnection();
 
+
     @Override
     public Optional<Product> searchProductById(int productId) {
-        String sql =  "SELECT p.*, m.name AS manufacturer_name, pc.category_id, c.name AS category_name " +
+        String sql = "SELECT p.*, m.name AS manufacturer_name " +
                 "FROM products p " +
                 "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id " +
-                "LEFT JOIN products_categories pc ON p.product_id = pc.product_id " +
-                "LEFT JOIN categories c ON pc.category_id = c.category_id " +
                 "WHERE p.product_id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, productId);
             ResultSet rs = stmt.executeQuery();
 
-            Product product = null;
+            if (rs.next()) {
+                return Optional.of(mapRowToProduct(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+
+           /* Product product = null;
             while (rs.next()) {
                 if (product == null) {
                     product = mapRowToProduct(rs);
@@ -48,35 +55,75 @@ public class ProductRepositoryImpl implements ProductRepository {
             e.printStackTrace();
         }
         return Optional.empty();
-    }
+    }*/
 
     @Override
     public List<Product> getAllProducts() {
+        String sql = "SELECT * FROM products";
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT p.*, m.name AS manufacturer_name, pc.category_id, c.name AS category_name " +
-                "FROM products p " +
-                "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id " +
-                "LEFT JOIN products_categories pc ON p.product_id = pc.product_id " +
-                "LEFT JOIN categories c ON pc.category_id = c.category_id";
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
-            Map<Integer, Product> productMap = new HashMap<>();
             while (rs.next()) {
-                int productId = rs.getInt("product_id");
-                Product product = productMap.get(productId);
+                products.add(mapRowToProduct(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
 
-                if (product == null) {
-                    product = mapRowToProduct(rs);
-                    productMap.put(productId, product);
-                    products.add(product);
-                }
+    @Override
+    public List<Product> searchProductByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Product name cannot be empty");
+        }
+        String sql = "SELECT * FROM products WHERE name LIKE ?";
 
-                int categoryId = rs.getInt("category_id");
-                if (categoryId != 0) {
-                    ProductCategory pc = new ProductCategory(productId, categoryId);
-                    product.getCategories().add(pc);
-                }
+        List<Product> products = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "%" + name + "%"); // Partial match
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                products.add(mapRowToProduct(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
+
+    @Override
+    public List<Product> searchProductByCategory(String categoryName) {
+        String sql = "SELECT p.* " +
+                "FROM products p " +
+                "JOIN products_categories pc ON p.product_id = pc.product_id " +
+                "JOIN categories c ON pc.category_id = c.category_id " +
+                "WHERE c.name = ?";
+        List<Product> products = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, categoryName);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                products.add(mapRowToProduct(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
+
+    @Override
+    public List<Product> searchProductByPriceRange(double minPrice, double maxPrice) {
+        String sql = "SELECT * FROM products WHERE price BETWEEN ? AND ?";
+        List<Product> products = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setDouble(1, minPrice);
+            stmt.setDouble(2, maxPrice);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                products.add(mapRowToProduct(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -137,31 +184,6 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
     }
 
-    // Helper Methods
-    private Product mapRowToProduct(ResultSet rs) throws SQLException {
-        Product product = new Product();
-        product.setProductId(rs.getInt("product_id"));
-        product.setName(rs.getString("name"));
-        product.setDescription(rs.getString("description"));
-        product.setPrice(rs.getDouble("price"));
-        product.setStockQuantity(rs.getInt("stock_quantity"));
-
-        Manufacturer manufacturer = new Manufacturer();
-        manufacturer.setManufacturerId(rs.getInt("manufacturer_id"));
-        manufacturer.setName(rs.getString("manufacturer_name"));
-        product.setManufacturers(manufacturer);
-
-        return product;
-    }
-
-    private void setProductStatement(PreparedStatement stmt, Product product) throws SQLException {
-        stmt.setString(1, product.getName());
-        stmt.setString(2, product.getDescription());
-        stmt.setDouble(3, product.getPrice());
-        stmt.setInt(4, product.getStockQuantity());
-        stmt.setInt(5, product.getManufacturers().getManufacturerId());
-    }
-
     private void saveProductCategories(Product product) throws SQLException {
         if (product.getCategories() == null || product.getCategories().isEmpty()) {
             return;
@@ -190,6 +212,41 @@ public class ProductRepositoryImpl implements ProductRepository {
             stmt.executeUpdate();
         }
     }
+
+    // Helper Methods
+    private Product mapRowToProduct(ResultSet rs) throws SQLException {
+        Product product = new Product();
+        product.setProductId(rs.getInt("product_id"));
+        product.setName(rs.getString("name"));
+        product.setDescription(rs.getString("description"));
+        product.setPrice(rs.getDouble("price"));
+        product.setStockQuantity(rs.getInt("stock_quantity"));
+
+        Manufacturer manufacturer = new Manufacturer();
+        manufacturer.setManufacturerId(rs.getInt("manufacturer_id"));
+        manufacturer.setName(rs.getString("name"));
+        product.setManufacturers(manufacturer);
+
+        return product;
+    }
+
+    private void setProductStatement(PreparedStatement stmt, Product product) throws SQLException {
+        stmt.setString(1, product.getName());
+        stmt.setString(2, product.getDescription());
+        stmt.setDouble(3, product.getPrice());
+        stmt.setInt(4, product.getStockQuantity());
+        stmt.setInt(5, product.getManufacturers().getManufacturerId());
+    }
+
+    private void validateProduct(Product product) {
+        if (product == null || product.getName() == null || product.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Product name cannot be empty");
+        }
+        if (product.getPrice() < 0) {
+            throw new IllegalArgumentException("Product price cannot be negative");
+        }
+    }
+
 }
 
 

@@ -2,11 +2,12 @@ package service;
 
 import model.Product;
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService {
     List<Product> getAllProducts();
 
-    Product getProductById(int id);
+    Optional<Product> getProductById(int id);
 
     Product createProduct(Product product);
 
@@ -16,30 +17,7 @@ public interface ProductService {
 
     void deleteProduct(int id);
 
-
-
-
-    private void validateProduct(Product product) {
-        if (product.getPrice() <= 0) {
-            throw new IllegalArgumentException("Product price must be positive");
-        }
-        if (product.getStockQuantity() < 0) {
-            throw new IllegalArgumentException("Stock quantity cannot be negative");
-        }
-        // NEW: Validate manufacturer
-        if (product.getManufacturers() == null || product.getManufacturers().getManufacturerId() <= 0) {
-            throw new IllegalArgumentException("Manufacturer is required");
-        }
-    }
-
+    List<Product>searchProductByName(String name);
+    List<Product>searchProductByCategory(String categoryName);
+    List<Product>searchProductByPriceRange(double minPrice, double maxPrice);
 }
-  /*  private final ProductRepository productRepository;
-
-    public ProductService(Connection connection) {
-        this.productRepository = new ProductRepository(connection);
-    }
-
-    public List<Product> getAllProducts() throws SQLException{
-        return productRepository.getAllProducts();
-    }
-}*/

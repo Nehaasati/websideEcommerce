@@ -14,20 +14,17 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
     public ProductServiceImpl(ProductRepository productRepository) {
-
         this.productRepository = new ProductRepositoryImpl();
     }
 
     @Override
     public List<Product> getAllProducts() {
-
         return productRepository.getAllProducts();
     }
 
     @Override
-    public Product getProductById(int productId) {
-        return productRepository.searchProductById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found with ID: " + productId));
+    public Optional<Product> getProductById(int productId) {
+        return productRepository.searchProductById(productId);
     }
 
     @Override
@@ -48,13 +45,28 @@ public class ProductServiceImpl implements ProductService {
         productRepository.delete(productId);
     }
 
-    private void validateProduct(Product product) {
-        if (product.getPrice() <= 0) {
-            throw new IllegalArgumentException("Product price must be positive");
+    @Override
+    public List<Product> searchProductByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Product name cannot be empty");
         }
-        if (product.getStockQuantity() < 0) {
-            throw new IllegalArgumentException("Stock quantity cannot be negative");
+        return productRepository.searchProductByName(name);
+    }
+
+    @Override
+    public List<Product> searchProductByCategory(String categoryName) {
+        if (categoryName == null || categoryName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Category name cannot be empty");
         }
+        return productRepository.searchProductByCategory(categoryName);
+    }
+
+    @Override
+    public List<Product> searchProductByPriceRange(double minPrice, double maxPrice) {
+        if (minPrice < 0 || maxPrice < 0 || minPrice > maxPrice) {
+            throw new IllegalArgumentException("Invalid price range");
+        }
+        return productRepository.searchProductByPriceRange(minPrice, maxPrice);
     }
 
     @Override
@@ -73,5 +85,21 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.update(product);
         return true; // Update successful
+    }
+
+
+    private void validateProduct(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null");
+        }
+        if (product.getName() == null || product.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Product name cannot be empty");
+        }
+        if (product.getPrice() <= 0) {
+            throw new IllegalArgumentException("Product price must be positive");
+        }
+        if (product.getStockQuantity() < 0) {
+            throw new IllegalArgumentException("Stock quantity cannot be negative");
+        }
     }
 }

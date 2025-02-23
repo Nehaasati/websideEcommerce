@@ -23,20 +23,19 @@ import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-       /* ProductRepository productRepository = new ProductRepositoryImpl();
+        ProductRepository productRepository = new ProductRepositoryImpl();
         ProductService productService = new ProductServiceImpl(productRepository);
-
         ProductController productController = new ProductController(productService);
 
-        productController.handleProductOperations();*/
+        productController.displayProductMenu();
 
-        IOrderProductService orderProductService = new OrderProductService();
+       /* IOrderProductService orderProductService = new OrderProductService();
 
         OrderController orderController = new OrderController();
         OrderProductController orderProductController = new OrderProductController(orderProductService);
 
         orderController.run();
-        orderProductController.run();
+        orderProductController.run();*/
 
 
 
