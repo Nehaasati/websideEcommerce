@@ -1,11 +1,15 @@
-import controller.OrderController;
-import controller.OrderProductController;
+
+
 import controller.ProductController;
 import repository.OrderProductRepository;
 import repository.OrderRepository;
 import repository.ProductCategoryRepository;
 import repository.ProductRepository;
 import repository.impl.ProductRepositoryImpl;
+import controller.OrderController;
+import controller.OrderProductController;
+import service.IOrderProductService;
+import service.impl.OrderProductService;
 import service.ProductService;
 import service.impl.ProductServiceImpl;
 import model.Product;
@@ -19,18 +23,22 @@ import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        ProductRepository productRepository = new ProductRepositoryImpl();
+       /* ProductRepository productRepository = new ProductRepositoryImpl();
         ProductService productService = new ProductServiceImpl(productRepository);
 
         ProductController productController = new ProductController(productService);
 
-        productController.handleProductOperations();
+        productController.handleProductOperations();*/
 
+        IOrderProductService orderProductService = new OrderProductService();
 
-       /* OrderController orderController = new OrderController();
-        OrderProductController orderProductController = new OrderProductController();
+        OrderController orderController = new OrderController();
+        OrderProductController orderProductController = new OrderProductController(orderProductService);
+
         orderController.run();
-        orderProductController.run();*/
+        orderProductController.run();
+
+
 
         // JDBC URL för SQLite
         // String url = "";
