@@ -2,7 +2,11 @@ package controller;
 
 import model.Manufacturer;
 import model.Product;
+import repository.ProductCategoryRepository;
+import repository.ProductRepository;
+import repository.impl.ProductRepositoryImpl;
 import service.ProductService;
+import service.impl.ProductServiceImpl;
 
 import java.util.List;
 import java.util.Scanner;
@@ -14,9 +18,11 @@ public class ProductController {
     public ProductController( ProductService productService ) {
         this.productService = productService;
         this.scanner = new Scanner(System.in);
+
     }
 
     public List<Product> getAllProducts() {
+
         return productService.getAllProducts();
     }
 
@@ -26,8 +32,9 @@ public class ProductController {
         System.out.println("2. View Product Details");
         System.out.println("3. Add New Product");
         System.out.println("4. Update Product");
-        System.out.println("5. Delete Product");
-        System.out.println("6. Back to Main Menu");
+        System.out.println("5. Update Product Categories");
+        System.out.println("6. Delete Product");
+        System.out.println("7. Back to Main Menu");
     }
 
     public void handleProductOperations() {
@@ -51,9 +58,12 @@ public class ProductController {
                     updateProduct();
                     break;
                 case 5:
-                    deleteProduct();
+                    updateProductCategories();
                     break;
                 case 6:
+                    deleteProduct();
+                    break;
+                case 7:
                     return;
                 default:
                     System.out.println("Invalid choice!");
@@ -62,6 +72,7 @@ public class ProductController {
     }
 
     private void listAllProducts() {
+
         productService.getAllProducts().forEach(System.out::println);
     }
 
@@ -108,6 +119,11 @@ public class ProductController {
         scanner.nextLine();
 
         Product product = productService.getProductById(id);
+        if (product == null) {
+            System.out.println("Product not found!");
+            return;
+        }
+
         System.out.print("Enter new name (" + product.getName() + "): ");
         product.setName(scanner.nextLine());
         System.out.print("Enter new description (" + product.getDescription() + "): ");
@@ -120,6 +136,27 @@ public class ProductController {
 
         productService.updateProduct(product);
         System.out.println("Product updated successfully!");
+    }
+
+    private void updateProductCategories() {
+        System.out.print("Enter product ID to update categories: ");
+        int productId = scanner.nextInt();
+
+        System.out.print("Enter number of categories: ");
+        int categoryCount = scanner.nextInt();
+
+        int[] categoryIds = new int[categoryCount];
+        for (int i = 0; i < categoryCount; i++) {
+            System.out.print("Enter category ID: ");
+            categoryIds[i] = scanner.nextInt();
+        }
+
+        boolean success = productService.updateProductCategories(productId, categoryIds);
+        if (success) {
+            System.out.println("Product categories updated successfully!");
+        } else {
+            System.out.println("Product not found!");
+        }
     }
 
     private void deleteProduct() {

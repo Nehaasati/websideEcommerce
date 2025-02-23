@@ -1,8 +1,6 @@
 package service;
 
-import model.Manufacturer;
 import model.Product;
-
 import java.util.List;
 
 public interface ProductService {
@@ -14,7 +12,11 @@ public interface ProductService {
 
     Product updateProduct(Product product);
 
+    boolean updateProductCategories(int productId, int[] categoryIds);
+
     void deleteProduct(int id);
+
+
 
 
     private void validateProduct(Product product) {

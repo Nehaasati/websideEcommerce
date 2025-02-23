@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Product {
     private int productId;
     private String name;
@@ -7,7 +10,7 @@ public class Product {
     private double price;
     private int stockQuantity;
     private Manufacturer manufacturers;  // Represents the manufacturer of the product
-   // private List<String> Category;          // Categories associated with the product
+    private List<ProductCategory> categories = new ArrayList<>();          // Categories associated with the product
 
     public Product() {}  // a no-arg constructor needed for the repository
 
@@ -18,6 +21,7 @@ public class Product {
             this.price = price;
             this.stockQuantity = stockQuantity;
             this.manufacturers = manufacturers;
+           // this.categories = categories;
     }
     public int getProductId() {
         return productId;
@@ -67,7 +71,19 @@ public class Product {
         this.manufacturers = manufacturers;
     }
 
-    @Override public String toString() {
+    public List<ProductCategory> getCategories() {
+        if (categories == null) {
+            categories = new ArrayList<>();
+        }
+        return categories;
+    }
+    public void setCategories(List<ProductCategory> categories) {
+        this.categories = categories != null ? categories : new ArrayList<>();
+    }
+
+
+    @Override
+    public String toString() {
         return "Product{" +
                 "productId=" + productId +
                 ", name='" + name + '\'' +
@@ -75,11 +91,10 @@ public class Product {
                 ", price=" + price +
                 ", stockQuantity=" + stockQuantity +
                 ", manufacturer=" + (manufacturers != null ? manufacturers.getName() : "N/A") +
+                ", categories=" + (categories != null ? categories.size() : 0) +
                 '}';
 
     }
-
-
 }
 
 
