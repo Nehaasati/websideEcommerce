@@ -75,9 +75,9 @@ public class OrderRepository {
      */
     public List<String> getOrderWithProducts(int orderId) {
         List<String> results = new ArrayList<>();
-        String sql = "SELECT o.order_id, o.customer_id, o.order_date, " +
-                "op.order_product_id, op.product_id, op.quantity, op.price " +
-                "FROM orders o JOIN order_product op ON o.order_id = op.order_id " +
+        String sql =  "SELECT o.order_id, o.customer_id, o.order_date, " +
+                "op.order_product_id, op.product_id, op.quantity, op.unit_price " +
+                "FROM orders o JOIN orders_products op ON o.order_id = op.order_id " +
                 "WHERE o.order_id = ?";
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -91,15 +91,12 @@ public class OrderRepository {
                             ", OrderProductID: " + rs.getInt("order_product_id") +
                             ", ProductID: " + rs.getInt("product_id") +
                             ", Quantity: " + rs.getInt("quantity") +
-                            ", Price: " + rs.getDouble("price"));
+                            ", Price: " + rs.getDouble("unit_price"));
                 }
             }                                //lambda method reference (System.out::println) is used to output each row.
         } catch (SQLException e) {
             System.err.println("Error while retrieving order details: " + e.getMessage());
         }
         return results;
-
-
     }
-
 }

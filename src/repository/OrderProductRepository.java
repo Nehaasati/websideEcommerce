@@ -39,7 +39,7 @@ public class OrderProductRepository {
     }*/
 
     public boolean deleteOrderProductsByOrderId(int orderId) {
-        String sql = "DELETE FROM orders_product WHERE order_id = ?";
+        String sql = "DELETE FROM orders_products WHERE order_id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, orderId);
             return pstmt.executeUpdate() > 0;
