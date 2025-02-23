@@ -2,26 +2,27 @@ package model;
 
 public class OrderProduct {
 
-        private int orderProductId;
+
+    private int orderProductId;
         private int orderId;
         private int productId;
         private int quantity;
-        private double price;
+        private double unit_price;
 
         // Constructor for insertion (orderProductId auto-generated)
-        public OrderProduct(int productId, int quantity, double price) {
+        public OrderProduct(int productId, int quantity, double unit_price) {
             this.productId = productId;
             this.quantity = quantity;
-            this.price = price;
+            this.unit_price = unit_price;
         }
 
         // Constructor for retrieval
-        public OrderProduct(int orderProductId, int orderId, int productId, int quantity, double price) {
+        public OrderProduct(int orderProductId, int orderId, int productId, int quantity, double unit_price) {
             this.orderProductId = orderProductId;
             this.orderId = orderId;
             this.productId = productId;
             this.quantity = quantity;
-            this.price = price;
+            this.unit_price = unit_price;
         }
 
         // Getters and Setters
@@ -49,11 +50,11 @@ public class OrderProduct {
         public void setQuantity(int quantity) {
             this.quantity = quantity;
         }
-        public double getPrice() {
-            return price;
+        public double getunit_Price() {
+            return unit_price;
         }
-        public void setPrice(double price) {
-            this.price = price;
+        public void setunit_Price(double unit_price) {
+            this.unit_price = unit_price;
         }
 
         @Override
@@ -63,7 +64,7 @@ public class OrderProduct {
                     ", orderId=" + orderId +
                     ", productId=" + productId +
                     ", quantity=" + quantity +
-                    ", price=" + price +
+                    ", unit_price=" + unit_price +
                     '}';
         }
     }
