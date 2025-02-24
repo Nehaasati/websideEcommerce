@@ -1,5 +1,6 @@
 package repository.impl;
 
+import model.Category;
 import model.Manufacturer;
 import model.Product;
 import model.ProductCategory;
@@ -7,13 +8,16 @@ import repository.ProductRepository;
 
 import java.sql.*;
 import util.SqliteConnection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
+
 
 public class ProductRepositoryImpl implements ProductRepository {
     private final Connection connection = SqliteConnection.getConnection();
 
+   /* public ProductRepositoryImpl(Connection connection) {
+        this.connection = connection;
+    }*/
 
     @Override
     public Optional<Product> searchProductById(int productId) {
@@ -35,42 +39,85 @@ public class ProductRepositoryImpl implements ProductRepository {
         return Optional.empty();
     }
 
-
-           /* Product product = null;
-            while (rs.next()) {
-                if (product == null) {
-                    product = mapRowToProduct(rs);
-                }
-                int categoryId = rs.getInt("category_id");
-                if (categoryId != 0) {
-                    ProductCategory pc = new ProductCategory(
-                            productId,
-                            categoryId
-                    );
-                    product.getCategories().add(pc);
-                }
-            }
-            return Optional.ofNullable(product);
-            } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return Optional.empty();
-    }*/
-
     @Override
     public List<Product> getAllProducts() {
-        String sql = "SELECT * FROM products";
-        List<Product> products = new ArrayList<>();
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        String sql =  "SELECT p.*, m.name AS manufacturer_name, " +
+                "c.category_id, c.name AS category_name " +
+                "FROM products p " +
+                "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id " +
+                "LEFT JOIN products_categories pc ON p.product_id = pc.product_id " +
+                "LEFT JOIN categories c ON pc.category_id = c.category_id";
 
+        List<Product> products = new ArrayList<>();
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery()) {
+
+            Map<Integer, Product> productMap = new HashMap<>();
             while (rs.next()) {
-                products.add(mapRowToProduct(rs));
+                int productId = rs.getInt("product_id");
+
+                // Create or retrieve product from map
+                Product product = productMap.computeIfAbsent(productId, id -> {
+                    try {
+                        Product p = new Product();
+                        p.setProductId(productId);
+                        p.setName(rs.getString("name"));
+                        p.setDescription(rs.getString("description"));
+                        p.setPrice(rs.getDouble("price"));
+                        p.setStockQuantity(rs.getInt("stock_quantity"));
+
+                        // Map manufacturer
+                        Manufacturer manufacturer = new Manufacturer();
+                        manufacturer.setManufacturerId(rs.getInt("manufacturer_id"));
+                        manufacturer.setName(rs.getString("manufacturer_name"));
+                        p.setManufacturers(manufacturer);
+
+                        return p;
+                    } catch (SQLException e) {
+                        throw new RuntimeException("Error mapping product", e);
+                    }
+                });
+
+                // Map category (if exists)
+                try {
+                    int categoryId = rs.getInt("category_id");
+                    if (categoryId != 0) { // Check for SQL NULL
+                        Category category = new Category();
+                        category.setCategoryId(categoryId);
+                        category.setName(rs.getString("category_name"));
+                        product.getCategories().add(category);
+                    }
+                } catch (SQLException e) {
+                    System.err.println("Error mapping category: " + e.getMessage());
+                }
             }
+
+            products.addAll(productMap.values());
+
         } catch (SQLException e) {
+            System.err.println("Database error: " + e.getMessage());
+            e.printStackTrace();
+        } catch (RuntimeException e) {
+            System.err.println("Mapping error: " + e.getMessage());
             e.printStackTrace();
         }
+
         return products;
+
+                    // Avoid duplicates
+                    /*if (product.getCategories().stream()
+                            .noneMatch(c -> c.getCategoryId() == categoryId)) {
+                        product.getCategories().add(category);
+                    }
+                }
+            }
+            products.addAll(productMap.values());
+        } catch (SQLException e) {
+            System.err.println("Error fetching products: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return products;*/
     }
 
     @Override
@@ -191,9 +238,9 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         String sql = "INSERT INTO products_categories (product_id, category_id) VALUES (?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            for (ProductCategory pc : product.getCategories()) {
+            for (Category category : product.getCategories()) {
                 stmt.setInt(1, product.getProductId());
-                stmt.setInt(2, pc.getCategoryId());
+                stmt.setInt(2, category.getCategoryId());
                 stmt.addBatch();
             }
             stmt.executeBatch();
@@ -222,11 +269,20 @@ public class ProductRepositoryImpl implements ProductRepository {
         product.setPrice(rs.getDouble("price"));
         product.setStockQuantity(rs.getInt("stock_quantity"));
 
+        // Map manufacturer
         Manufacturer manufacturer = new Manufacturer();
         manufacturer.setManufacturerId(rs.getInt("manufacturer_id"));
         manufacturer.setName(rs.getString("name"));
         product.setManufacturers(manufacturer);
 
+        // Map category ID
+        int categoryId = rs.getInt("category_id");
+        if (categoryId != 0) {
+            Category category = new Category();
+            category.setCategoryId(categoryId);
+            category.setName(rs.getString("category_name")); // Optional: if you need category names
+            product.getCategories().add(category);
+        }
         return product;
     }
 

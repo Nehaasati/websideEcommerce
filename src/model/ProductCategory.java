@@ -1,9 +1,11 @@
 package model;
 
 public class ProductCategory {
-    private int id;
+    private int id;   //junction Table PK
     private int productId;
     private int categoryId;
+
+    public ProductCategory() {}
 
     public ProductCategory(int productId, int categoryId) {
         this.productId = productId;
@@ -13,18 +15,23 @@ public class ProductCategory {
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
+
     public int getProductId() {
         return productId;
     }
+
     public void setProductId(int productId) {
         this.productId = productId;
     }
+
     public int getCategoryId() {
         return categoryId;
     }
+
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
@@ -37,4 +44,5 @@ public class ProductCategory {
                 ", categoryId=" + categoryId +
                 '}';
     }
+
 }

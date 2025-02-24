@@ -1,10 +1,7 @@
 
 
 import controller.ProductController;
-import repository.OrderProductRepository;
-import repository.OrderRepository;
-import repository.ProductCategoryRepository;
-import repository.ProductRepository;
+import repository.*;
 import repository.impl.ProductRepositoryImpl;
 import controller.OrderController;
 import controller.OrderProductController;
@@ -24,7 +21,12 @@ import java.util.Optional;
 public class Main {
     public static void main(String[] args) throws SQLException {
         ProductRepository productRepository = new ProductRepositoryImpl();
-        ProductService productService = new ProductServiceImpl(productRepository);
+        ProductCategoryRepository productCategoryRepository = new ProductCategoryRepository();
+        CategoryRepository categoryRepository = new CategoryRepository();
+        ProductService productService = new ProductServiceImpl(productRepository,
+                productCategoryRepository,
+                categoryRepository
+        );
         ProductController productController = new ProductController(productService);
 
         productController.displayProductMenu();
