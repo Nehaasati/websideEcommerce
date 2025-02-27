@@ -18,27 +18,6 @@ public class ProductRepositoryImpl implements ProductRepository {
    /* public ProductRepositoryImpl(Connection connection) {
         this.connection = connection;
     }*/
-
-    @Override
-    public Optional<Product> searchProductById(int productId) {
-        String sql = "SELECT p.*, m.name AS manufacturer_name " +
-                "FROM products p " +
-                "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id " +
-                "WHERE p.product_id = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, productId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return Optional.of(mapRowToProduct(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return Optional.empty();
-    }
-
     @Override
     public List<Product> getAllProducts() {
         String sql =  "SELECT p.*, m.name AS manufacturer_name, " +
@@ -119,6 +98,27 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
         return products;*/
     }
+
+    @Override
+    public Optional<Product> searchProductById(int productId) {
+        String sql = "SELECT p.*, m.name AS manufacturer_name " +
+                "FROM products p " +
+                "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id " +
+                "WHERE p.product_id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, productId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(mapRowToProduct(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
 
     @Override
     public List<Product> searchProductByName(String name) {
