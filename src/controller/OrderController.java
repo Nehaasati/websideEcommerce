@@ -1,54 +1,82 @@
 package controller;
 
-import service.IOrderService;
-import service.impl.OrderService;
 import model.Order;
 import model.OrderProduct;
-import java.sql.Date;
-import java.util.ArrayList;
+import repository.impl.OrderRepository;
+import service.IOrderService;
+import service.impl.OrderService;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 public class OrderController {
-    private final IOrderService orderService = new OrderService();
+    private final IOrderService orderService;
     private final Scanner scanner = new Scanner(System.in);
 
-    public void run() {
+    // Constructor to properly initialize OrderService with OrderRepository
+    public OrderController() {
+        this.orderService = new OrderService(new OrderRepository());
+    }
+
+    public void displayMenu() {
         while (true) {
             System.out.println("\n=== Order Management ===");
             System.out.println("1. Place Order");
-            System.out.println("2. Cancel Order");
-            System.out.println("3. Display Order with Products");
-            System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
+            System.out.println("2. Get All Orders");
+            System.out.println("3. Cancel Order");
+            System.out.println("4. Update Order");
+            System.out.println("5. View Order History");
+            System.out.println("6. Back to Main Menu");
+            System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
             switch (choice) {
                 case 1:
-                    placeOrder();
+                    System.out.print("Enter Customer ID: ");
+                    int customerId = scanner.nextInt();
+                    int orderId = orderService.placeOrder(customerId);
+                    System.out.println(orderId > 0 ? "Order placed successfully! Order ID: " + orderId : "Failed to place order.");
                     break;
                 case 2:
-                    System.out.print("Enter Order ID to cancel: ");
-                    int orderIdToCancel = scanner.nextInt();
-                    scanner.nextLine();
-                    orderService.cancelOrder(orderIdToCancel);
+                    List<String> orders = orderService.getAllOrders();
+                    if (orders.isEmpty()) {
+                        System.out.println("No orders found.");
+                    } else {
+                        orders.forEach(System.out::println);
+                    }
                     break;
                 case 3:
-                    System.out.print("Enter Order ID to display: ");
-                    int orderIdToDisplay = scanner.nextInt();
-                    scanner.nextLine();
-                    orderService.displayOrderWithProducts(orderIdToDisplay);
+                    System.out.print("Enter Order ID to cancel: ");
+                    int cancelOrderId = scanner.nextInt();
+                    System.out.println(orderService.cancelOrder(cancelOrderId) ? "Order Cancelled!" : "Cancel Failed!");
                     break;
-                case 0:
-                    System.out.println("Exiting Order Management.");
+                case 4:
+                    System.out.print("Enter Order ID to Update: ");
+                    int updateOrderId = scanner.nextInt();
+                    System.out.print("Enter New Customer ID: ");
+                    int newCustomerId = scanner.nextInt();
+                    System.out.println(orderService.updateOrder(updateOrderId, newCustomerId) ? "Order Updated!" : "Update Failed!");
+                    break;
+                case 5:
+                    System.out.print("Enter Customer ID: ");
+                    int viewCustomerId = scanner.nextInt();
+                    List<String> history = orderService.getOrderHistory(viewCustomerId);
+                    if (history.isEmpty()) {
+                        System.out.println("No order history found.");
+                    } else {
+                        history.forEach(System.out::println);
+                    }
+                    break;
+                case 6:
+                    System.out.println("Returning to main menu...");
                     return;
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
         }
     }
+
 
     private void placeOrder() {
         System.out.print("Enter Customer ID: ");
@@ -78,4 +106,5 @@ public class OrderController {
         Order order = new Order(customerId, new Date(System.currentTimeMillis()));
         orderService.placeOrder(order, orderProducts);
     }
+
 }

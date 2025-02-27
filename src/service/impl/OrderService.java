@@ -1,16 +1,22 @@
 package service.impl;
-import repository.OrderRepository;
-import repository.OrderProductRepository;
-import model.Order;
-import model.OrderProduct;
+
+import repository.IOrderRepository;
 import service.IOrderService;
 
 import java.util.List;
+<<<<<<< HEAD
+import java.util.logging.Logger;
+=======
+>>>>>>> origin/master
 
 public class OrderService implements IOrderService {
-    private final OrderRepository orderRepository = new OrderRepository();
-    private final OrderProductRepository orderProductRepository = new OrderProductRepository();
+    private final IOrderRepository orderRepository;
+    private static final Logger logger = Logger.getLogger(OrderService.class.getName());
 
+<<<<<<< HEAD
+    public OrderService(IOrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+=======
     @Override
     public void placeOrder(Order order, List<OrderProduct> orderProducts) {
         if (order == null) {                                         // validate oder object is not null
@@ -79,15 +85,35 @@ public class OrderService implements IOrderService {
         } else {
             System.err.println("Failed to cancel order.");
         }
+>>>>>>> origin/master
     }
 
     @Override
-    public void displayOrderWithProducts(int orderId) {
-        List<String> details = orderRepository.getOrderWithProducts(orderId);
-        if (details.isEmpty()) {
-            System.out.println("No details found for order ID: " + orderId);
-        } else {
-            details.forEach(System.out::println);
-        }
+    public int placeOrder(int customerId) {
+        return orderRepository.placeOrder(customerId);
     }
+<<<<<<< HEAD
+
+    @Override
+    public List<String> getAllOrders() {
+        return orderRepository.getAllOrders();
+    }
+
+    @Override
+    public boolean cancelOrder(int orderId) {
+        return orderRepository.cancelOrder(orderId);
+    }
+
+    @Override
+    public boolean updateOrder(int orderId, int customerId) {
+        return orderRepository.updateOrder(orderId, customerId);
+    }
+
+    @Override
+    public List<String> getOrderHistory(int customerId) {
+        return orderRepository.getOrderHistory(customerId);
+    }
+=======
+>>>>>>> origin/master
 }
+

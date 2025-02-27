@@ -2,6 +2,7 @@ package repository;
 
 import util.SqliteConnection;
 import model.Customer;
+import util.SqliteConnection;
 
 import java.sql.*;
 import java.util.ArrayList;

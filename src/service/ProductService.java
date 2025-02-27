@@ -1,8 +1,18 @@
 package service;
 
 import model.Product;
+<<<<<<< HEAD
+import repository.IOrderRepository;
+import repository.impl.OrderRepository;
+
+=======
+>>>>>>> origin/master
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Optional;
+=======
+import java.util.logging.Logger;
+>>>>>>> origin/Neha
 
 public interface ProductService {
     List<Product> getAllProducts();
