@@ -1,7 +1,5 @@
 package repository.impl;
 
-
-
 import repository.IOrderRepository;
 import util.SqliteConnection;
 import java.sql.*;

@@ -1,21 +1,17 @@
-<<<<<<< HEAD
+
 import controller.CustomerController;
 import controller.OrderController;
 import controller.OrderProductController;
 import repository.CustomerRepository;
-=======
-
-
 import controller.ProductController;
-<<<<<<< HEAD
 import repository.*;
-=======
+
 import repository.OrderProductRepository;
 import repository.OrderRepository;
 import repository.ProductCategoryRepository;
->>>>>>> origin/master
+
 import repository.ProductRepository;
->>>>>>> origin/Neha
+
 import repository.impl.ProductRepositoryImpl;
 import controller.OrderController;
 import controller.OrderProductController;
@@ -29,42 +25,37 @@ import service.impl.ProductServiceImpl;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-<<<<<<< HEAD
+
         /*'ProductRepository productRepository = new ProductRepositoryImpl();
         ProductCategoryRepository productCategoryRepository = new ProductCategoryRepository();
         CategoryRepository categoryRepository = new CategoryRepository();
         ProductService productService = new ProductServiceImpl(productRepository,
                 productCategoryRepository,
                 categoryRepository
-        );
-=======
-<<<<<<< HEAD
-        //ProductRepository productRepository = new ProductRepositoryImpl();
-        //ProductService productService = new ProductServiceImpl(productRepository);
-       // ProductController productController = new ProductController(productService);
-=======
-       /* ProductRepository productRepository = new ProductRepositoryImpl();
-        ProductService productService = new ProductServiceImpl(productRepository);
->>>>>>> origin/master
+        );*/
 
->>>>>>> origin/Neha
+        ProductRepository productRepository = new ProductRepositoryImpl();
+        ProductCategoryRepository productCategoryRepository = new ProductCategoryRepository();
+        CategoryRepository categoryRepository = new CategoryRepository();
+
+        ProductService productService = new ProductServiceImpl(productRepository, productCategoryRepository,
+                categoryRepository);
         ProductController productController = new ProductController(productService);
+        productController.displayProductMenu();
 
-        productController.displayProductMenu();*/
+        //IOrderProductService orderProductService = new OrderProductService();
 
-        IOrderProductService orderProductService = new OrderProductService();
+        //OrderController orderController = new OrderController();
 
-        OrderController orderController = new OrderController();
-<<<<<<< HEAD
        // OrderProductController orderProductController = new OrderProductController();
-        orderController.displayMenu();
+        //orderController.displayMenu();
         //orderProductController.run();
-=======
-        OrderProductController orderProductController = new OrderProductController(orderProductService);
 
-        orderController.run();
-        orderProductController.run();
->>>>>>> origin/master
+        //OrderProductController orderProductController = new OrderProductController(orderProductService);
+
+        //orderController.run();
+        //orderProductController.run();
+
 
 
 

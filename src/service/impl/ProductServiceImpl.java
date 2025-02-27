@@ -16,16 +16,16 @@ import java.util.Optional;
 
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private final ProductCategoryRepository productCategoryRepository;
-    private final CategoryRepository categoryRepository;
+   // private final ProductCategoryRepository productCategoryRepository;
+   // private final CategoryRepository categoryRepository;
 
 
     public ProductServiceImpl(ProductRepository productRepository,
                               ProductCategoryRepository productCategoryRepository,
                               CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
-        this.productCategoryRepository = productCategoryRepository;
-        this.categoryRepository = categoryRepository;
+       // this.productCategoryRepository = productCategoryRepository;
+       // this.categoryRepository = categoryRepository;
     }
 
     @Override
