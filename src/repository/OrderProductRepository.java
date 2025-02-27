@@ -5,13 +5,13 @@ import java.sql.*;
 
 public class OrderProductRepository {
     public boolean addOrderProduct(OrderProduct op) {
-        String sql = "INSERT INTO order_product (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO orders_products (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, op.getOrderId());
             pstmt.setInt(2, op.getProductId());
             pstmt.setInt(3, op.getQuantity());
-            pstmt.setDouble(4, op.getPrice());
+            pstmt.setDouble(4, op.getunit_Price());
             int affected = pstmt.executeUpdate();
             return affected > 0;
         } catch (SQLException e) {
@@ -21,7 +21,7 @@ public class OrderProductRepository {
     }
 
     public boolean deleteOrderProductsByOrderId(int orderId) {
-        String sql = "DELETE FROM order_product WHERE order_id = ?";
+        String sql = "DELETE FROM orders_products WHERE order_id = ?";
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, orderId);

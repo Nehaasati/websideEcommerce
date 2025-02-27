@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="webbutiken.db" uuid="638ce9ff-ecd5-4906-bd04-58a2c365d433">
+    <data-source source="LOCAL" name="webbutiken1.db" uuid="638ce9ff-ecd5-4906-bd04-58a2c365d433">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\nehaa\IdeaProjects\websideEcommerce\webbutiken.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:C:\Users\nehaa\IdeaProjects\websideEcommerce\webbutiken1.db</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
       </jdbc-additional-properties>
@@ -15,7 +15,7 @@
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\buddh\IdeaProjects\websideEcommerce\webbutiken.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:C:\Users\nehaa\IdeaProjects\websideEcommerce\webbutiken.db</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
       </jdbc-additional-properties>
