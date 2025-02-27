@@ -8,16 +8,16 @@ public class Order {
     private Date order_Date;
 
     // Constructor for insertion (orderId auto-generated)
-    public Order(int customerId, Date orderDate) {
+    public Order(int customerId) {
         this.customerId = customerId;
-        this.order_Date = order_Date;
+        //this.order_Date = order_Date;
     }
 
     // Constructor for retrieval
-    public Order(int orderId, int customerId, Date orderDate) {
+    public Order(int orderId, int customerId) {
         this.orderId = orderId;
         this.customerId = customerId;
-        this.order_Date = order_Date;
+       // this.order_Date = order_Date;
     }
 
     // Getters and Setters
@@ -49,5 +49,3 @@ public class Order {
                 '}';
     }
 }
-
-
