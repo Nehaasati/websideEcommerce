@@ -1,8 +1,11 @@
 package controller;
 
+<<<<<<< HEAD
 
 
 import repository.impl.OrderRepository;
+=======
+>>>>>>> origin/master
 import service.IOrderService;
 import service.impl.OrderService;
 
@@ -75,4 +78,36 @@ public class OrderController {
             }
         }
     }
+<<<<<<< HEAD
+=======
+
+    private void placeOrder() {
+        System.out.print("Enter Customer ID: ");
+        int customerId = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        List<OrderProduct> orderProducts = new ArrayList<>();
+        System.out.print("Enter number of products for the order: ");
+        int numProducts = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        for (int i = 0; i < numProducts; i++) {
+            System.out.println("Enter details for product " + (i + 1) + ":");
+            System.out.print("Product ID: ");
+            int productId = scanner.nextInt();
+            System.out.print("Quantity: ");
+            int quantity = scanner.nextInt();
+            System.out.print("Unit Price: ");
+            double unitPrice = scanner.nextDouble();
+            scanner.nextLine(); // Consume newline
+
+            OrderProduct op = new OrderProduct(0,productId, quantity, unitPrice);
+            orderProducts.add(op);
+        }
+
+        // Create order with the current date
+        Order order = new Order(customerId, new Date(System.currentTimeMillis()));
+        orderService.placeOrder(order, orderProducts);
+    }
+>>>>>>> origin/master
 }

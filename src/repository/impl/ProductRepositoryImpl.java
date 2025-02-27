@@ -1,9 +1,12 @@
 package repository.impl;
 
 import model.Manufacturer;
-import repository.ProductRepository;
 import model.Product;
+import model.ProductCategory;
+import repository.ProductRepository;
 
+import java.util.Map;
+import java.util.HashMap;
 import util.SqliteConnection;
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,21 +16,35 @@ import java.util.Optional;
 public class ProductRepositoryImpl implements ProductRepository {
     private final Connection connection = SqliteConnection.getConnection();
 
-
     @Override
-    public Optional<Product> findById(int productId) {
-        String sql = "SELECT p.*, m.name AS manufacturer_name FROM products p " +
+    public Optional<Product> searchProductById(int productId) {
+        String sql =  "SELECT p.*, m.name AS manufacturer_name, pc.category_id, c.name AS category_name " +
+                "FROM products p " +
                 "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id " +
+                "LEFT JOIN products_categories pc ON p.product_id = pc.product_id " +
+                "LEFT JOIN categories c ON pc.category_id = c.category_id " +
                 "WHERE p.product_id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, productId);
             ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                return Optional.of(mapRowToProduct(rs));
+            Product product = null;
+            while (rs.next()) {
+                if (product == null) {
+                    product = mapRowToProduct(rs);
+                }
+                int categoryId = rs.getInt("category_id");
+                if (categoryId != 0) {
+                    ProductCategory pc = new ProductCategory(
+                            productId,
+                            categoryId
+                    );
+                    product.getCategories().add(pc);
+                }
             }
-        } catch (SQLException e) {
+            return Optional.ofNullable(product);
+            } catch (SQLException e) {
             e.printStackTrace();
         }
         return Optional.empty();
@@ -36,14 +53,30 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT p.*, m.name AS manufacturer_name FROM products p " +
-                "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id";
+        String sql = "SELECT p.*, m.name AS manufacturer_name, pc.category_id, c.name AS category_name " +
+                "FROM products p " +
+                "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id " +
+                "LEFT JOIN products_categories pc ON p.product_id = pc.product_id " +
+                "LEFT JOIN categories c ON pc.category_id = c.category_id";
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
+            Map<Integer, Product> productMap = new HashMap<>();
             while (rs.next()) {
-                products.add(mapRowToProduct(rs));
+                int productId = rs.getInt("product_id");
+                Product product = productMap.get(productId);
+
+                if (product == null) {
+                    product = mapRowToProduct(rs);
+                    productMap.put(productId, product);
+                    products.add(product);
+                }
+
+                int categoryId = rs.getInt("category_id");
+                if (categoryId != 0) {
+                    ProductCategory pc = new ProductCategory(productId, categoryId);
+                    product.getCategories().add(pc);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,6 +102,7 @@ public class ProductRepositoryImpl implements ProductRepository {
                     product.setProductId(generatedKeys.getInt(1));
                 }
             }
+            saveProductCategories(product); //save categories
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -84,6 +118,9 @@ public class ProductRepositoryImpl implements ProductRepository {
             setProductStatement(stmt, product);
             stmt.setInt(6, product.getProductId());
             stmt.executeUpdate();
+
+            updateProductCategories(product);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -100,6 +137,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
     }
 
+    // Helper Methods
     private Product mapRowToProduct(ResultSet rs) throws SQLException {
         Product product = new Product();
         product.setProductId(rs.getInt("product_id"));
@@ -121,7 +159,36 @@ public class ProductRepositoryImpl implements ProductRepository {
         stmt.setString(2, product.getDescription());
         stmt.setDouble(3, product.getPrice());
         stmt.setInt(4, product.getStockQuantity());
+        stmt.setInt(5, product.getManufacturers().getManufacturerId());
+    }
 
+    private void saveProductCategories(Product product) throws SQLException {
+        if (product.getCategories() == null || product.getCategories().isEmpty()) {
+            return;
+        }
+
+        String sql = "INSERT INTO products_categories (product_id, category_id) VALUES (?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            for (ProductCategory pc : product.getCategories()) {
+                stmt.setInt(1, product.getProductId());
+                stmt.setInt(2, pc.getCategoryId());
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        }
+    }
+
+    private void updateProductCategories(Product product) throws SQLException {
+        deleteProductCategories(product.getProductId());
+        saveProductCategories(product);
+    }
+
+    private void deleteProductCategories(int productId) throws SQLException {
+        String sql = "DELETE FROM products_categories WHERE product_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, productId);
+            stmt.executeUpdate();
+        }
     }
 }
 

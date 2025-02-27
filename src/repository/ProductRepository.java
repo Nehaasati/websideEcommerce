@@ -3,6 +3,21 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< HEAD
+=======
+
+public interface ProductRepository {
+    Optional<Product> searchProductById(int productId);
+
+    List<Product> getAllProducts();
+
+    Product save(Product product);
+
+    void update(Product product);
+
+    void delete(int productId);
+}
+>>>>>>> origin/master
 
 import model.Product;
 import connect.SqliteConnection;

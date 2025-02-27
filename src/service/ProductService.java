@@ -1,9 +1,12 @@
 package service;
 
 import model.Product;
+<<<<<<< HEAD
 import repository.IOrderRepository;
 import repository.impl.OrderRepository;
 
+=======
+>>>>>>> origin/master
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -16,7 +19,11 @@ public interface ProductService {
 
     Product updateProduct(Product product);
 
+    boolean updateProductCategories(int productId, int[] categoryIds);
+
     void deleteProduct(int id);
+
+
 
 
     private void validateProduct(Product product) {
