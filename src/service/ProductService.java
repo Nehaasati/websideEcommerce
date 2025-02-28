@@ -2,11 +2,8 @@ package service;
 
 import model.Product;
 
-import repository.IOrderRepository;
-import repository.impl.OrderRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 
 public interface ProductService {

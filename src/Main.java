@@ -1,27 +1,19 @@
 
-import controller.CustomerController;
 //import controller.OrderController;
-import controller.OrderProductController;
-import repository.CustomerRepository;
 import controller.ProductController;
 import repository.*;
 
-import repository.OrderProductRepository;
-import repository.OrderRepository;
-import repository.ProductCategoryRepository;
+        import repository.ProductCategoryRepository;
 
 import repository.ProductRepository;
 
 import repository.impl.ProductRepositoryImpl;
 //import controller.OrderController;
-import controller.OrderProductController;
-import service.IOrderProductService;
-import service.impl.OrderProductService;
-import service.ProductService;
+        import service.ProductService;
 
 import java.sql.*;
-import controller.ProductController;
-import service.impl.ProductServiceImpl;
+
+        import service.impl.ProductServiceImpl;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
