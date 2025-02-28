@@ -1,56 +1,39 @@
-<<<<<<< HEAD
+
 import controller.CustomerController;
 import controller.OrderController;
 import controller.OrderProductController;
 import repository.CustomerRepository;
-=======
 
 
-import controller.ProductController;
-import repository.OrderProductRepository;
-import repository.OrderRepository;
-import repository.ProductCategoryRepository;
->>>>>>> origin/master
-import repository.ProductRepository;
-import repository.impl.ProductRepositoryImpl;
-import controller.OrderController;
-import controller.OrderProductController;
-import service.IOrderProductService;
-import service.impl.OrderProductService;
-import service.ProductService;
+
 
 import java.sql.*;
-import controller.ProductController;
-import service.impl.ProductServiceImpl;
+//import controller.ProductController;
+//import service.impl.ProductServiceImpl;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-<<<<<<< HEAD
+
         //ProductRepository productRepository = new ProductRepositoryImpl();
         //ProductService productService = new ProductServiceImpl(productRepository);
        // ProductController productController = new ProductController(productService);
-=======
+
        /* ProductRepository productRepository = new ProductRepositoryImpl();
-        ProductService productService = new ProductServiceImpl(productRepository);
->>>>>>> origin/master
+       // ProductService productService = new ProductServiceImpl(productRepository);
 
-        ProductController productController = new ProductController(productService);
 
-        productController.handleProductOperations();*/
+        //ProductController productController = new ProductController(productService);
 
-        IOrderProductService orderProductService = new OrderProductService();
+        //productController.handleProductOperations();*/
 
-        OrderController orderController = new OrderController();
-<<<<<<< HEAD
-       // OrderProductController orderProductController = new OrderProductController();
-        orderController.displayMenu();
-        //orderProductController.run();
-=======
-        OrderProductController orderProductController = new OrderProductController(orderProductService);
+       // IOrderProductService orderProductService = new OrderProductService();
 
-        orderController.run();
-        orderProductController.run();
->>>>>>> origin/master
+        //OrderController orderController = new OrderController();
+        //orderController.displayMenu();
+        OrderProductController orderProductController = new OrderProductController();
+        orderProductController.displayMenu();
+
+
 
 
 
