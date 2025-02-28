@@ -9,4 +9,3 @@ public interface IOrderRepository {
     boolean updateOrder(int orderId, int customerId);
     List<String> getOrderHistory(int customerId);
 }
-
