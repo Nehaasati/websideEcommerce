@@ -1,10 +1,11 @@
 
+import controller.CartController;
 import controller.CustomerController;
 import controller.OrderController;
 import controller.OrderProductController;
+import repository.CartRepository;
 import repository.CustomerRepository;
-
-
+import service.CartService;
 
 
 import java.sql.*;
@@ -30,8 +31,13 @@ public class Main {
 
         //OrderController orderController = new OrderController();
         //orderController.displayMenu();
-        OrderProductController orderProductController = new OrderProductController();
-        orderProductController.displayMenu();
+        //OrderProductController orderProductController = new OrderProductController();
+       // orderProductController.displayMenu();
+
+        CartRepository cartRepository = new CartRepository();
+        CartService cartService = new CartService(cartRepository);
+        CartController controller = new CartController(cartService);
+        controller.start();
 
 
 
