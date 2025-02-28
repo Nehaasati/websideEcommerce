@@ -3,14 +3,14 @@ package controller;
 import model.Order;
 import model.OrderProduct;
 import repository.impl.OrderRepository;
-import service.IOrderService;
-import service.impl.OrderService;
+//import service.IOrderService;
+//import service.impl.OrderService;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-public class OrderController {
+/*public class OrderController {
     private final IOrderService orderService;
     private final Scanner scanner = new Scanner(System.in);
 
@@ -107,4 +107,4 @@ public class OrderController {
         orderService.placeOrder(order, orderProducts);
     }
 
-}
+}*/

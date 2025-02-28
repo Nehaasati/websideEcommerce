@@ -1,4 +1,4 @@
-package service;
+/*package service;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ public interface IOrderService {
     void cancelOrder(int orderId);
     boolean updateOrder(int orderId, int customerId);
     List<String> getOrderHistory(int customerId);
-}
+}*/
 

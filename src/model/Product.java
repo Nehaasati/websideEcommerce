@@ -9,7 +9,7 @@ public class Product {
     private String description;
     private double price;
     private int stockQuantity;
-    private Manufacturer manufacturers;  // Represents the manufacturer of the product
+    private Manufacturer manufacturers;
     private List<Category> categories = new ArrayList<>();
     //private List<ProductCategory> categories = new ArrayList<>();          // Categories associated with the product
 
@@ -98,11 +98,13 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
-                ", stockQuantity=" + stockQuantity +
                 ", manufacturer=" + (manufacturers != null ? manufacturers.getName() : "N/A") +
                 ", categories=" + categories  +
                 '}';
 
+    }
+
+    public void setManufacturer(Manufacturer manufacturer) {
     }
 }
 

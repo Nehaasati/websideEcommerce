@@ -24,10 +24,6 @@ public class ProductController{
             System.out.println("2. Search Product by Name");
             System.out.println("3. Search Product by Category");
             System.out.println("4. Search Product by Price Range");
-            System.out.println("5. Add New Product");
-            System.out.println("6. Update Product");
-            System.out.println("7. Delete Product");
-            System.out.println("8. Update Product Categories");
             System.out.println("9. Exit");
             System.out.print("Enter your choice: ");
 
@@ -48,18 +44,6 @@ public class ProductController{
                     searchProductByPriceRange();
                     break;
                 case 5:
-                    addNewProduct();
-                    break;
-                case 6:
-                    updateProduct();
-                    break;
-                case 7:
-                    deleteProduct();
-                    break;
-                case 8:
-                    updateProductCategories();
-                    break;
-                case 9:
                     System.out.println("Exiting...");
                     return;
                 default:

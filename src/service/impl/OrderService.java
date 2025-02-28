@@ -1,4 +1,4 @@
-package service.impl;
+/*package service.impl;
 
 import model.Order;
 import model.OrderProduct;
@@ -73,22 +73,24 @@ public class OrderService implements IOrderService {
 
         // delete order
         @Override
-        public void cancelOrder(int orderId){
+        public void cancelOrder(int orderId) {
             if (orderId <= 0) {
                 System.err.println("Invalid order ID.");
                 return;
             }
-            try{
-            boolean productsDeleted = orderProductRepository.deleteOrderProductsByOrderId(orderId);
-            boolean orderDeleted = orderRepository.deleteOrder(orderId);
-            if (orderDeleted && productsDeleted) {
-                System.out.println("Order canceled successfully.");
-            } else if (orderDeleted) {
-                System.err.println("Order canceled but failed to delete some order products.");
-            } else {
-                System.err.println("Failed to cancel order.");
+            try {
+                boolean productsDeleted = orderProductRepository.deleteOrderProductsByOrderId(orderId);
+                boolean orderDeleted = orderRepository.deleteOrder(orderId);
+                if (orderDeleted && productsDeleted) {
+                    System.out.println("Order canceled successfully.");
+                } else if (orderDeleted) {
+                    System.err.println("Order canceled but failed to delete some order products.");
+                } else {
+                    System.err.println("Failed to cancel order.");
+                }
+            } catch(Exception e){  // ✅ Catching exceptions
+                System.err.println("Error canceling order: " + e.getMessage());
             }
-
         }
 
         @Override
@@ -112,6 +114,6 @@ public class OrderService implements IOrderService {
         public List<String> getOrderHistory ( int customerId){
             return orderRepository.getOrderHistory(customerId);
         }
-    }
+    }*/
 
 
