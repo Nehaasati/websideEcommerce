@@ -12,31 +12,7 @@ public class OrderRepository {
 
     private final Connection connection = SqliteConnection.getConnection();
 
-    public int createOrder(Order order) {
-        int generatedId = -1;
-        String sql = "INSERT INTO orders (customer_id, order_date) VALUES (?, ?)";
 
-        try (Connection conn = SqliteConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pstmt.setInt(1, order.getCustomerId());
-            pstmt.setDate(2, order.getOrder_Date());
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows == 0) {
-                System.err.println("Creating order failed, no rows affected."); // no row affected print error
-                return -1;
-            }
-            try (ResultSet rs = pstmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    generatedId = rs.getInt(1);
-                } else {
-                    System.err.println("Creating order failed, no ID obtained.");
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error while creating order: " + e.getMessage());
-        }
-        return generatedId;
-    }
 
     public boolean deleteOrder(int orderId) {
         String sql = "DELETE FROM orders WHERE order_id = ?";

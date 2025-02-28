@@ -1,5 +1,6 @@
 package repository.impl;
 
+import model.Order;
 import repository.IOrderRepository;
 import util.SqliteConnection;
 import java.sql.*;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 
 public class OrderRepository implements IOrderRepository {
     private static final Logger logger = Logger.getLogger(OrderRepository.class.getName());
+
 
     @Override
     public int placeOrder(int customerId) {

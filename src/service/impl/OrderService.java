@@ -3,7 +3,7 @@ package service.impl;
 import model.Order;
 import model.OrderProduct;
 import repository.IOrderRepository;
-import repository.IOrderProductRepository;
+import repository.OrderProductRepository;
 import service.IOrderService;
 import java.util.List;
 import java.util.logging.Logger;
@@ -11,10 +11,10 @@ import java.util.logging.Logger;
 
 public class OrderService implements IOrderService {
     private final IOrderRepository orderRepository;
-    private final IOrderProductRepository orderProductRepository; // Added dependency for OrderProductRepository
+    private final OrderProductRepository orderProductRepository; // Added dependency for OrderProductRepository
     private static final Logger logger = Logger.getLogger(OrderService.class.getName());
 
-    public OrderService(IOrderRepository orderRepository,IOrderProductRepository orderProductRepository) {
+    public OrderService(IOrderRepository orderRepository,OrderProductRepository orderProductRepository) {
         this.orderRepository = orderRepository;
         this.orderProductRepository = orderProductRepository; // Inject the repository
     }
@@ -50,7 +50,7 @@ public class OrderService implements IOrderService {
                 }
             }
             //create order
-            int orderId = orderRepository.createOrder(order); //service calls the repository method to create a new order
+            int orderId = OrderRepository.createOrder(order); //service calls the repository method to create a new order
             if (orderId <= 0) {                                //generated Id
                 System.err.println("Failed to create order.");
                 return;
@@ -73,11 +73,12 @@ public class OrderService implements IOrderService {
 
         // delete order
         @Override
-        public void cancelOrder ( int orderId){
+        public void cancelOrder(int orderId){
             if (orderId <= 0) {
                 System.err.println("Invalid order ID.");
                 return;
             }
+            try{
             boolean productsDeleted = orderProductRepository.deleteOrderProductsByOrderId(orderId);
             boolean orderDeleted = orderRepository.deleteOrder(orderId);
             if (orderDeleted && productsDeleted) {
@@ -101,10 +102,6 @@ public class OrderService implements IOrderService {
             return orderRepository.getAllOrders();
         }
 
-        @Override
-        public boolean cancelOrder ( int orderId){
-            return orderRepository.cancelOrder(orderId);
-        }
 
         @Override
         public boolean updateOrder ( int orderId, int customerId){

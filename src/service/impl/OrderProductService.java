@@ -28,19 +28,20 @@ public class OrderProductService implements IOrderProductService {
         }
         if (op.getUnitPrice() < 0) {
             System.err.println("Price cannot be negative for order product.");
-                return false;
-            }
-            return orderProductRepository.addOrderProduct(op);
+            return false;
         }
+        return orderProductRepository.addOrderProduct(op);
+    }
 
-        @Override
-        public boolean deleteOrderProductsByOrderId(int orderId) {
-            if (orderId <= 0) {
-                System.err.println("Invalid order ID.");
-                return false;
-            }
-            return orderProductRepository.deleteOrderProductsByOrderId(orderId);
+
+    @Override
+    public boolean deleteOrderProductsByOrderId(int orderId) {
+        if (orderId <= 0) {
+            System.err.println("Invalid order ID.");
+            return false;
         }
+        return orderProductRepository.deleteOrderProductsByOrderId(orderId);
+    }
 
     }
 
