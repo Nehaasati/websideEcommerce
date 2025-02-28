@@ -1,85 +1,107 @@
 package controller;
 
-import model.Manufacturer;
 import model.Product;
-import repository.ProductCategoryRepository;
-import repository.ProductRepository;
-import repository.impl.ProductRepositoryImpl;
+import model.Manufacturer;
 import service.ProductService;
-import service.impl.ProductServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
-public class ProductController {
+public class ProductController{
     private final ProductService productService;
     private final Scanner scanner;
 
-    public ProductController( ProductService productService ) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.scanner = new Scanner(System.in);
-
+        this.scanner =  new Scanner(System.in);
     }
 
-    public List<Product> getAllProducts() {
-
-        return productService.getAllProducts();
-    }
-
-    public void showProductMenu() {
-        System.out.println("\nProduct Management");
-        System.out.println("1. List All Products");
-        System.out.println("2. View Product Details");
-        System.out.println("3. Add New Product");
-        System.out.println("4. Update Product");
-        System.out.println("5. Update Product Categories");
-        System.out.println("6. Delete Product");
-        System.out.println("7. Back to Main Menu");
-    }
-
-    public void handleProductOperations() {
+    public void displayProductMenu() {  // Moved outside constructor
         while (true) {
-            showProductMenu();
+            System.out.println("\n=====Product Management Menu=====");
+            System.out.println("1. View All Products");
+            System.out.println("2. Search Product by Name");
+            System.out.println("3. Search Product by Category");
+            System.out.println("4. Search Product by Price Range");
+            System.out.println("9. Exit");
             System.out.print("Enter your choice: ");
+
             int choice = scanner.nextInt();
-            scanner.nextLine();  // Consume newline
+            scanner.nextLine(); // Consume newline
 
             switch (choice) {
                 case 1:
-                    listAllProducts();
+                    viewAllProducts();
                     break;
                 case 2:
-                    viewProductDetails();
+                    searchProductByName();
                     break;
                 case 3:
-                    addNewProduct();
+                    searchProductByCategory();
                     break;
                 case 4:
-                    updateProduct();
+                    searchProductByPriceRange();
                     break;
                 case 5:
-                    updateProductCategories();
-                    break;
-                case 6:
-                    deleteProduct();
-                    break;
-                case 7:
+                    System.out.println("Exiting...");
                     return;
                 default:
-                    System.out.println("Invalid choice!");
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
     }
 
-    private void listAllProducts() {
-
-        productService.getAllProducts().forEach(System.out::println);
+    private void viewAllProducts() {
+        List<Product> products = productService.getAllProducts();
+        if (products.isEmpty()) {
+            System.out.println("No products found.");
+        } else {
+            for (Product product : products) {
+                System.out.println(product);
+            }
+        }
     }
 
-    private void viewProductDetails() {
-        System.out.print("Enter Product ID: ");
-        int id =Integer.parseInt(scanner.nextLine());
-        System.out.println(productService.getProductById(id));
+    private void searchProductByName() {
+        System.out.print("Enter product name: ");
+        String name = scanner.nextLine();
+        List<Product> products = productService.searchProductByName(name);
+        if (products.isEmpty()) {
+            System.out.println("No products found.");
+        } else {
+            for (Product product : products) {
+                System.out.println(product);
+            }
+        }
+    }
+
+    private void searchProductByCategory() {
+        System.out.print("Enter category name: ");
+        String categoryName = scanner.nextLine();
+        List<Product> products = productService.searchProductByCategory(categoryName);
+        if (products.isEmpty()) {
+            System.out.println("No products found.");
+        } else {
+            for (Product product : products) {
+                System.out.println(product);
+            }
+        }
+    }
+
+    private void searchProductByPriceRange() {
+        System.out.print("Enter minimum price: ");
+        double minPrice = scanner.nextDouble();
+        System.out.print("Enter maximum price: ");
+        double maxPrice = scanner.nextDouble();
+        List<Product> products = productService.searchProductByPriceRange(minPrice, maxPrice);
+        if (products.isEmpty()) {
+            System.out.println("No products found.");
+        } else {
+            for (Product product : products) {
+                System.out.println(product);
+            }
+        }
     }
 
     private void addNewProduct() {
@@ -102,8 +124,6 @@ public class ProductController {
 
         System.out.print("Enter Manufacturer ID: ");
         int manufacturerId = scanner.nextInt();
-        scanner.nextLine();
-
         Manufacturer manufacturer = new Manufacturer();
         manufacturer.setManufacturerId(manufacturerId);
         product.setManufacturers(manufacturer);
@@ -116,24 +136,39 @@ public class ProductController {
     private void updateProduct() {
         System.out.print("Enter product ID to update: ");
         int id = scanner.nextInt();
-        scanner.nextLine();
+        scanner.nextLine();  // Clear the newline character
 
-        Product product = productService.getProductById(id);
-        if (product == null) {
+        // Get product wrapped in Optional
+        Optional<Product> optionalProduct = productService.getProductById(id);
+
+        // Check if product exists
+        if (!optionalProduct.isPresent()) {
             System.out.println("Product not found!");
             return;
         }
 
+        // Extract actual Product object from Optional
+        Product product = optionalProduct.get();
+
+        // Update name
         System.out.print("Enter new name (" + product.getName() + "): ");
         product.setName(scanner.nextLine());
+
+        // Update description
         System.out.print("Enter new description (" + product.getDescription() + "): ");
         product.setDescription(scanner.nextLine());
+
+        // Update price
         System.out.print("Enter new price (" + product.getPrice() + "): ");
         product.setPrice(scanner.nextDouble());
+        scanner.nextLine();  // Clear the newline after double input
+
+        // Update stock quantity
         System.out.print("Enter new stock quantity (" + product.getStockQuantity() + "): ");
         product.setStockQuantity(scanner.nextInt());
-        scanner.nextLine();
+        scanner.nextLine();  // Clear the newline after int input
 
+        // Save changes
         productService.updateProduct(product);
         System.out.println("Product updated successfully!");
     }
@@ -160,9 +195,11 @@ public class ProductController {
     }
 
     private void deleteProduct() {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter product ID to delete: ");
         int id = scanner.nextInt();
-        scanner.nextLine();
+        scanner.nextLine(); // Consume newline
+
         productService.deleteProduct(id);
         System.out.println("Product deleted successfully!");
     }
@@ -173,26 +210,4 @@ public class ProductController {
 
 
 
-    /*public ProductController(Connection connection) {
-        if (connection != null) {
-            this.productService = new ProductService(connection);
-        } else {
-            throw new IllegalArgumentException("Database connection cannot be null");
-        }
-    }
 
-    public void getAllProducts() {
-        try {
-            List<Product> products = productService.getAllProducts();
-            if (products.isEmpty()) {
-                System.out.println("No products found");
-            } else {
-                for (Product product : products) {
-                    System.out.println(product);
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println("Error getting products: " + e.getMessage());
-        }
-    }
-}*/

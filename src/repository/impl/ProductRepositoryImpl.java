@@ -1,150 +1,153 @@
 package repository.impl;
 
+import model.Category;
 import model.Manufacturer;
 import model.Product;
-import model.ProductCategory;
 import repository.ProductRepository;
-
-import java.util.Map;
-import java.util.HashMap;
 import util.SqliteConnection;
+
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ProductRepositoryImpl implements ProductRepository {
     private final Connection connection = SqliteConnection.getConnection();
 
     @Override
-    public Optional<Product> searchProductById(int productId) {
-        String sql =  "SELECT p.*, m.name AS manufacturer_name, pc.category_id, c.name AS category_name " +
-                "FROM products p " +
-                "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id " +
-                "LEFT JOIN products_categories pc ON p.product_id = pc.product_id " +
-                "LEFT JOIN categories c ON pc.category_id = c.category_id " +
-                "WHERE p.product_id = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, productId);
-            ResultSet rs = stmt.executeQuery();
-
-            Product product = null;
-            while (rs.next()) {
-                if (product == null) {
-                    product = mapRowToProduct(rs);
-                }
-                int categoryId = rs.getInt("category_id");
-                if (categoryId != 0) {
-                    ProductCategory pc = new ProductCategory(
-                            productId,
-                            categoryId
-                    );
-                    product.getCategories().add(pc);
-                }
-            }
-            return Optional.ofNullable(product);
-            } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return Optional.empty();
-    }
-
-    @Override
     public List<Product> getAllProducts() {
+        String sql = "SELECT product_id, name, description, price FROM products";
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT p.*, m.name AS manufacturer_name, pc.category_id, c.name AS category_name " +
-                "FROM products p " +
-                "JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id " +
-                "LEFT JOIN products_categories pc ON p.product_id = pc.product_id " +
-                "LEFT JOIN categories c ON pc.category_id = c.category_id";
+
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
-            Map<Integer, Product> productMap = new HashMap<>();
+            if (!rs.isBeforeFirst()) {
+                throw new SQLException("No products found in the database.");
+            }
+
             while (rs.next()) {
-                int productId = rs.getInt("product_id");
-                Product product = productMap.get(productId);
-
-                if (product == null) {
-                    product = mapRowToProduct(rs);
-                    productMap.put(productId, product);
-                    products.add(product);
-                }
-
-                int categoryId = rs.getInt("category_id");
-                if (categoryId != 0) {
-                    ProductCategory pc = new ProductCategory(productId, categoryId);
-                    product.getCategories().add(pc);
-                }
+                products.add(mapRowToProduct(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Database error while fetching products: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Unexpected error: " + e.getMessage());
         }
         return products;
     }
 
     @Override
     public Product save(Product product) {
-        String sql = "INSERT INTO products (name, description, price, stock_quantity, manufacturer_id) " +
-                "VALUES (?, ?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            setProductStatement(stmt, product);
-            int affectedRows = stmt.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Creating product failed, no rows affected.");
-            }
-
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    product.setProductId(generatedKeys.getInt(1));
-                }
-            }
-            saveProductCategories(product); //save categories
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return product;
+        return null;
     }
 
     @Override
     public void update(Product product) {
-        String sql = "UPDATE products SET name = ?, description = ?, price = ?, " +
-                "stock_quantity = ?, manufacturer_id = ? WHERE product_id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            setProductStatement(stmt, product);
-            stmt.setInt(6, product.getProductId());
-            stmt.executeUpdate();
-
-            updateProductCategories(product);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void delete(int productId) {
-        String sql = "DELETE FROM products WHERE product_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, productId);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 
-    // Helper Methods
+    @Override
+    public Optional<Product> searchProductById(int productId) {
+        if (productId <= 0) {
+            throw new IllegalArgumentException("Invalid product ID.");
+        }
+
+        String sql ="SELECT p.product_id, p.name, p.description, p.price,"+
+                "m.manufacturer_id, m.name AS manufacturer_name," +
+                "FROM products p," +
+                "INNER JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id,"+
+                "WHERE p.product_id = ?";
+
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, productId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(mapRowToProduct(rs));
+            } else {
+                throw new SQLException("Product not found with ID: " + productId);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error searching for product by ID: " + e.getMessage());
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Product> searchProductByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Product name cannot be empty.");
+        }
+
+        String sql = "SELECT p.product_id, p.name, p.description, p.price, " +
+                "m.manufacturer_id, m.name AS manufacturer_name " +
+                "FROM products p " +
+                "LEFT JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id " +
+                "WHERE p.name LIKE ?";
+
+        List<Product> products = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "%" + name + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            if (!rs.isBeforeFirst()) {
+                throw new SQLException("No products found with name: " + name);
+            }
+
+            while (rs.next()) {
+                products.add(mapRowToProduct(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error searching for products: " + e.getMessage());
+        }
+        return products;
+    }
+
+    @Override
+    public List<Product> searchProductByCategory(String categoryName) {
+        return List.of();
+    }
+
+    @Override
+    public List<Product> searchProductByPriceRange(double minPrice, double maxPrice) {
+        if (minPrice < 0 || maxPrice < 0) {
+            throw new IllegalArgumentException("Price range cannot be negative.");
+        }
+        if (minPrice > maxPrice) {
+            throw new IllegalArgumentException("Minimum price cannot be greater than maximum price.");
+        }
+
+        String sql = "SELECT * FROM products WHERE price BETWEEN ? AND ?";
+        List<Product> products = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setDouble(1, minPrice);
+            stmt.setDouble(2, maxPrice);
+            ResultSet rs = stmt.executeQuery();
+
+            if (!rs.isBeforeFirst()) {
+                throw new SQLException("No products found in the given price range.");
+            }
+
+            while (rs.next()) {
+                products.add(mapRowToProduct(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error searching products by price range: " + e.getMessage());
+        }
+        return products;
+    }
+
     private Product mapRowToProduct(ResultSet rs) throws SQLException {
         Product product = new Product();
         product.setProductId(rs.getInt("product_id"));
         product.setName(rs.getString("name"));
         product.setDescription(rs.getString("description"));
         product.setPrice(rs.getDouble("price"));
-        product.setStockQuantity(rs.getInt("stock_quantity"));
 
         Manufacturer manufacturer = new Manufacturer();
         manufacturer.setManufacturerId(rs.getInt("manufacturer_id"));
@@ -153,45 +156,4 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         return product;
     }
-
-    private void setProductStatement(PreparedStatement stmt, Product product) throws SQLException {
-        stmt.setString(1, product.getName());
-        stmt.setString(2, product.getDescription());
-        stmt.setDouble(3, product.getPrice());
-        stmt.setInt(4, product.getStockQuantity());
-        stmt.setInt(5, product.getManufacturers().getManufacturerId());
-    }
-
-    private void saveProductCategories(Product product) throws SQLException {
-        if (product.getCategories() == null || product.getCategories().isEmpty()) {
-            return;
-        }
-
-        String sql = "INSERT INTO products_categories (product_id, category_id) VALUES (?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            for (ProductCategory pc : product.getCategories()) {
-                stmt.setInt(1, product.getProductId());
-                stmt.setInt(2, pc.getCategoryId());
-                stmt.addBatch();
-            }
-            stmt.executeBatch();
-        }
-    }
-
-    private void updateProductCategories(Product product) throws SQLException {
-        deleteProductCategories(product.getProductId());
-        saveProductCategories(product);
-    }
-
-    private void deleteProductCategories(int productId) throws SQLException {
-        String sql = "DELETE FROM products_categories WHERE product_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, productId);
-            stmt.executeUpdate();
-        }
-    }
 }
-
-
-
-

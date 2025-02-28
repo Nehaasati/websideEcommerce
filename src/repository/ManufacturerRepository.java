@@ -30,7 +30,7 @@ public class ManufacturerRepository {
         return manufacturers;
     }
 
-    public Manufacturer findById(int id) {
+    public Manufacturer searchManufacturerById(int id) {
         String sql = "SELECT * FROM manufacturers WHERE manufacturer_id = ?";
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

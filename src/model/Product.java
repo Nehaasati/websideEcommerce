@@ -9,12 +9,13 @@ public class Product {
     private String description;
     private double price;
     private int stockQuantity;
-    private Manufacturer manufacturers;  // Represents the manufacturer of the product
-    private List<ProductCategory> categories = new ArrayList<>();          // Categories associated with the product
+    private Manufacturer manufacturers;
+    private List<Category> categories = new ArrayList<>();
+    //private List<ProductCategory> categories = new ArrayList<>();          // Categories associated with the product
 
     public Product() {}  // a no-arg constructor needed for the repository
 
-    public Product(int productId, String name, String description, double price, int stockQuantity) {
+    public Product(int productId, String name, String description, double price, int stockQuantity, Manufacturer manufacturers) {
             this.productId = productId;
             this.name = name;
             this.description = description;
@@ -71,7 +72,15 @@ public class Product {
         this.manufacturers = manufacturers;
     }
 
-    public List<ProductCategory> getCategories() {
+    // Proper Category list handling
+    public List<Category> getCategories() {
+        return categories;
+    }
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    /*public List<ProductCategory> getCategories() {
         if (categories == null) {
             categories = new ArrayList<>();
         }
@@ -79,7 +88,7 @@ public class Product {
     }
     public void setCategories(List<ProductCategory> categories) {
         this.categories = categories != null ? categories : new ArrayList<>();
-    }
+    }*/
 
 
     @Override
@@ -89,11 +98,13 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
-                ", stockQuantity=" + stockQuantity +
                 ", manufacturer=" + (manufacturers != null ? manufacturers.getName() : "N/A") +
-                ", categories=" + (categories != null ? categories.size() : 0) +
+                ", categories=" + categories  +
                 '}';
 
+    }
+
+    public void setManufacturer(Manufacturer manufacturer) {
     }
 }
 

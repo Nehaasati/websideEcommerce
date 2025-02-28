@@ -1,42 +1,61 @@
 
-
+import controller.CustomerController;
+//import controller.OrderController;
+import controller.OrderProductController;
+import repository.CustomerRepository;
 import controller.ProductController;
+import repository.*;
+
 import repository.OrderProductRepository;
 import repository.OrderRepository;
 import repository.ProductCategoryRepository;
+
 import repository.ProductRepository;
+
 import repository.impl.ProductRepositoryImpl;
-import controller.OrderController;
+//import controller.OrderController;
 import controller.OrderProductController;
 import service.IOrderProductService;
 import service.impl.OrderProductService;
 import service.ProductService;
-import service.impl.ProductServiceImpl;
-import model.Product;
 
 import java.sql.*;
-import  java.util.List;
-import util.SqliteConnection;
-import java.sql.Connection;
-import java.util.Optional;
-
+import controller.ProductController;
+import service.impl.ProductServiceImpl;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-       /* ProductRepository productRepository = new ProductRepositoryImpl();
-        ProductService productService = new ProductServiceImpl(productRepository);
 
+        /*'ProductRepository productRepository = new ProductRepositoryImpl();
+        ProductCategoryRepository productCategoryRepository = new ProductCategoryRepository();
+        CategoryRepository categoryRepository = new CategoryRepository();
+        ProductService productService = new ProductServiceImpl(productRepository,
+                productCategoryRepository,
+                categoryRepository
+        );*/
+
+        ProductRepository productRepository = new ProductRepositoryImpl();
+        ProductCategoryRepository productCategoryRepository = new ProductCategoryRepository();
+        CategoryRepository categoryRepository = new CategoryRepository();
+
+        ProductService productService = new ProductServiceImpl(productRepository, productCategoryRepository,
+                categoryRepository);
         ProductController productController = new ProductController(productService);
+        productController.displayProductMenu();
 
-        productController.handleProductOperations();*/
+        //IOrderProductService orderProductService = new OrderProductService();
 
-        IOrderProductService orderProductService = new OrderProductService();
+        //OrderController orderController = new OrderController();
 
-        OrderController orderController = new OrderController();
-        OrderProductController orderProductController = new OrderProductController(orderProductService);
+       // OrderProductController orderProductController = new OrderProductController();
+        //orderController.displayMenu();
+        //orderProductController.run();
 
-        orderController.run();
-        orderProductController.run();
+        //OrderProductController orderProductController = new OrderProductController(orderProductService);
+
+        //orderController.run();
+        //orderProductController.run();
+
 
 
 
@@ -73,8 +92,8 @@ public class Main {
         //CustomerService service = new CustomerService();
         //service.showAllCustomers();
 
-        // CustomerController customerController = new CustomerController();
-        // customerController.run();
+        //CustomerController customerController = new CustomerController();
+        //customerController.run();
 
         //productController.run();
 
@@ -88,7 +107,7 @@ public class Main {
 
 
 
-//customers cs =new customers(9,"neha","31@ngmail.com","232312");
+ //customers cs =new customers(9,"neha","31@ngmail.com","232312");
 //CustomerRepository cr = new CustomerRepository();
 //cr.getCustomerById(2);
 

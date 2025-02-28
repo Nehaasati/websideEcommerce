@@ -12,31 +12,7 @@ public class OrderRepository {
 
     private final Connection connection = SqliteConnection.getConnection();
 
-    public int createOrder(Order order) {
-        int generatedId = -1;
-        String sql = "INSERT INTO orders (customer_id, order_date) VALUES (?, ?)";
 
-        try (Connection conn = SqliteConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pstmt.setInt(1, order.getCustomerId());
-            pstmt.setDate(2, order.getOrder_Date());
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows == 0) {
-                System.err.println("Creating order failed, no rows affected."); // no row affected print error
-                return -1;
-            }
-            try (ResultSet rs = pstmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    generatedId = rs.getInt(1);
-                } else {
-                    System.err.println("Creating order failed, no ID obtained.");
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error while creating order: " + e.getMessage());
-        }
-        return generatedId;
-    }
 
     public boolean deleteOrder(int orderId) {
         String sql = "DELETE FROM orders WHERE order_id = ?";
@@ -55,7 +31,7 @@ public class OrderRepository {
         String sql = "INSERT INTO orders (customer_id, order_date) VALUES (?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, order.getCustomerId());
-            stmt.setDate(2, order.getOrderDate());
+            stmt.setDate(2, order.getOrder_Date());
             stmt.executeUpdate();
 
             // Set the auto-generated orderId
@@ -75,15 +51,14 @@ public class OrderRepository {
      */
     public List<String> getOrderWithProducts(int orderId) {
         List<String> results = new ArrayList<>();
-<<<<<<< HEAD
-        String sql =  "SELECT o.order_id, o.customer_id, o.order_date, " +
+
+       /* String sql =  "SELECT o.order_id, o.customer_id, o.order_date, " +
                 "op.order_product_id, op.product_id, op.quantity, op.unit_price " +
-                "FROM orders o JOIN orders_products op ON o.order_id = op.order_id " +
-=======
+                "FROM orders o JOIN orders_products op ON o.order_id = op.order_id " +*/
+
         String sql = "SELECT o.order_id, o.customer_id, o.order_date, " +
                 "op.order_product_id, op.product_id, op.quantity, op.unit_price " +
                 "FROM orders o JOIN order_product op ON o.order_id = op.order_id " +
->>>>>>> Neha
                 "WHERE o.order_id = ?";
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -97,11 +72,10 @@ public class OrderRepository {
                             ", OrderProductID: " + rs.getInt("order_product_id") +
                             ", ProductID: " + rs.getInt("product_id") +
                             ", Quantity: " + rs.getInt("quantity") +
-<<<<<<< HEAD
-                            ", Price: " + rs.getDouble("unit_price"));
-=======
-                            ", unit_Price: " + rs.getDouble("unit_price"));
->>>>>>> Neha
+
+                            ", Price: " + rs.getDouble("unit_price") +
+                            ", unit_price: " + rs.getDouble("unit_price"));
+
                 }
             }                                //lambda method reference (System.out::println) is used to output each row.
         } catch (SQLException e) {

@@ -2,16 +2,17 @@ package repository;
 
 import util.SqliteConnection;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import model.Category;
 
 
 public class CategoryRepository {
+    private final Connection connection = SqliteConnection.getConnection();
+
     public List<Category> getAllCategories() {
         List<Category> categories = new ArrayList<>();
         String query = "SELECT * FROM categories WHERE category_id";
@@ -35,4 +36,25 @@ public class CategoryRepository {
         }
         return categories;
     }
+
+    public Optional<Category> searchCategory(int categoryId) {
+        String sql = "SELECT * FROM categories WHERE category_id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, categoryId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Category category = new Category(
+                        rs.getInt("category_id"),
+                        rs.getString("name") // Ensure correct column name
+                );
+                return Optional.of(category);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
 }
+

@@ -1,14 +1,12 @@
-/*package service;
+package repository;
 
 import java.util.List;
 
-public interface IOrderService {
+public interface IOrderRepository {
     int placeOrder(int customerId);
     List<String> getAllOrders();
-
-    // delete order
-    void cancelOrder(int orderId);
+    boolean cancelOrder(int orderId);
     boolean updateOrder(int orderId, int customerId);
     List<String> getOrderHistory(int customerId);
-}*/
+}
 
