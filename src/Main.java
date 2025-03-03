@@ -2,18 +2,14 @@
 //import controller.OrderController;
 import controller.ProductController;
 import repository.*;
-
-        import repository.ProductCategoryRepository;
-
+import repository.ProductCategoryRepository;
 import repository.ProductRepository;
-
 import repository.impl.ProductRepositoryImpl;
 //import controller.OrderController;
-        import service.ProductService;
+import service.ProductService;
 
 import java.sql.*;
-
-        import service.impl.ProductServiceImpl;
+import service.impl.ProductServiceImpl;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
