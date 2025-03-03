@@ -1,4 +1,4 @@
-package repository;
+/*package repository;
 
 import util.SqliteConnection;
 
@@ -56,5 +56,5 @@ public class CategoryRepository {
         }
         return Optional.empty();
     }
-}
+}*/
 

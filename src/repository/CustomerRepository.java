@@ -1,4 +1,4 @@
-package repository;
+/*package repository;
 
 import util.SqliteConnection;
 import model.Customer;
@@ -145,7 +145,7 @@ public class CustomerRepository {
         return null; // Return null if no customer found with the provided email
     }
 
-}
+}*/
 
 
 

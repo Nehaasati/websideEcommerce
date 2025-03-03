@@ -6,20 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import util.SqliteConnection;
 
+import static util.SqliteConnection.getConnection;
+
 public class ManufacturerRepository {
 
-    public List<Manufacturer> getAllManufacturers() throws SQLException {
+    public List<Manufacturer> getAllManufacturers() {
+
         List<Manufacturer> manufacturers = new ArrayList<>();
         String query = "SELECT * FROM manufacturers";
 
-        try (Connection conn = SqliteConnection.getConnection();
-             Statement stmt = conn.createStatement();
+        try (Statement stmt = getConnection().createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
-
-            // Validate connection
-            if (conn == null) {
-                throw new SQLException("Failed to obtain database connection");
-            }
 
             while (rs.next()) {
                 Manufacturer manufacturer = new Manufacturer(
@@ -28,14 +25,28 @@ public class ManufacturerRepository {
                 );
                 manufacturers.add(manufacturer);
             }
-
-        } catch (SQLException e) {
-            System.err.println("Error fetching manufacturers: " + e.getMessage());
-            throw e;
+        }catch (SQLException e){
+                e.printStackTrace();
+        }
+             return manufacturers;
         }
 
-        return manufacturers;
+    public Manufacturer getManufacturerById(int id) throws SQLException {
+        String sql = "SELECT * FROM manufacturers WHERE manufacturer_id = ?";
+
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return new Manufacturer(
+                            rs.getInt("manufacturer_id"),
+                            rs.getString("name")
+                    );
+                }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Explicit "not found" indicator
     }
-
-
 }

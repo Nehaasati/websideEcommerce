@@ -1,4 +1,4 @@
-package controller;
+/*package controller;
 
 import java.util.List;
 import service.CategoryService;
@@ -21,4 +21,4 @@ public class CategoryController {
             }
         }
     }
-}
+}*/

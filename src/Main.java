@@ -3,7 +3,7 @@
 
 import controller.ManufacturerController;
 import repository.*;
-import repository.ProductCategoryRepository;
+
 
 
 //import controller.OrderController;
@@ -15,8 +15,9 @@ import java.sql.*;
 public class Main {
     public static void main(String[] args) throws SQLException {
 
+        //Start the manufacturer menu
         ManufacturerController manufacturerController = new ManufacturerController();
-        manufacturerController.displayManufacturers();
+        manufacturerController.start();
 
         /*'ProductRepository productRepository = new ProductRepositoryImpl();
         ProductCategoryRepository productCategoryRepository = new ProductCategoryRepository();

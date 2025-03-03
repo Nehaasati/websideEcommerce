@@ -15,15 +15,34 @@ public class ManufacturerService {
     }
 
     // Either handle the SQLException
-    public List<Manufacturer> getAllManufacturers() {
-        try {
-            return manufacturerRepository.getAllManufacturers();
-        } catch (SQLException e) {
-            System.err.println("Error retrieving manufacturers: " + e.getMessage());
-            // Return empty list or handle error as appropriate for your application
-            return new ArrayList<>();
+    public List<Manufacturer> getAllManufacturers() throws SQLException, IllegalArgumentException {
+        // Fetch from repository (propagates SQLException)
+        List<Manufacturer> manufacturers = manufacturerRepository.getAllManufacturers();
+
+        // Handle empty result
+        if (manufacturers.isEmpty()) {
+            throw new IllegalArgumentException("No manufacturers found in the database.");
         }
+
+        return manufacturers;
     }
 
+    public Manufacturer getManufacturerById(int id) throws SQLException, IllegalArgumentException {
+        // Validate input
+        if (id <= 0) {
+            throw new IllegalArgumentException("Manufacturer ID must be a positive integer.");
+        }
 
+        // Fetch from repository (propagates SQLException)
+        Manufacturer manufacturer = manufacturerRepository.getManufacturerById(id);
+
+        // Handle not found
+        if (manufacturer == null) {
+            throw new IllegalArgumentException("Manufacturer with ID " + id + " does not exist.");
+        }
+
+        return manufacturer;
+    }
 }
+
+

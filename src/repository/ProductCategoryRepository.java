@@ -1,4 +1,4 @@
-package repository;
+/*package repository;
 
 import model.ProductCategory;
 import util.SqliteConnection;
@@ -32,5 +32,5 @@ public class ProductCategoryRepository {
             return false;
         }
     }
-}
+}*/
 

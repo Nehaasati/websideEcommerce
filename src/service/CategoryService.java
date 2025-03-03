@@ -1,4 +1,4 @@
-package service;
+/*package service;
 
 import repository.CategoryRepository;
 import model.Category;
@@ -16,4 +16,4 @@ public class CategoryService {
     public List<Category> getAllCategories() {
         return categoryRepository.getAllCategories();
     }
-}
+}*/
