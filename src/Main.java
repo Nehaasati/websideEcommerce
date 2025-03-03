@@ -1,18 +1,22 @@
 
 //import controller.OrderController;
-import controller.ProductController;
+
+import controller.ManufacturerController;
 import repository.*;
 import repository.ProductCategoryRepository;
-import repository.ProductRepository;
-import repository.impl.ProductRepositoryImpl;
+
+
 //import controller.OrderController;
-import service.ProductService;
+
 
 import java.sql.*;
-import service.impl.ProductServiceImpl;
+
 
 public class Main {
     public static void main(String[] args) throws SQLException {
+
+        ManufacturerController manufacturerController = new ManufacturerController();
+        manufacturerController.displayManufacturers();
 
         /*'ProductRepository productRepository = new ProductRepositoryImpl();
         ProductCategoryRepository productCategoryRepository = new ProductCategoryRepository();
@@ -22,14 +26,14 @@ public class Main {
                 categoryRepository
         );*/
 
-        ProductRepository productRepository = new ProductRepositoryImpl();
+       /* ProductRepository productRepository = new ProductRepositoryImpl();
         ProductCategoryRepository productCategoryRepository = new ProductCategoryRepository();
         CategoryRepository categoryRepository = new CategoryRepository();
 
         ProductService productService = new ProductServiceImpl(productRepository, productCategoryRepository,
                 categoryRepository);
         ProductController productController = new ProductController(productService);
-        productController.displayProductMenu();
+        productController.displayProductMenu();*/
 
         //IOrderProductService orderProductService = new OrderProductService();
 
@@ -89,8 +93,7 @@ public class Main {
         // categoryController.displayCategories();
 
 
-        //  ManufacturerController manufacturerController = new ManufacturerController();
-        //  manufacturerController.displayManufacturers();
+
 
 
 
