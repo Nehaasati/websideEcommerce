@@ -1,6 +1,7 @@
 
 //import controller.OrderController;
 
+import controller.CategoryController;
 import controller.ManufacturerController;
 import repository.*;
 
@@ -16,9 +17,17 @@ public class Main {
     public static void main(String[] args) throws SQLException {
 
         //Start the manufacturer menu
-        ManufacturerController manufacturerController = new ManufacturerController();
+        /*ManufacturerController manufacturerController = new ManufacturerController();
           try {
               manufacturerController.start();
+          } catch (Exception e) {
+              System.out.println("There are error with"+ e.getMessage());
+          }*/
+
+          // Start the Categories
+        CategoryController categoryController = new CategoryController();
+          try{
+              categoryController.start();
           } catch (Exception e) {
               System.out.println("There are error with"+ e.getMessage());
           }
@@ -26,7 +35,7 @@ public class Main {
 
         /*'ProductRepository productRepository = new ProductRepositoryImpl();
         ProductCategoryRepository productCategoryRepository = new ProductCategoryRepository();
-        CategoryRepository categoryRepository = new CategoryRepository();
+
         ProductService productService = new ProductServiceImpl(productRepository,
                 productCategoryRepository,
                 categoryRepository
@@ -34,7 +43,6 @@ public class Main {
 
        /* ProductRepository productRepository = new ProductRepositoryImpl();
         ProductCategoryRepository productCategoryRepository = new ProductCategoryRepository();
-        CategoryRepository categoryRepository = new CategoryRepository();
 
         ProductService productService = new ProductServiceImpl(productRepository, productCategoryRepository,
                 categoryRepository);

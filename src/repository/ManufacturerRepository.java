@@ -10,41 +10,46 @@ import static util.SqliteConnection.getConnection;
 
 public class ManufacturerRepository {
 
+    // Get all manufacturers with SQLException handled internally
     public List<Manufacturer> getAllManufacturers() {
-
         List<Manufacturer> manufacturers = new ArrayList<>();
         String query = "SELECT * FROM manufacturers";
 
-        try (Statement stmt = getConnection().createStatement();
+        try (Connection conn = SqliteConnection.getConnection();
+             Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                Manufacturer manufacturer = new Manufacturer(
+                manufacturers.add(new Manufacturer(
                         rs.getInt("manufacturer_id"),
                         rs.getString("name")
-                );
-                manufacturers.add(manufacturer);
+                ));
             }
-        }catch (SQLException e){
-                e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Error retrieving manufacturers: " + e.getMessage());
+            e.printStackTrace();
         }
-             return manufacturers;
-        }
+        return manufacturers;
+    }
 
-    public Manufacturer getManufacturerById(int id) throws SQLException {
+    // Get manufacturer by ID with SQLException handled internally
+   public Manufacturer getManufacturerById(int id) throws SQLException {
         String sql = "SELECT * FROM manufacturers WHERE manufacturer_id = ?";
 
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
-
+        try(Connection conn = SqliteConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
+
+            try(ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new Manufacturer(
                             rs.getInt("manufacturer_id"),
                             rs.getString("name")
                     );
                 }
+            }
         } catch (SQLException e) {
+            System.err.println("Error retrieving by Id: " + e.getMessage());
             e.printStackTrace();
         }
         return null; // Explicit "not found" indicator

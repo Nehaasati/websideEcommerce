@@ -12,7 +12,7 @@ public class DatabaseConnectionTest {
                 }
             } catch (Exception e) {
                 System.out.println("error: " + e.getMessage());
-                //e.printStackTrace();
+
             }
         }
     }

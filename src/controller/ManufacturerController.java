@@ -86,7 +86,7 @@ public class ManufacturerController {
     }
 
     // Display manufacturer by ID with consistent formatting
-    public void displayManufacturerById(int id) {
+   public void displayManufacturerById(int id) {
         try {
             Manufacturer manufacturer = manufacturerService.getManufacturerById(id);
 
