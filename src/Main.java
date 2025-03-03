@@ -17,7 +17,12 @@ public class Main {
 
         //Start the manufacturer menu
         ManufacturerController manufacturerController = new ManufacturerController();
-        manufacturerController.start();
+          try {
+              manufacturerController.start();
+          } catch (Exception e) {
+              System.out.println("There are error with"+ e.getMessage());
+          }
+
 
         /*'ProductRepository productRepository = new ProductRepositoryImpl();
         ProductCategoryRepository productCategoryRepository = new ProductCategoryRepository();
