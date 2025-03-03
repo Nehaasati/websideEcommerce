@@ -1,0 +1,165 @@
+package repository.impl;
+
+import model.Customer;
+import repository.CustomerRepository;
+import util.SqliteConnection;
+import java.sql.*;
+import java.util.logging.*;
+
+public class CustomerRepositoryImpl implements CustomerRepository {
+    private static final Logger logger = Logger.getLogger(CustomerRepositoryImpl.class.getName());
+
+    @Override
+    public Customer createCustomer(String name, String email, String phone, String address, String password) throws SQLException {
+
+        logger.info("Attempting to create customer:" + email);
+        String sql = "INSERT INTO customers (name, email, phone, address, password) "
+                + "VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, name);
+            stmt.setString(2, email);
+            stmt.setString(3, phone);
+            stmt.setString(4, address);
+            stmt.setString(5, password);
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) {
+                logger.severe("Failed to create customer: " + email);
+                throw new SQLException("Creating customer failed, no rows affected");
+            }
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int newId = generatedKeys.getInt(1);
+                    logger.info("Successfully created customer with id: " + newId);
+                    return new Customer(newId, name, email, phone, address, password);
+                }
+            }
+        } catch (SQLException e) {
+            if (e.getMessage().contains("UNIQUE constraint failed: customers.email")) {
+                logger.warning("Duplicate email registration attempt: " + email);
+                throw new SQLException("Email already exists", e);
+            }
+            logger.log(Level.SEVERE, "Database error creating customer", e);
+            throw e;
+        }
+        throw new SQLException("Creating customer failed, no ID obtained.");
+    }
+
+    @Override
+    public Customer loginCustomer(String email, String password) throws SQLException {
+        logger.info("Login attempt for: " + email);
+        String sql = "SELECT * FROM customers WHERE email = ? AND password = ?";
+
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            stmt.setString(2, password);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    logger.info("Successful login: " + email);
+                    return new Customer(
+                            rs.getInt("customer_id"),
+                            rs.getString("name"),
+                            rs.getString("email"),
+                            rs.getString("phone"),
+                            rs.getString("address"),
+                            rs.getString("password")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Database error during login", e);
+            throw e;
+        }
+        logger.warning("Failed login attempt for: " + email);
+        return null;
+    }
+
+    @Override
+    public Customer getCustomerDetails(int customerId) throws SQLException {
+        logger.info("Fetching details for customer: " + customerId);
+        String sql = "SELECT * FROM customers WHERE customer_id = ?";
+
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, customerId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Customer(
+                            rs.getInt("customer_id"),
+                            rs.getString("name"),
+                            rs.getString("email"),
+                            rs.getString("phone"),
+                            rs.getString("address"),
+                            rs.getString("password")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Database error fetching customer", e);
+            throw e;
+        }
+        logger.warning("Customer not found: " + customerId);
+        return null;
+    }
+
+    @Override
+    public void updateCustomerDetails(Customer customer) throws SQLException {
+        logger.info("Updating customer: " + customer.getEmail());
+        String sql = "UPDATE customers SET name = ?, email = ?, phone = ?, address = ? "
+                + "WHERE customer_id = ?";
+
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, customer.getName());
+            stmt.setString(2, customer.getEmail());
+            stmt.setString(3, customer.getPhone());
+            stmt.setString(4, customer.getAddress());
+            stmt.setInt(5, customer.getCustomerId());
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) {
+                logger.severe("Update failed for customer: " + customer.getCustomerId());
+                throw new SQLException("Updating customer failed, no rows affected.");
+            }
+            logger.info("Successfully updated customer: " + customer.getCustomerId());
+        } catch (SQLException e) {
+            if (e.getMessage().contains("UNIQUE constraint failed")) {
+                logger.warning("Duplicate email update attempt: " + customer.getEmail());
+                throw new SQLException("Email already in use", e);
+            }
+            logger.log(Level.SEVERE, "Database error updating customer", e);
+            throw e;
+        }
+    }
+
+    @Override
+    public boolean emailExists(String email) throws SQLException {
+        logger.info("Checking email existence: " + email);
+        String sql = "SELECT 1 FROM customers WHERE email = ?";
+
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Database error checking email existence", e);
+            throw e;
+        }
+    }
+}
+
+
+
+
+

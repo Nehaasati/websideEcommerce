@@ -1,10 +1,14 @@
 
-//import controller.OrderController;
+
 
 import controller.CategoryController;
+import controller.CustomerController;
 import controller.ManufacturerController;
+import model.Customer;
 import repository.*;
-
+import repository.impl.CustomerRepositoryImpl;
+import service.CustomerService;
+import service.impl.CustomerServiceImpl;
 
 
 //import controller.OrderController;
@@ -24,13 +28,19 @@ public class Main {
               System.out.println("There are error with"+ e.getMessage());
           }*/
 
-          // Start the Categories
-        CategoryController categoryController = new CategoryController();
+        // Start the Categories
+      /*  CategoryController categoryController = new CategoryController();
           try{
               categoryController.start();
           } catch (Exception e) {
               System.out.println("There are error with"+ e.getMessage());
-          }
+          }*/
+
+        // Customer setup
+        CustomerRepository repository = new CustomerRepositoryImpl();
+        CustomerService service = new CustomerServiceImpl(repository);
+        CustomerController controller = new CustomerController(service);
+        controller.start();
 
 
         /*'ProductRepository productRepository = new ProductRepositoryImpl();
@@ -53,7 +63,7 @@ public class Main {
 
         //OrderController orderController = new OrderController();
 
-       // OrderProductController orderProductController = new OrderProductController();
+        // OrderProductController orderProductController = new OrderProductController();
         //orderController.displayMenu();
         //orderProductController.run();
 
@@ -61,8 +71,6 @@ public class Main {
 
         //orderController.run();
         //orderProductController.run();
-
-
 
 
         // JDBC URL för SQLite
@@ -107,15 +115,11 @@ public class Main {
         // categoryController.displayCategories();
 
 
-
-
-
-
-
- //customers cs =new customers(9,"neha","31@ngmail.com","232312");
+        //customers cs =new customers(9,"neha","31@ngmail.com","232312");
 //CustomerRepository cr = new CustomerRepository();
 //cr.getCustomerById(2);
-
     }
 }
+
+
 
