@@ -18,20 +18,23 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer registerCustomer(String name, String email, String phone,
                                      String address, String password) {
+
+        // Validate password first
+        if (password == null || password.trim().isEmpty()) {
+            logger.warning("Registration attempt with empty password");
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
+        if (password.length() < 8) {
+            logger.warning("Registration attempt with short password");
+            throw new IllegalArgumentException("Password must be at least 8 characters");
+        }
+
         try {
-            // Check for existing email first
             if (customerRepository.emailExists(email)) {
                 logger.warning("Duplicate email registration attempt: " + email);
                 throw new IllegalArgumentException("Email already registered");
             }
-
-            // Create new customer
-            Customer newCustomer = customerRepository.createCustomer(
-                    name, email, phone, address, password
-            );
-            logger.info("New customer registered: " + email);
-            return newCustomer;
-
+            return customerRepository.createCustomer(name, email, phone, address, password);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Registration failed for: " + email, e);
             throw new RuntimeException("Registration failed: " + e.getMessage());

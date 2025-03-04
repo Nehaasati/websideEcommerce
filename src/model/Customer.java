@@ -20,7 +20,7 @@ public class Customer {
             throw new IllegalArgumentException("Invalid customer ID");
         }
 
-        if (name == null || !name.trim().isEmpty()) {
+        if (name == null || name.trim().isEmpty()) {
             logger.warning("Attempt to create customer with empty name");
             throw new IllegalArgumentException("Name cannot be empty");
         }
@@ -30,18 +30,17 @@ public class Customer {
             throw new IllegalArgumentException("Invalid email address");
         }
 
-
-        if (password == null || !password.trim().isEmpty()) {
-            logger.warning("Attempt to create customer with empty password");
-            throw new IllegalArgumentException("Password cannot be empty");
+        // Trim password before validation
+        if (password != null) {
+            password = password.trim();
         }
 
         this.customerId = customerId;
-        this.name = name;
+        this.name = name.trim();
         this.phone = phone;
         this.email = email;
         this.address = address;
-        this.password = password;
+        this.setPassword(password);
 
         logger.info("Created customer object:" + email);
     }
@@ -98,12 +97,13 @@ public class Customer {
             logger.warning("Attempt to set empty password for customer: " + customerId);
             throw new IllegalArgumentException("Password cannot be empty");
         }
-        if (newPassword.length() < 8) {
+        this.password = newPassword;
+        /*if (newPassword.length() < 8) {
             logger.warning("Password too short for customer: " + customerId);
             throw new IllegalArgumentException("Password must be at least 8 characters");
         }
         this.password = newPassword;
-        logger.info("Updated password for customer: " + customerId);
+        logger.info("Updated password for customer: " + customerId);*/
     }
 
 

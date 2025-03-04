@@ -45,7 +45,7 @@ public class CustomerController {
 
     private void handleRegistration() {
         System.out.println("\n--- New Customer Registration ---");
-        System.out.print("Enter full name: ");
+        System.out.print("Enter name: ");
         String name = scanner.nextLine();
         System.out.print("Enter email: ");
         String email = scanner.nextLine();
@@ -56,12 +56,17 @@ public class CustomerController {
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
+        // Basic input validation
+        if (password.isEmpty()) {
+            System.out.println("Error: Password cannot be empty");
+            return;
+        }
+
         try {
             Customer newCustomer = customerService.registerCustomer(name, email, phone, address, password);
             System.out.println("\nRegistration successful!");
             printCustomerDetails(newCustomer);
         } catch (Exception e) {
-            logger.warning("Registration failed: " + e.getMessage());
             System.out.println("Registration error: " + e.getMessage());
         }
     }

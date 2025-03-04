@@ -13,10 +13,16 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     public Customer createCustomer(String name, String email, String phone, String address, String password) throws SQLException {
 
         logger.info("Attempting to create customer:" + email);
+
+        // Debug log to check if name is empty/null before inserting
+        logger.info("Name being inserted: [" + name + "]");
+
+
         String sql = "INSERT INTO customers (name, email, phone, address, password) "
                 + "VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             stmt.setString(1, name);
             stmt.setString(2, email);
             stmt.setString(3, phone);
@@ -82,8 +88,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Override
     public Customer getCustomerDetails(int customerId) throws SQLException {
         logger.info("Fetching details for customer: " + customerId);
-        String sql = "SELECT customer_id, name, email, phone, address, password "
-                + "FROM customers WHERE customer_id = ?";
+        String sql =  "SELECT * FROM customers WHERE customer_id = ?";
 
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -91,14 +96,29 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             stmt.setInt(1, customerId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    String nameFromDB = rs.getString("name");  // for debugging
+                    // Log all retrieved values
+                    logger.info("Retrieved name: " + rs.getString("name"));
+                    logger.info("Retrieved email: " + rs.getString("email"));
+                    logger.info("Retrieved phone: " + rs.getString("phone"));
+                    logger.info("Retrieved address: " + rs.getString("address"));
+                    logger.info("Retrieved password: " + rs.getString("password"));
+
+                    String name = rs.getString("name");
+
+                    // Check if name is empty and log the issue
+                    if (name == null || name.trim().isEmpty()) {
+                        logger.severe("Empty name for customer ID: " + customerId);
+                        throw new SQLException("Invalid customer data: empty name");
+                    }
+
+                   /* String nameFromDB = rs.getString("name");  // for debugging
                     logger.info("Retrieved name: " + nameFromDB);
 
                     String name = rs.getString("name");
                       if (name == null || name.trim().isEmpty()) {
                             logger.severe("Empty name for customer ID: " + customerId);
                             throw new SQLException("Invalid customer data: empty name");
-                      }
+                      }*/
                     return new Customer(
                             rs.getInt("customer_id"),
                             name,
