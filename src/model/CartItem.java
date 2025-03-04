@@ -3,11 +3,11 @@ package model;
 public class CartItem {
     private final int productId;          //Once set, it cannot be changed.
     private int quantity;
-
-    public CartItem(int productId, int quantity) {
-        if (quantity <= 0) {                                   // Ensuring quantity is valid
-            throw new IllegalArgumentException("Quantity must be greater than zero.");
-        }
+    private int customerId;
+    public CartItem(int customerId,int productId, int quantity) {
+        //if (quantity <= 0) {                                   // Ensuring quantity is valid
+        //    throw new IllegalArgumentException("Quantity must be greater than zero.");
+       // }
         this.productId = productId;
         this.quantity = quantity;
     }

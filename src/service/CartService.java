@@ -1,46 +1,61 @@
 package service;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import model.CartItem;
 import repository.CartRepository;
-
+import repository.ProductRepository;
 import java.util.List;
 
 public class CartService {
     private final CartRepository cartRepository;
+    private final ProductService productService;
 
-    public CartService(CartRepository cartRepository) {
+    public CartService(CartRepository cartRepository, ProductService productService) {
         this.cartRepository = cartRepository;
+        this.productService = productService;
     }
 
+    // Add product to cart
     public String addProductToCart(int customerId, int productId, int quantity) {
-        if (quantity <= 0) {                                        // prevents negative/zero quantities).
-            return "Error: Quantity must be greater than zero.";
-        }
+        if (quantity <= 0) return "Error: Quantity must be greater than zero.";
 
-        cartRepository.addProductToCart(customerId, productId, quantity);
-        return "Product added to cart successfully.";
+        if (!productService.checkStock(productId, quantity)) return "Error: Not enough stock available.";
+
+        // Deduct stock and add to cart
+        if (cartRepository.addProductToCart(customerId, productId, quantity)) {
+            productService.reduceStock(productId, quantity);
+            return "✅ Product added to cart successfully!";
+        }
+        return "❌ Error: Failed to add product to cart.";
     }
 
+    // Remove product from cart
     public String removeProductFromCart(int customerId, int productId) {
-        boolean success = cartRepository.removeProductFromCart(customerId, productId);
-        return success ? "Product removed from cart successfully." : "Error: Product not found in cart.";
-    }
+        List<CartItem> cartItems = cartRepository.getCartItems(customerId);
+        int quantity = cartItems.stream()
+                .filter(item -> item.getProductId() == productId)
+                .mapToInt(CartItem::getQuantity)
+                .sum();
 
-    public String updateProductQuantity(int customerId, int productId, int newQuantity) {
-        if (newQuantity <= 0) {
-            return removeProductFromCart(customerId, productId);
+        if (cartRepository.removeProductFromCart(customerId, productId)) {
+            productService.addStock(productId, quantity); // Restore stock
+            return "✅ Product removed from cart successfully!";
         }
-
-        boolean success = cartRepository.updateProductQuantity(customerId, productId, newQuantity);
-        return success ? "Product quantity updated successfully." : "Error: Product not found in cart.";
+        return "❌ Error: Product not in cart.";
     }
 
+    // Get all cart items
     public List<CartItem> getCartItems(int customerId) {
         return cartRepository.getCartItems(customerId);
     }
 
+    // Clear entire cart
     public String clearCart(int customerId) {
-        boolean success = cartRepository.clearCart(customerId);
-        return success ? "Cart cleared successfully." : "Error: Cart is already empty.";
+        if (cartRepository.clearCart(customerId)) {
+            return "🛒 Cart cleared successfully!";
+        }
+        return "❌ Error: Cart is already empty.";
     }
 }

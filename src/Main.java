@@ -1,11 +1,10 @@
 
 import controller.CartController;
-import controller.CustomerController;
-import controller.OrderController;
-import controller.OrderProductController;
 import repository.CartRepository;
-import repository.CustomerRepository;
+import repository.ProductRepository;
 import service.CartService;
+import service.ProductService;
+import util.SqliteConnectionManger;
 
 
 import java.sql.*;
@@ -34,10 +33,29 @@ public class Main {
         //OrderProductController orderProductController = new OrderProductController();
        // orderProductController.displayMenu();
 
-        CartRepository cartRepository = new CartRepository();
-        CartService cartService = new CartService(cartRepository);
+       /* CartRepository cartRepository = new CartRepository();
+        CartService cartService = new CartService(cartRepository,new ProductService());
         CartController controller = new CartController(cartService);
         controller.start();
+        //CartRepository cartRepo = new CartRepository();
+        ProductRepository productRepo = new ProductRepository();
+        ProductService productService =new ProductService();
+        //CartService cartService = new CartService(cartRepo, productRepo);*/
+        ProductRepository productRepository = new ProductRepository();
+        CartRepository cartRepository = new CartRepository();
+
+        // Initialize services
+        ProductService productService = new ProductService(productRepository);
+        CartService cartService = new CartService(cartRepository, productService);
+
+        // Initialize controller
+        CartController cartController = new CartController(cartService);
+
+        // Start the cart system
+        cartController.start();
+
+        // Close database connection before exiting
+        SqliteConnectionManger.closeConnection();
 
 
 

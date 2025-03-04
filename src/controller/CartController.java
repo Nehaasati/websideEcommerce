@@ -18,10 +18,10 @@ public class CartController {
         while (true) {
             System.out.println("\n1. Add Product to Cart");
             System.out.println("2. Remove Product from Cart");
-            System.out.println("3. Update Product Quantity");
-            System.out.println("4. View Cart");
-            System.out.println("5. Clear Cart");
-            System.out.println("6. Exit");
+            //System.out.println("3. Update Product Quantity");
+            System.out.println("3. View Cart");
+            System.out.println("4. Clear Cart");
+            System.out.println("5. Exit");
             System.out.print("Choose an option: ");
 
             int choice = scanner.nextInt();
@@ -29,10 +29,10 @@ public class CartController {
             switch (choice) {
                 case 1 -> addProduct(customerId);
                 case 2 -> removeProduct(customerId);
-                case 3 -> updateProduct(customerId);
-                case 4 -> viewCart(customerId);
-                case 5 -> clearCart(customerId);
-                case 6 -> {
+                // case 3 -> updateProduct(customerId);
+                case 3 -> viewCart(customerId);
+                case 4 -> clearCart(customerId);
+                case 5 -> {
                     System.out.println("Exiting...");
                     return;
                 }
@@ -56,6 +56,20 @@ public class CartController {
         System.out.println(cartService.removeProductFromCart(customerId, productId));
     }
 
+    private void clearCart(int customerId) {
+        System.out.println(cartService.clearCart(customerId));
+    }
+
+    private void viewCart(int customerId) {
+        List<CartItem> items = cartService.getCartItems(customerId);
+        if (items.isEmpty()) {
+            System.out.println("Cart is empty.");
+        } else {
+            System.out.println("Cart Items: " + items);
+        }
+    }
+}
+    /*
     private void updateProduct(int customerId) {
         System.out.print("Enter Product ID: ");
         int productId = scanner.nextInt();
@@ -71,9 +85,7 @@ public class CartController {
         } else {
             System.out.println("Cart Items: " + items);
         }
-    }
+    }*/
 
-    private void clearCart(int customerId) {
-        System.out.println(cartService.clearCart(customerId));
-    }
-}
+
+
