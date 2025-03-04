@@ -22,17 +22,19 @@ public class CustomerController {
             System.out.println("2. Login");
             System.out.println("3. View Customer Details");
             System.out.println("4. Update Customer Details");
-            System.out.println("5. Return to Main Menu");
+            System.out.println("5. Delete Customer Details");
+            System.out.println("6. Return to Main Menu");
             System.out.print("Enter your choice: ");
 
             String choice = scanner.nextLine();
 
             switch (choice) {
-                case "1" -> displayRegistration();
-               // case "2" -> displayLogin();
-               // case "3" -> displayViewDetails();
-               // case "4" -> diaplayUpdateDetails();
-                case "5" -> {
+                case "1" -> handleRegistration();
+                case "2" -> handleLogin();
+                case "3" -> handleViewDetails();
+                case "4" ->handleUpdateDetails();
+                case "5" -> handleDeleteCustomer();
+                case "6" -> {
                     System.out.println("Returning to main menu...");
                     return;
                 }
@@ -41,7 +43,7 @@ public class CustomerController {
         }
     }
 
-    private void displayRegistration() {
+    private void handleRegistration() {
         System.out.println("\n--- New Customer Registration ---");
         System.out.print("Enter full name: ");
         String name = scanner.nextLine();
@@ -147,6 +149,31 @@ public class CustomerController {
         } catch (Exception e) {
             logger.severe("Update error: " + e.getMessage());
             System.out.println("Update failed: " + e.getMessage());
+        }
+    }
+
+    private void handleDeleteCustomer() {
+        System.out.println("\n--- Delete Customer ---");
+        System.out.print("Enter customer ID to delete: ");
+
+        try {
+            int customerId = Integer.parseInt(scanner.nextLine());
+
+            System.out.print("Are you sure you want to delete customer " + customerId + "? (y/n): ");
+            String confirmation = scanner.nextLine();
+
+            if (confirmation.equalsIgnoreCase("y")) {
+                customerService.deleteCustomer(customerId);
+                System.out.println("Customer deleted successfully");
+            } else {
+                System.out.println("Deletion cancelled");
+            }
+        } catch (NumberFormatException e) {
+            logger.warning("Invalid ID input: " + e.getMessage());
+            System.out.println("Invalid customer ID format");
+        } catch (Exception e) {
+            logger.severe("Delete error: " + e.getMessage());
+            System.out.println("Delete failed: " + e.getMessage());
         }
     }
 

@@ -90,6 +90,24 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public void deleteCustomer(int customerId) {
+        try {
+            // Verify customer exists first
+            Customer customer = customerRepository.getCustomerDetails(customerId);
+            if (customer == null) {
+                logger.warning("Delete failed: Customer not found ID: " + customerId);
+                throw new IllegalArgumentException("Customer not found");
+            }
+
+            customerRepository.deleteCustomer(customerId);
+            logger.info("Customer deleted successfully ID: " + customerId);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Delete error for customer ID: " + customerId, e);
+            throw new RuntimeException("Delete failed: " + e.getMessage());
+        }
+    }
+
+    @Override
     public boolean validateCredentials(String email, String password) {
         try {
             return customerRepository.loginCustomer(email, password) != null;

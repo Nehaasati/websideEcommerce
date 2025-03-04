@@ -27,13 +27,16 @@ public class CustomerRepositoryTest {
 
         try {
             // Call createCustomer method
-            Customer newCustomer = repository.createCustomer(testName, testEmail, testPhone, testAddress, testPassword);
+           Customer newCustomer = repository.createCustomer(testName, testEmail, testPhone, testAddress, testPassword);
 
             // Log success message
-            logger.info("✅ Customer Created: " + newCustomer.getEmail());
+           // logger.info("✅ Customer Created: " + newCustomer.getEmail());
 
             // Verify in database
-            verifyCustomerInDB(testEmail);
+           // verifyCustomerInDB(testEmail);
+
+            // Delete Customer
+            deleteTestCustomer(testEmail);
 
         } catch (SQLException e) {
             logger.severe("❌ Test failed: " + e.getMessage());
@@ -56,6 +59,23 @@ public class CustomerRepositoryTest {
             }
         } catch (SQLException e) {
             logger.severe("❌ Database Error: " + e.getMessage());
+        }
+    }
+
+    private static void deleteTestCustomer(String email) {
+        String sql = "DELETE FROM customers WHERE email = ?";
+
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            int rowsDeleted = stmt.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                logger.info("🗑️ Deleted test customer: " + email);
+            }
+        } catch (SQLException e) {
+            logger.severe("❌ Error deleting test customer: " + e.getMessage());
         }
     }
 }

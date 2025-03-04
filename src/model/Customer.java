@@ -20,15 +20,17 @@ public class Customer {
             throw new IllegalArgumentException("Invalid customer ID");
         }
 
+        if (name == null || !name.trim().isEmpty()) {
+            logger.warning("Attempt to create customer with empty name");
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
+
         if (email == null || !email.contains("@")) {
             logger.warning("Invalid email format: " + email);
             throw new IllegalArgumentException("Invalid email address");
         }
 
-        if (name == null || !name.trim().isEmpty()) {
-            logger.warning("Attempt to create customer with empty name");
-            throw new IllegalArgumentException("Name cannot be empty");
-        }
+
         if (password == null || !password.trim().isEmpty()) {
             logger.warning("Attempt to create customer with empty password");
             throw new IllegalArgumentException("Password cannot be empty");

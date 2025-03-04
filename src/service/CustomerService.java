@@ -8,5 +8,6 @@ public interface CustomerService {
     Customer login(String email, String password);
     Customer getCustomer(int customerId);
     void updateCustomer(Customer customer);
+    void deleteCustomer(int customerId);
     boolean validateCredentials(String email, String password);
 }

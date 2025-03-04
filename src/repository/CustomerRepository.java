@@ -11,6 +11,7 @@ public interface CustomerRepository {
      Customer loginCustomer(String email, String password) throws SQLException;
      Customer getCustomerDetails(int customerId) throws SQLException;
      void updateCustomerDetails(Customer customer) throws SQLException;
+     void deleteCustomer(int customerId) throws SQLException;
      boolean emailExists(String email) throws SQLException;
 }
 

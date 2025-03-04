@@ -82,18 +82,26 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Override
     public Customer getCustomerDetails(int customerId) throws SQLException {
         logger.info("Fetching details for customer: " + customerId);
-        String sql = "SELECT * FROM customers WHERE customer_id = ?";
+        String sql = "SELECT customer_id, name, email, phone, address, password "
+                + "FROM customers WHERE customer_id = ?";
 
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, customerId);
-
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
+                    String nameFromDB = rs.getString("name");  // for debugging
+                    logger.info("Retrieved name: " + nameFromDB);
+
+                    String name = rs.getString("name");
+                      if (name == null || name.trim().isEmpty()) {
+                            logger.severe("Empty name for customer ID: " + customerId);
+                            throw new SQLException("Invalid customer data: empty name");
+                      }
                     return new Customer(
                             rs.getInt("customer_id"),
-                            rs.getString("name"),
+                            name,
                             rs.getString("email"),
                             rs.getString("phone"),
                             rs.getString("address"),
@@ -105,9 +113,10 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             logger.log(Level.SEVERE, "Database error fetching customer", e);
             throw e;
         }
-        logger.warning("Customer not found: " + customerId);
         return null;
     }
+
+
 
     @Override
     public void updateCustomerDetails(Customer customer) throws SQLException {
@@ -136,6 +145,29 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 throw new SQLException("Email already in use", e);
             }
             logger.log(Level.SEVERE, "Database error updating customer", e);
+            throw e;
+        }
+    }
+
+    @Override
+    public void deleteCustomer(int customerId) throws SQLException {
+        logger.info("Attempting to delete customer ID: " + customerId);
+        String sql = "DELETE FROM customers WHERE customer_id = ?";
+
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, customerId);
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                logger.warning("No customer found with ID: " + customerId);
+                throw new SQLException("No customer found with ID: " + customerId);
+            }
+
+            logger.info("Successfully deleted customer ID: " + customerId);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error deleting customer ID: " + customerId, e);
             throw e;
         }
     }
