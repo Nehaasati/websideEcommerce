@@ -1,6 +1,6 @@
 package repository;
 
-import util.SqliteConnection;
+import util.SqliteConnectionManger;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -18,7 +18,7 @@ public class CategoryRepository {
         //"ORDER BY name ASC";
         //"SELECT category_id, name FROM categories";
 
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 

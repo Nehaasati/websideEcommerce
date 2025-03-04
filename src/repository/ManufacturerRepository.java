@@ -1,6 +1,6 @@
 package repository;
 
-import util.SqliteConnection;
+import util.SqliteConnectionManger;
 import model.Manufacturer;
 
 import java.sql.*;
@@ -13,7 +13,7 @@ public class ManufacturerRepository {
         List<Manufacturer> manufacturers = new ArrayList<>();
         String query = "SELECT * FROM manufacturers";
 
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
@@ -32,7 +32,7 @@ public class ManufacturerRepository {
 
     public Manufacturer findById(int id) {
         String sql = "SELECT * FROM manufacturers WHERE manufacturer_id = ?";
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();

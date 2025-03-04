@@ -1,11 +1,14 @@
 package repository;
 
 import model.ProductCategory;
-import util.SqliteConnection;
+import util.SqliteConnectionManger;
 import java.sql.*;
 
 public class ProductCategoryRepository {
-    private final Connection connection = SqliteConnection.getConnection();
+    private final Connection connection = SqliteConnectionManger.getConnection();
+
+    public ProductCategoryRepository() throws SQLException {
+    }
 
     //to add a product-category relationship
     public boolean addProductCategory(ProductCategory pc) {

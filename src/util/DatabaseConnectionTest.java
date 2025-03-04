@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 public class DatabaseConnectionTest {
     public static void main(String[] args) {
-            try (Connection conn = SqliteConnection.getConnection()) {
+            try (Connection conn = SqliteConnectionManger.getConnection()) {
                 if (conn != null) {
                     System.out.println("✅ Database Connection Successful!");
                 } else {

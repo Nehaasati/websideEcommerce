@@ -3,7 +3,7 @@ package repository.impl;
 
 
 import repository.IOrderRepository;
-import util.SqliteConnection;
+import util.SqliteConnectionManger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class OrderRepository implements IOrderRepository {
         String sql = "INSERT INTO orders (customer_id) VALUES (?)";
         int orderId = -1;
 
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             conn.setAutoCommit(false);
@@ -48,7 +48,7 @@ public class OrderRepository implements IOrderRepository {
         List<String> orders = new ArrayList<>();
         String sql = "SELECT * FROM orders";
 
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -65,7 +65,7 @@ public class OrderRepository implements IOrderRepository {
     @Override
     public boolean cancelOrder(int orderId) {
         String sql = "DELETE FROM orders WHERE order_id = ?";
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, orderId);
@@ -80,7 +80,7 @@ public class OrderRepository implements IOrderRepository {
     @Override
     public boolean updateOrder(int orderId, int customerId) {
         String sql = "UPDATE orders SET customer_id = ? WHERE order_id = ?";
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, customerId);
@@ -97,7 +97,7 @@ public class OrderRepository implements IOrderRepository {
         List<String> orders = new ArrayList<>();
         String sql = "SELECT order_id, order_date FROM orders WHERE customer_id = ?";
 
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, customerId);

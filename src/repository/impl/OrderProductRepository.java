@@ -1,7 +1,7 @@
 package repository.impl;
 import model.OrderProduct;
 import repository.IOrderProductRepository;
-import util.SqliteConnection;
+import util.SqliteConnectionManger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class OrderProductRepository implements IOrderProductRepository {
     @Override
     public boolean addOrderProduct(int orderId, int productId, int quantity, double unitPrice) {
         String sql = "INSERT INTO orders_products (order_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)";
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, orderId);
             pstmt.setInt(2, productId);
@@ -31,7 +31,7 @@ public class OrderProductRepository implements IOrderProductRepository {
     public List<OrderProduct> getOrderProducts(int orderId) {
         String sql = "SELECT * FROM orders_products WHERE order_id = ?";
         List<OrderProduct> orderProducts = new ArrayList<>();
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, orderId);
             ResultSet rs = pstmt.executeQuery();
@@ -53,7 +53,7 @@ public class OrderProductRepository implements IOrderProductRepository {
     @Override
     public boolean removeOrderProduct(int orderProductId) {
         String sql = "DELETE FROM orders_products WHERE order_product_id = ?";
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, orderProductId);
             return pstmt.executeUpdate() > 0;

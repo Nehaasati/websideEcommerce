@@ -29,17 +29,22 @@ import java.sql.SQLException;
     }
 }*/
 
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
-public class SqliteConnection {
+public class SqliteConnectionManger {
     private static final String URL = "jdbc:sqlite:./webbutiken.db";
     private static Connection connection = null;
 
-    private SqliteConnection() { //Make constructor private to make class singleton
+    public static void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+
+
 
     public static Connection getConnection() throws SQLException {
         try {

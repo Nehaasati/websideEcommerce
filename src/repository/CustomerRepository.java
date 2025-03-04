@@ -1,8 +1,7 @@
 package repository;
 
-import util.SqliteConnection;
+import util.SqliteConnectionManger;
 import model.Customer;
-import util.SqliteConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class CustomerRepository {
         String sql = "SELECT * FROM customers";
         List<Customer> customers = new ArrayList<>();
 
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -38,7 +37,7 @@ public class CustomerRepository {
     public Customer getCustomerById(int customerId) {
         String sql = "SELECT * FROM customers WHERE customer_id = ?";
 
-        try (Connection conn = SqliteConnection.getConnection(); // Ensure connection is properly opened
+        try (Connection conn = SqliteConnectionManger.getConnection(); // Ensure connection is properly opened
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, customerId);
@@ -64,7 +63,7 @@ public class CustomerRepository {
 
     public boolean addNewCustomer(Customer customer) {
         String sql = " insert into customers(name, email, phone, address,password) values(?,?,?,?,?)";
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, customer.getName());
@@ -84,7 +83,7 @@ public class CustomerRepository {
     public  boolean deleteCustomer(int customerId) {
         String sql = "DELETE fROM CUSTOMERS WHERE customer_id =?";
         try {
-            Connection conn = SqliteConnection.getConnection();
+            Connection conn = SqliteConnectionManger.getConnection();
             PreparedStatement ptsmt = conn.prepareStatement(sql);
 
             ptsmt.setInt(1, customerId);
@@ -101,7 +100,7 @@ public class CustomerRepository {
     public boolean updateCustomer(Customer customer) {
         String sql = "UPDATED customers  SET name =?,email =?, phone =?, address =?, password =? WHERE customer_id =?";
         try {
-            Connection conn = SqliteConnection.getConnection();
+            Connection conn = SqliteConnectionManger.getConnection();
             PreparedStatement ptstmt = conn.prepareStatement(sql);
 
             ptstmt.setString(1, customer.getName());
@@ -123,7 +122,7 @@ public class CustomerRepository {
     // Find a customer by email
     public Customer getCustomerByEmail(String email) {
         String sql = "SELECT * FROM customers WHERE email = ?";
-        try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnectionManger.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, email);
