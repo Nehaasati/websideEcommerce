@@ -1,4 +1,4 @@
-/*package model;
+package model;
 
 public class ProductCategory {
     private int id;   //junction Table PK
@@ -45,4 +45,4 @@ public class ProductCategory {
                 '}';
     }
 
-}*/
+}
