@@ -4,6 +4,7 @@
 import controller.CategoryController;
 import controller.CustomerController;
 import controller.ManufacturerController;
+import controller.OrderController;
 import model.Customer;
 import repository.*;
 import repository.impl.CustomerRepositoryImpl;
@@ -37,10 +38,13 @@ public class Main {
           }*/
 
         // Customer setup
-        CustomerRepository repository = new CustomerRepositoryImpl();
+        /*CustomerRepository repository = new CustomerRepositoryImpl();
         CustomerService service = new CustomerServiceImpl(repository);
         CustomerController controller = new CustomerController(service);
-        controller.start();
+        controller.start();*/
+
+        OrderController orderController = new OrderController();
+        orderController.displayMenu();
 
 
         /*'ProductRepository productRepository = new ProductRepositoryImpl();
