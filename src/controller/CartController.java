@@ -60,12 +60,22 @@ public class CartController {
         System.out.println(cartService.clearCart(customerId));
     }
 
+
     private void viewCart(int customerId) {
         List<CartItem> items = cartService.getCartItems(customerId);
         if (items.isEmpty()) {
             System.out.println("Cart is empty.");
         } else {
-            System.out.println("Cart Items: " + items);
+            System.out.println("\n+------------+------------+");
+            System.out.println("| Product ID | Quantity   |");
+            System.out.println("+------------+------------+");
+
+            for (CartItem item : items) {
+                System.out.printf("| %-10d | %-10d |\n",
+                        item.getProductId(), item.getQuantity());
+            }
+
+            System.out.println("+------------+------------+");
         }
     }
 }
