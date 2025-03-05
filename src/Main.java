@@ -1,9 +1,16 @@
 
 import controller.CartController;
+import controller.CategoryController;
+import controller.CustomerController;
+import controller.ManufacturerController;
 import repository.CartRepository;
+import repository.CustomerRepository;
 import repository.ProductRepository;
+import repository.impl.CustomerRepositoryImpl;
 import service.CartService;
+import service.CustomerService;
 import service.ProductService;
+import service.impl.CustomerServiceImpl;
 import util.SqliteConnectionManger;
 
 
@@ -33,20 +40,15 @@ public class Main {
         //OrderProductController orderProductController = new OrderProductController();
        // orderProductController.displayMenu();
 
-       /* CartRepository cartRepository = new CartRepository();
-        CartService cartService = new CartService(cartRepository,new ProductService());
-        CartController controller = new CartController(cartService);
-        controller.start();
-        //CartRepository cartRepo = new CartRepository();
-        ProductRepository productRepo = new ProductRepository();
-        ProductService productService =new ProductService();
-        //CartService cartService = new CartService(cartRepo, productRepo);*/
+
+        //ProductRepository productRepo = new ProductRepository();
+
         ProductRepository productRepository = new ProductRepository();
         CartRepository cartRepository = new CartRepository();
 
         // Initialize services
-        ProductService productService = new ProductService(productRepository);
-        CartService cartService = new CartService(cartRepository, productService);
+         ProductService productService = new ProductService(productRepository);
+         CartService cartService = new CartService(cartRepository, productService);
 
         // Initialize controller
         CartController cartController = new CartController(cartService);
@@ -61,38 +63,21 @@ public class Main {
 
 
 
-        // JDBC URL för SQLite
-        // String url = "";
-
-       /* Connection connection = SqliteConnection.getConnection();
-        if (connection != null) {
-            System.out.println("Connection established");
-
-            ProductController productController = new ProductController(connection);
-            productController.getAllProducts();
-        } else {
-            System.out.println("Connection failed");
-        }
-
-        //Statement stmt = connection.createStatement(URL);
-        //  ResultSet rs = stmt.executeQuery("SELECT * FROM customers")) {
-
-        //Loopa genom alla rader i resultatet
-          /*  while (rs.next()) {
-                // Ändra kolumnnamnen nedan till de som finns i din tabell
-                System.out.println(
-                       rs.getInt("customer_id") + " | " +
-                             rs.getString("first_name")+"|"+
-                               rs.getString("email");
-
-                       // Lägg till fler kolumner efter behov);
-                        }
-
-        } catch (SQLException e) {
-           System.out.println("Ett fel uppstod: " + e.getMessage());
-        }*/
+        // Start the Categories
+       /*CategoryController categoryController = new CategoryController();
+          try{
+              categoryController.start();
+          } catch (Exception e) {
+              System.out.println("There are error with" + e.getMessage());
+          }*/
         //CustomerService service = new CustomerService();
         //service.showAllCustomers();
+        //CartRepository cartRepository = new CartRepository();
+        //CartService cartService = new CartService(cartRepository,new ProductService());
+        //CartController controller = new CartController(cartService);
+        //controller.start();
+        //CartRepository cartRepo = new CartRepository();
+
 
         //CustomerController customerController = new CustomerController();
         //customerController.run();
@@ -103,10 +88,13 @@ public class Main {
         // categoryController.displayCategories();
 
 
-        //  ManufacturerController manufacturerController = new ManufacturerController();
-        //  manufacturerController.displayManufacturers();
+         // ManufacturerController manufacturerController = new ManufacturerController();
+         // manufacturerController.displayManufacturers();
 
-
+        //CustomerRepository repository = new CustomerRepositoryImpl();
+        //CustomerService service = new CustomerServiceImpl(repository);
+        //CustomerController controller = new CustomerController(service);
+        //controller.start();
 
 
  //customers cs =new customers(9,"neha","31@ngmail.com","232312");
