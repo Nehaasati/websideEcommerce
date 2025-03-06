@@ -2,12 +2,21 @@ package repository;
 
 import model.CartItem;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.CartItem;
+import util.SqliteConnectionManger;
+
 import java.util.*;
 
 public class CartRepository {
+    private static final Logger LOGGER = Logger.getLogger(CartRepository.class.getName());
+
     private final Map<Integer, List<CartItem>> cartData = new HashMap<>();
 
     // Add product to cart
@@ -34,4 +43,13 @@ public class CartRepository {
         cartData.remove(customerId);
         return true;
     }
+
+    /**
+     * Calculates the total price of all items in a customer's cart.
+     * @param customerId The ID of the customer whose cart total is to be calculated.
+     * @return The total price of the cart.
+     */
+    // Get all cart items
+
 }
+

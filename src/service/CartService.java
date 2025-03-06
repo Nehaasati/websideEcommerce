@@ -1,21 +1,28 @@
 package service;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
+import repository.CartRepository;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.CartItem;
 import repository.CartRepository;
 import repository.ProductRepository;
 import java.util.List;
+import model.Product;
 
 public class CartService {
+
     private final CartRepository cartRepository;
     private final ProductService productService;
 
+    private static final Logger LOGGER = Logger.getLogger(CartService.class.getName());
     public CartService(CartRepository cartRepository, ProductService productService) {
         this.cartRepository = cartRepository;
         this.productService = productService;
     }
+
 
     // Add product to cart
     public String addProductToCart(int customerId, int productId, int quantity) {
@@ -58,4 +65,26 @@ public class CartService {
         }
         return "❌ Error: Cart is already empty.";
     }
+    public double getTotalCartPrice(int customerId) throws SQLException {
+        List<CartItem> cartItems = cartRepository.getCartItems(customerId);
+        double totalPrice = 0.0;
+
+        ProductRepository productRepository = new ProductRepository();
+
+        System.out.println("Cart Items for Customer " + customerId + ": " + cartItems.size());
+
+        for (CartItem item : cartItems) {
+            double price = productRepository.getProductPrice(item.getProductId());
+            int quantity = item.getQuantity();
+
+            // Print debug info
+            System.out.println("Product ID: " + item.getProductId() + ", Price: " + price + ", Quantity: " + quantity);
+
+            totalPrice += (price * quantity);
+        }
+
+        LOGGER.log(Level.INFO, "Total Cart Price for Customer ID {0}: KR{1}", new Object[]{customerId, totalPrice});
+        return totalPrice;
+    }
+
 }

@@ -51,6 +51,8 @@ public class ProductService {
     public int getStockStatus(int productId) throws SQLException {
         return productRepository.getStock(productId);
     }
+
+
 }
 
 

@@ -51,17 +51,18 @@ public class ProductRepository {
     }
 
     public int getStock(int productId) throws SQLException {
-            String query = "SELECT stock_quantity FROM products WHERE product_id = ?";
-            try (Connection conn = SqliteConnectionManger.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setInt(1, productId);
-                ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    return rs.getInt("stock_quantity");
-                }
+        String query = "SELECT stock_quantity FROM products WHERE product_id = ?";
+        try (Connection conn = SqliteConnectionManger.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, productId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("stock_quantity");
             }
-            return 0;
         }
+        return 0;
+    }
+
     public void UpdateStock(int productId, int quantity) throws SQLException {
         String query = "UPDATE products SET stock_quantity = ? WHERE product_id = ?";
         try (Connection conn = SqliteConnectionManger.getConnection();
@@ -79,7 +80,28 @@ public class ProductRepository {
             stmt.setDouble(1, newPrice);
             stmt.setInt(2, productId);
             stmt.executeUpdate();
+
         }
-}}
+    }
+
+    public double getProductPrice(int productId) {
+        String query = "SELECT price FROM products WHERE product_id = ?";
+        try (Connection conn = SqliteConnectionManger.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, productId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getDouble("price");
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "❌ Database Error in getProductPrice", e);
+            System.out.println("⚠️ Product ID not found: " + productId);
+        }
+        return 0.0; // Return 0 if product not found
+    }
+}
+
 
 
