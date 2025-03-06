@@ -6,7 +6,7 @@ import repository.ProductRepository;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 
 public class ProductService {
@@ -52,10 +52,18 @@ public class ProductService {
     }
 
     public List<Product> searchProductsByPriceRange(double min, double max) {
+        // Validate input parameters
+        if (min < 0) {
+            throw new IllegalArgumentException("Error: Price cannot be negative");
+        }
+        if (max < min) {
+            throw new IllegalArgumentException(
+                    String.format("Error: Maximum price (%.2f) must be >= minimum price (%.2f)", max, min)
+            );
+        }
+
         try {
-            return repository.findProductsByPriceRange(min, max).stream()
-                    .filter(p -> p.getPrice() >= min && p.getPrice() <= max)
-                    .collect(Collectors.toList());
+            return repository.findProductsByPriceRange(min, max);
         } catch (SQLException e) {
             handleDatabaseError(e);
             return Collections.emptyList();

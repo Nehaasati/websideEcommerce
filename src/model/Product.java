@@ -15,6 +15,12 @@ public class Product {
 
     public Product(int productId, int manufacturerId, String name, String description,
                    double price, int stockQuantity) {
+        if(name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Product name cannot be empty");
+        }
+        if(price < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
         this.productId = productId;
         this.manufacturerId = manufacturerId;
         this.name = name;

@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class ProductRepository {
     private static final String SELECT_BASE =
-                "SELECT p.product_id, p.manufacturer_id, p.name, p.description, " +
+                "SELECT  p.product_id, p.manufacturer_id, p.name, p.description, " +
                         "p.price, p.stock_quantity, GROUP_CONCAT(pc.category_id) AS categories " +
                         "FROM products p " +
                         "LEFT JOIN products_categories pc ON p.product_id = pc.product_id ";
@@ -41,17 +41,21 @@ public class ProductRepository {
     }
 
     public List<Product> findProductByName(String name) throws SQLException {
-        String sql = SELECT_BASE + " WHERE p.name = ?";
-        try(Connection conn = SqliteConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)){
+        String sql = SELECT_BASE +
+                "WHERE LOWER(p.name) LIKE LOWER(?) " +
+                "GROUP BY p.product_id";  // Add proper grouping
 
-            stmt.setString(1, "%" + name + "%");
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + name + "%");  // Add wildcards
             return executeQueryAndMapResults(stmt);
         }
     }
 
     public List<Product> findProductByCategory(int categoryId) throws SQLException {
-        String sql = SELECT_BASE + " WHERE p.category_id = ? GROUP BY p.product_id";
+        String sql = SELECT_BASE +
+                " WHERE pc.category_id = ? " +
+                " GROUP BY p.product_id";
         try(Connection conn = SqliteConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -61,7 +65,7 @@ public class ProductRepository {
     }
 
     public List<Product> findProductsByPriceRange(double min, double max) throws SQLException {
-        String sql = SELECT_BASE + " WHERE price BETWEEN ? AND ? GROUP BY p.product_id";
+        String sql = SELECT_BASE + "WHERE p.price BETWEEN ? AND ? GROUP BY p.product_id";
         try(Connection conn = SqliteConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
