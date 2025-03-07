@@ -75,7 +75,7 @@ public class CartService {
 
         for (CartItem item : cartItems) {
             double price = productService.getProductPrice(item.getProductId());
-            String Name = productService.getProductName(item.getProductId());
+            String Name = productService.getProductNameById(item.getProductId());
             int quantity = item.getQuantity();
 
             // Print debug info

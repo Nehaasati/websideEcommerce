@@ -88,7 +88,7 @@ public class ProductService {
             throw new RuntimeException("Database error: " + e.getMessage());
         }
     }
-    public String getProductName(int productId) {
+    public String getProductNameById(int productId) {                              // connect cart for name of product Totalcartprice
         try {
             return repository.findProductById(productId)
                     .map(Product::getName)

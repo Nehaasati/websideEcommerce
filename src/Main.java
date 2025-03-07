@@ -1,8 +1,5 @@
 
-import controller.CartController;
-import controller.CategoryController;
-import controller.CustomerController;
-import controller.ManufacturerController;
+import controller.*;
 import repository.CartRepository;
 import repository.CustomerRepository;
 import repository.ProductRepository;
@@ -21,12 +18,7 @@ import java.sql.*;
 public class Main {
     public static void main(String[] args) throws SQLException {
 
-        //ProductRepository productRepository = new ProductRepositoryImpl();
-        //ProductService productService = new ProductServiceImpl(productRepository);
-       // ProductController productController = new ProductController(productService);
 
-       /* ProductRepository productRepository = new ProductRepositoryImpl();
-       // ProductService productService = new ProductServiceImpl(productRepository);
 
 
         //ProductController productController = new ProductController(productService);
@@ -43,7 +35,7 @@ public class Main {
 
         //ProductRepository productRepo = new ProductRepository();
 
-        ProductRepository productRepository = new ProductRepository();
+       ProductRepository productRepository = new ProductRepository();
         CartRepository cartRepository = new CartRepository();
 
         // Initialize services
@@ -52,7 +44,9 @@ public class Main {
 
         // Initialize controller
         CartController cartController = new CartController(cartService);
-
+        ProductController productController = new ProductController(productService);
+       // productController.showAdminMenu();
+        //productController.showCustomerMenu();
         // Start the cart system
         cartController.start();
 
