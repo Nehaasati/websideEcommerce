@@ -74,31 +74,4 @@ public class OrderController {
             }
         }
     }
-
-    /*private void displayOrders(List<String> orders) {
-        if (orders.isEmpty()) {
-            System.out.println("No orders found.");
-            return;
-        }
-
-        System.out.println("\n+------------+--------------+---------------------+");
-        System.out.println("| Order ID   | Customer ID  | Order Date         |");
-        System.out.println("+------------+--------------+---------------------+");
-
-        for (String order : orders) {
-            try {
-                String[] parts = order.split(",");// Adjust based on actual data format
-
-                String orderId = parts[0].split(": ")[1].trim();
-                String customerId = parts[1].split(": ")[1].trim();
-                String orderDate = parts[2].split(": ")[1].trim();  // New field for date
-
-                System.out.printf("| %-10s | %-12s | %-19s |\n" , orderId, customerId, orderDate);
-            } catch (Exception e) {
-                System.out.println("Error while displaying order: " + order);
-            }
-        }
-        System.out.println("+------------+--------------+---------------------+");
-    }*/
 }
-

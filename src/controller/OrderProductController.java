@@ -1,9 +1,7 @@
 package controller;
 
 import model.OrderProduct;
-import repository.OrderProductRepository;
 import repository.impl.OrderProductRepositoryImpl;
-import repository.impl.OrderRepositoryImpl;
 import service.OrderProductService;
 import service.impl.OrderProductServiceImpl;
 
