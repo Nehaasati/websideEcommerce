@@ -28,7 +28,7 @@ public class CartService {
     public String addProductToCart(int customerId, int productId, int quantity) {
         if (quantity <= 0) return "Error: Quantity must be greater than zero.";
 
-        if (!productService.checkStock(productId, quantity)) return "Error: Not enough stock available.";
+        if (!productService.checkStockAvailability(productId, quantity)) return "Error: Not enough stock available.";
 
         // Deduct stock and add to cart
         if (cartRepository.addProductToCart(customerId, productId, quantity)) {
@@ -69,16 +69,17 @@ public class CartService {
         List<CartItem> cartItems = cartRepository.getCartItems(customerId);
         double totalPrice = 0.0;
 
-        ProductRepository productRepository = new ProductRepository();
 
-        System.out.println("Cart Items for Customer " + customerId + ": " + cartItems.size());
+
+        System.out.println("Number of Items in cart for CustomerID " + customerId + ": " + cartItems.size());
 
         for (CartItem item : cartItems) {
-            double price = productRepository.getProductPrice(item.getProductId());
+            double price = productService.getProductPrice(item.getProductId());
+            String Name = productService.getProductName(item.getProductId());
             int quantity = item.getQuantity();
 
             // Print debug info
-            System.out.println("Product ID: " + item.getProductId() + ", Price: " + price + ", Quantity: " + quantity);
+            System.out.println("Product ID: " + item.getProductId() + ", Price: " + price + ", Quantity: " + quantity+",Name: "+Name);
 
             totalPrice += (price * quantity);
         }
@@ -98,7 +99,7 @@ public class CartService {
         }
 
         // Check if stock is sufficient
-        if (!productService.checkStock(productId, newQuantity)) {
+        if (!productService.checkStockAvailability(productId, newQuantity)) {
             return "Error: Not enough stock available.";
         }
 
@@ -117,7 +118,7 @@ public class CartService {
             return "Error: Old product not found in cart.";
         }
 
-        if (!productService.checkStock(newProductId, newQuantity)) return "Error: Not enough stock available for new product.";
+        if (!productService.checkStockAvailability(newProductId, newQuantity)) return "Error: Not enough stock available for new product.";
 
         if (cartRepository.updateProductInCart(customerId, oldProductId, newProductId, newQuantity)) {
             return "✅ Product updated successfully!";
