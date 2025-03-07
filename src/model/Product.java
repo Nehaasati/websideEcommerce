@@ -3,22 +3,25 @@ package model;
 import java.util.List;
 import java.util.ArrayList;
 
+
+
 public class Product {
 
     private final int productId;
     private final String name;
-    private final String description;
-    private final double price;
+    private  String description;
+    private double price;
     private int stockQuantity;
     private List<Integer> categoryIds = new ArrayList<>();
-    private final int manufacturerId;
+    private  int manufacturerId;
 
+   // Main Constructor
     public Product(int productId, int manufacturerId, String name, String description,
                    double price, int stockQuantity) {
-        if(name == null || name.isBlank()) {
+        if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Product name cannot be empty");
         }
-        if(price < 0) {
+        if (price < 0) {
             throw new IllegalArgumentException("Price cannot be negative");
         }
         this.productId = productId;
@@ -29,7 +32,17 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    // Getters
+    // Overload construtor
+      public Product( int productId, String name){
+            this.productId = productId;
+            this.name = name;
+      }
+
+
+
+
+
+        // Getters
     public int getProductId() { return productId; }
     public String getName() { return name; }
     public String getDescription() { return description; }

@@ -12,6 +12,12 @@ public class Customer {
     private String address;
     private String password;
 
+    public Customer(int customerId, String name) {  // this constructor is created in connection with reviews
+        this.customerId = customerId;
+        this.name = name;
+    }
+
+
 
     public Customer(int customerId, String name, String email, String phone, String address, String password) {
 
@@ -44,6 +50,7 @@ public class Customer {
 
         logger.info("Created customer object:" + email);
     }
+
 
     // getters
     public int getCustomerId() {return customerId;}
