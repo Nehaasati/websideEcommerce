@@ -86,5 +86,44 @@ public class CartService {
         LOGGER.log(Level.INFO, "Total Cart Price for Customer ID {0}: KR{1}", new Object[]{customerId, totalPrice});
         return totalPrice;
     }
+    public String updateProductQuantity(int customerId, int productId, int newQuantity) {
+        if (newQuantity < 0) return "Error: Quantity cannot be negative.";
+
+        // Check if product exists in cart
+        boolean productExists = cartRepository.getCartItems(customerId)
+                .stream().anyMatch(item -> item.getProductId() == productId);
+
+        if (!productExists) {
+            return "Error: Product not found in cart.";
+        }
+
+        // Check if stock is sufficient
+        if (!productService.checkStock(productId, newQuantity)) {
+            return "Error: Not enough stock available.";
+        }
+
+        // Update quantity
+        if (cartRepository.updateProductQuantity(customerId, productId, newQuantity)) {
+            return "✅ Product quantity updated successfully!";
+        }
+
+        return "❌ Error: Failed to update product quantity.";
+    }
+    // Update product (replace product in the cart)
+    public String updateProductInCart(int customerId, int oldProductId, int newProductId, int newQuantity) {
+        if (newQuantity <= 0) return "Error: Quantity must be greater than zero.";
+
+        if (!cartRepository.getCartItems(customerId).stream().anyMatch(item -> item.getProductId() == oldProductId)) {
+            return "Error: Old product not found in cart.";
+        }
+
+        if (!productService.checkStock(newProductId, newQuantity)) return "Error: Not enough stock available for new product.";
+
+        if (cartRepository.updateProductInCart(customerId, oldProductId, newProductId, newQuantity)) {
+            return "✅ Product updated successfully!";
+        }
+
+        return "❌ Error: Failed to update product.";
+    }
 
 }

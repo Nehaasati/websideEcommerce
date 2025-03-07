@@ -43,6 +43,34 @@ public class CartRepository {
         cartData.remove(customerId);
         return true;
     }
+    // Update product quantity
+    public boolean updateProductQuantity(int customerId, int productId, int newQuantity) {
+        if (!cartData.containsKey(customerId)) return false;
+
+        List<CartItem> items = cartData.get(customerId);
+        for (CartItem item : items) {
+            if (item.getProductId() == productId) {
+                if (newQuantity <= 0) {
+                    items.remove(item); // Remove product if quantity is 0
+                } else {
+                    item.setQuantity(newQuantity); // Update quantity
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+    // Replace a product in the cart
+    public boolean updateProductInCart(int customerId, int oldProductId, int newProductId, int newQuantity) {
+        if (!cartData.containsKey(customerId)) return false;
+
+        // Remove old product
+        removeProductFromCart(customerId, oldProductId);
+
+        // Add new product
+        return addProductToCart(customerId, newProductId, newQuantity);
+    }
+
 
     /**
      * Calculates the total price of all items in a customer's cart.

@@ -21,12 +21,12 @@ public class CartController {
         while (true) {
             System.out.println("\n 🛒1. Add Product to Cart");
             System.out.println("🛒2. Remove Product from Cart");
-            //System.out.println("3. Update Product Quantity");
-            System.out.println("🛒3. View Cart");
-            System.out.println("🛒4. Clear Cart");
-            System.out.println("🛒5  Show total price");
-
-            System.out.println("6. Exit");
+            System.out.println("🛒3. Update Product Quantity");
+            System.out.println("🛒4. View Cart");
+            System.out.println("🛒5. Clear Cart");
+            System.out.println("🛒6  Show total price");
+            System.out.println("🛒7 Replace product in cart");
+            System.out.println("8. Exit");
             System.out.print("Choose an option: ");
 
             int choice = scanner.nextInt();
@@ -34,11 +34,12 @@ public class CartController {
             switch (choice) {
                 case 1 -> addProduct(customerId);
                 case 2 -> removeProduct(customerId);
-                // case 3 -> updateProduct(customerId);
-                case 3 -> viewCart(customerId);
-                case 4 -> clearCart(customerId);
-                case 5 -> showTotalCartPrice();
-                case 6 -> {
+                case 3 -> updateProductQuantity(customerId);
+                case 4 -> viewCart(customerId);
+                case 5-> clearCart(customerId);
+                case 6 -> showTotalCartPrice();
+                case 7-> updateProductIncart(customerId);
+                case 8 -> {
                     System.out.println("Exiting...");
                     return;
                 }
@@ -96,16 +97,32 @@ public class CartController {
             System.out.println("\n⚠️ Error: Unable to fetch cart total. Please try again.");
         }
     }
-}
-/*
-    private void updateProduct(int customerId) {
+    public void updateProductQuantity(int customerId) {
+        System.out.print("Enter Customer ID: ");
+        customerId = scanner.nextInt();
+
         System.out.print("Enter Product ID: ");
         int productId = scanner.nextInt();
+
         System.out.print("Enter New Quantity: ");
-        int quantity = scanner.nextInt();
-        System.out.println(cartService.updateProductQuantity(customerId, productId, quantity));
+        int newQuantity = scanner.nextInt();
+
+        String response = cartService.updateProductQuantity(customerId, productId, newQuantity);
+        System.out.println(response);
     }
+   public void updateProductIncart(int customerId){
+       System.out.print("Enter Product ID: ");
+       int productId = scanner.nextInt();
+       System.out.print("Enter NewProduct ID: ");
+       productId = scanner.nextInt();
+       System.out.print("Enter New Quantity: ");
+       int quantity = scanner.nextInt();
+       System.out.println(cartService.updateProductQuantity(customerId, productId, quantity));
+   }
+
 }
+
+    /*
     private void viewCart(int customerId) {
         List<CartItem> items = cartService.getCartItems(customerId);
         if (items.isEmpty()) {
