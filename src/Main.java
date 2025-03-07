@@ -5,6 +5,7 @@ import controller.*;
 import model.Customer;
 import repository.*;
 import repository.impl.CustomerRepositoryImpl;
+import service.CartService;
 import service.CustomerService;
 import service.ProductService;
 import service.impl.CustomerServiceImpl;
@@ -50,7 +51,7 @@ public class Main {
 
 
         // Product management
-        try {
+       /* try {
             ProductRepository repo = new ProductRepository();
             ProductService service = new ProductService(repo);
             ProductController controller = new ProductController(service);
@@ -68,8 +69,28 @@ public class Main {
         } catch (Exception e) {
             System.err.println("Application failed to start: " + e.getMessage());
         }
+    }*/
+
+        try {
+            // Initialize repositories
+            ProductRepository productRepository = new ProductRepository();
+            CartRepository cartRepository = new CartRepository();
+
+            // Initialize services
+            ProductService productService = new ProductService(productRepository);
+            CartService cartService = new CartService(cartRepository, productService);
+
+            // Initialize controllers
+            CartController cartController = new CartController(cartService);
+
+            // Start the cart system
+            cartController.start();
+        } catch (Exception e) {
+            System.err.println("Cart application failed to start: " + e.getMessage());
+        }
     }
 }
+
 
 
 

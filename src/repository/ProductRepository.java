@@ -72,8 +72,11 @@ public class ProductRepository {
             stmt.setDouble(1, min);
             stmt.setDouble(2, max);
             return executeQueryAndMapResults(stmt);
+
         }
     }
+
+
 
     public void updateStock(int productId, int quantityChange) throws SQLException {
         String sql = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE product_id = ?";
