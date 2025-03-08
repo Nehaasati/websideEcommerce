@@ -9,13 +9,14 @@ public class Product {
 
     private final int productId;
     private final String name;
-    private  String description;
+    private String description;
     private double price;
     private int stockQuantity;
     private List<Integer> categoryIds = new ArrayList<>();
-    private  int manufacturerId;
+    private int manufacturerId;
+    private List<Reviews> reviews;
 
-   // Main Constructor
+    // Main Constructor
     public Product(int productId, int manufacturerId, String name, String description,
                    double price, int stockQuantity) {
         if (name == null || name.isBlank()) {
@@ -33,24 +34,49 @@ public class Product {
     }
 
     // Overload construtor
-      public Product( int productId, String name){
-            this.productId = productId;
-            this.name = name;
-      }
+    public Product(int productId, String name) {
+        this.productId = productId;
+        this.name = name;
+    }
 
 
+    // Getters
+    public int getProductId() {
+        return productId;
+    }
 
+    public String getName() {
+        return name;
+    }
 
+    public String getDescription() {
+        return description;
+    }
 
-        // Getters
-    public int getProductId() { return productId; }
-    public String getName() { return name; }
-    public String getDescription() { return description; }
-    public double getPrice() { return price; }
-    public int getStockQuantity() { return stockQuantity; }
-    public List<Integer> getCategoryIds() { return categoryIds; }
-    public void addCategoryId(int categoryId) { categoryIds.add(categoryId); }
-    public int getManufacturerId() { return manufacturerId; }
+    public double getPrice() {
+        return price;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public List<Integer> getCategoryIds() {
+        return categoryIds;
+    }
+
+    public void addCategoryId(int categoryId) {
+        categoryIds.add(categoryId);
+    }
+
+    public int getManufacturerId() {
+        return manufacturerId;
+    }
+
+    public List<Reviews> getReviews() {
+        if (reviews == null) reviews = new ArrayList<>();
+        return reviews;
+    }
 
         // setters only
     public void setStockQuantity(int quantity) { stockQuantity = quantity; }

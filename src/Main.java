@@ -8,7 +8,9 @@ import repository.impl.CustomerRepositoryImpl;
 import service.CartService;
 import service.CustomerService;
 import service.ProductService;
+import service.ReviewService;
 import service.impl.CustomerServiceImpl;
+import controller.ReviewsController;
 
 
 //import controller.OrderController;
@@ -23,11 +25,11 @@ public class Main {
 
         //Start the manufacturer menu
         /*ManufacturerController manufacturerController = new ManufacturerController();
-          try {
-              manufacturerController.start();
-          } catch (Exception e) {
-              System.out.println("There are error with"+ e.getMessage());
-          }*/
+        try {
+            manufacturerController.start();
+        } catch (Exception e) {
+            System.out.println("There are error with" + e.getMessage());
+        }*/
 
         // Start the Categories
       /*  CategoryController categoryController = new CategoryController();
@@ -74,22 +76,37 @@ public class Main {
         try {
             // Initialize repositories
             ProductRepository productRepository = new ProductRepository();
-            CartRepository cartRepository = new CartRepository();
+            // CartRepository cartRepository = new CartRepository();
+            ReviewsRepository reviewsRepository = new ReviewsRepository();
+            CustomerRepository customerRepository = new CustomerRepositoryImpl();
 
             // Initialize services
             ProductService productService = new ProductService(productRepository);
-            CartService cartService = new CartService(cartRepository, productService);
+            //CartService cartService = new CartService(cartRepository, productService);
+            CustomerService customerService = new CustomerServiceImpl(customerRepository);
+            ReviewService reviewService = new ReviewService(reviewsRepository);
 
             // Initialize controllers
-            CartController cartController = new CartController(cartService);
+            // CartController cartController = new CartController(cartService);
+            ReviewsController reviewsController = new ReviewsController(reviewService, productService, customerService);
 
             // Start the cart system
-            cartController.start();
+           /* cartController.start();
         } catch (Exception e) {
             System.err.println("Cart application failed to start: " + e.getMessage());
         }
+    }*/
+            // Call methods to see the output
+            reviewsController.displayProductReviews();  // To see reviews for a product
+            reviewsController.displayCustomerReviews(); // To see reviews by a customer
+        } catch (Exception e) {
+            System.out.println("There are error with" + e.getMessage());
+        }
+        }
     }
-}
+
+
+
 
 
 

@@ -89,7 +89,19 @@ public class ProductService {
         }
     }
 
-   // 2. Stock Availability Methods
+    public String getProductNameById(int productId) {                              // connect cart for name of product Totalcartprice
+        try {
+            return repository.findProductById(productId)
+                    .map(Product::getName)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error: " + e.getMessage());
+        }
+    }
+
+
+
+    // 2. Stock Availability Methods
 
     public int getStockStatus(int productId) {
         try{
@@ -179,5 +191,6 @@ public class ProductService {
         System.err.println("SQL State: " + e.getSQLState());
         System.err.println("Error Code: " + e.getErrorCode());
     }
+
 
 }

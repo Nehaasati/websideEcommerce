@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class Customer {
@@ -11,6 +13,7 @@ public class Customer {
     private String phone;
     private String address;
     private String password;
+    private List<Reviews> reviews;
 
     public Customer(int customerId, String name) {  // this constructor is created in connection with reviews
         this.customerId = customerId;
@@ -59,6 +62,11 @@ public class Customer {
     public String getPhone() {return phone;}
     public String getAddress() {return address;}
     public String getPassword() {return password;}
+
+    public List<Reviews> getReviews() {
+        if (reviews == null) reviews = new ArrayList<Reviews>();
+        return reviews;
+    }
 
     //setters with validation
 

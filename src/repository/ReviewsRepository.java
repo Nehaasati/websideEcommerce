@@ -16,23 +16,41 @@ public class ReviewsRepository {
                     "p.product_id, p.name AS product_name, " +
                     "c.customer_id, c.name AS customer_name " +
                     "FROM reviews r " +
-                    "JOIN products p ON r.product_id = p.product_id " +
-                    "JOIN customers c ON r.customer_id = c.customer_id ";
+                    "INNER JOIN products p ON r.product_id = p.product_id " +  // Changed to INNER JOIN
+                    "INNER JOIN customers c ON r.customer_id = c.customer_id "; // Ensures valid relationships;
 
-    public List<Reviews> getReviewsByProduct(int product_id) throws SQLException {
+    public List<Reviews> getReviewsByProduct(int productId) throws SQLException {
         List<Reviews> reviews = new ArrayList<>();
         String sql = SELECT_BASE + " WHERE r.product_id = ?";
 
         try(Connection conn = SqliteConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, product_id);
+            stmt.setInt(1, productId);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()) {
             reviews.add(mapReviews(rs));
             }
         }
         return reviews;
+    }
+
+    public List<Reviews> getReviewsByCustomer(int customerId) throws SQLException {
+
+        List<Reviews> reviews = new ArrayList<>(); // Declaration and initialization
+        String sql = SELECT_BASE + " WHERE r.customer_id = ?";
+
+        try(Connection conn = SqliteConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+               reviews.add(mapReviews(rs));
+            }
+        }
+        return reviews;
+
     }
 
     private Reviews mapReviews(ResultSet rs) throws SQLException {

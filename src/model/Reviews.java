@@ -1,7 +1,5 @@
 package model;
 
-import java.sql.ResultSet;
-
 public class Reviews {
     private int reviewId;
     private Product product;
@@ -9,7 +7,7 @@ public class Reviews {
     private int rating;
     private String comment;
 
-    //Construtor
+    //Constructor
     public Reviews(int reviewId, Product product, Customer customer, int rating, String comment) {
         this.reviewId = reviewId;
         this.product = product;
@@ -50,7 +48,8 @@ public class Reviews {
                 rating,
                 stars,
                 comment,
-                customer.getName());
+                customer.getName()
+        );
     }
     }
 
