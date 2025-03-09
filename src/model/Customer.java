@@ -3,7 +3,7 @@ package model;
 import java.util.logging.Logger;
 
 public class Customer {
-    private static final Logger logger = Logger.getLogger(Customer.class.getName());
+    public static final Logger logger = Logger.getLogger(Customer.class.getName());
 
     private int customerId;
     private String name;

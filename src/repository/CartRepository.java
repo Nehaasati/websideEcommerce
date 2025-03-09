@@ -1,18 +1,14 @@
 package repository;
 
 import model.CartItem;
+import util.SqliteConnectionManger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.CartItem;
-import util.SqliteConnectionManger;
 
-import java.util.*;
+import static model.Customer.logger;
 
 public class CartRepository {
     private static final Logger LOGGER = Logger.getLogger(CartRepository.class.getName());
@@ -60,24 +56,45 @@ public class CartRepository {
         }
         return false;
     }
-    // Replace a product in the cart
-    public boolean updateProductInCart(int customerId, int oldProductId, int newProductId, int newQuantity) {
-        if (!cartData.containsKey(customerId)) return false;
 
-        // Remove old product
-        removeProductFromCart(customerId, oldProductId);
+    public int createOrder(int customerId) {
+        String sql = "INSERT INTO orders (customer_id) VALUES (?)";
+        int orderId = -1;
 
-        // Add new product
-        return addProductToCart(customerId, newProductId, newQuantity);
+        try (Connection conn = SqliteConnectionManger.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            conn.setAutoCommit(false);
+            pstmt.setInt(1, customerId);
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating order failed, no rows affected.");
+            }
+
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    orderId = rs.getInt(1);
+                }
+            }
+
+            conn.commit();
+            logger.info("Order placed successfully. Order ID: " + orderId);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error placing order: " + e.getMessage(), e);
+        }
+        return orderId;
     }
 
 
-    /**
-     * Calculates the total price of all items in a customer's cart.
-     * @param customerId The ID of the customer whose cart total is to be calculated.
-     * @return The total price of the cart.
-     */
-    // Get all cart items
+    // Simulate payment processing
+    public boolean processPayment(int customerId, double amount, String paymentMethod) {
+        LOGGER.info("Processing payment for Customer ID: " + customerId + " via " + paymentMethod + " for amount: KR" + amount);
+        // Simulate a successful payment
+        return true;
+    }
+
+
 
 }
 

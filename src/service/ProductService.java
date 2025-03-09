@@ -1,6 +1,4 @@
 package service;
-
-
 import model.Product;
 import repository.ProductRepository;
 import java.sql.SQLException;
@@ -16,6 +14,8 @@ public class ProductService {
     public ProductService(ProductRepository repository) {
         this.repository = repository;
     }
+
+
 
     // Product Retrieval Methods
     public List<Product> getAllProducts() {

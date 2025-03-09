@@ -1,100 +1,57 @@
 
 import controller.*;
 import repository.CartRepository;
-import repository.CustomerRepository;
 import repository.ProductRepository;
-import repository.impl.CustomerRepositoryImpl;
+import repository.impl.OrderProductRepository;
+import repository.impl.OrderRepository;
 import service.CartService;
-import service.CustomerService;
 import service.ProductService;
-import service.impl.CustomerServiceImpl;
 import util.SqliteConnectionManger;
 
-
-import java.sql.*;
-//import controller.ProductController;
-//import service.impl.ProductServiceImpl;
+import java.sql.SQLException;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
+        Scanner scanner = new Scanner(System.in);
 
-
-
-
-        //ProductController productController = new ProductController(productService);
-
-        //productController.handleProductOperations();*/
-
-       // IOrderProductService orderProductService = new OrderProductService();
-
-        //OrderController orderController = new OrderController();
-        //orderController.displayMenu();
-        //OrderProductController orderProductController = new OrderProductController();
-       // orderProductController.displayMenu();
-
-
-        //ProductRepository productRepo = new ProductRepository();
-
-       ProductRepository productRepository = new ProductRepository();
+        // Initialize repositories
+        ProductRepository productRepository = new ProductRepository();
         CartRepository cartRepository = new CartRepository();
-
+        OrderRepository orderRepository = new OrderRepository();
+        OrderProductRepository orderProductRepository = new OrderProductRepository();
         // Initialize services
-         ProductService productService = new ProductService(productRepository);
-         CartService cartService = new CartService(cartRepository, productService);
+        ProductService productService = new ProductService(productRepository);
+        CartService cartService = new CartService(cartRepository, productService, orderRepository, orderProductRepository);
 
-        // Initialize controller
-        CartController cartController = new CartController(cartService);
-        ProductController productController = new ProductController(productService);
-       // productController.showAdminMenu();
-        //productController.showCustomerMenu();
-        // Start the cart system
-        cartController.start();
+        // Initialize controllers
+        CartController cartController = new CartController(cartService, orderRepository);
+        OrderController orderController = new OrderController();
 
-        // Close database connection before exiting
-        SqliteConnectionManger.closeConnection();
+        // 🚀 Show the Main Menu (Loop until exit)
+        while (true) {
+            System.out.println("\n=== 🛍️ Main Menu ===");
+            System.out.println("1. 🛒 Cart Management");
+            System.out.println("2. 📦 Order Management");
+            System.out.println("3. ❌ Exit");
+            System.out.print("Choose an option: ");
 
+            int choice = scanner.nextInt();
 
-
-
-
-        // Start the Categories
-       /*CategoryController categoryController = new CategoryController();
-          try{
-              categoryController.start();
-          } catch (Exception e) {
-              System.out.println("There are error with" + e.getMessage());
-          }*/
-        //CustomerService service = new CustomerService();
-        //service.showAllCustomers();
-        //CartRepository cartRepository = new CartRepository();
-        //CartService cartService = new CartService(cartRepository,new ProductService());
-        //CartController controller = new CartController(cartService);
-        //controller.start();
-        //CartRepository cartRepo = new CartRepository();
-
-
-        //CustomerController customerController = new CustomerController();
-        //customerController.run();
-
-        //productController.run();
-
-        //CategoryController categoryController = new CategoryController();
-        // categoryController.displayCategories();
-
-
-         // ManufacturerController manufacturerController = new ManufacturerController();
-         // manufacturerController.displayManufacturers();
-
-        //CustomerRepository repository = new CustomerRepositoryImpl();
-        //CustomerService service = new CustomerServiceImpl(repository);
-        //CustomerController controller = new CustomerController(service);
-        //controller.start();
-
-
- //customers cs =new customers(9,"neha","31@ngmail.com","232312");
-//CustomerRepository cr = new CustomerRepository();
-//cr.getCustomerById(2);
-
+            switch (choice) {
+                case 1:
+                    cartController.start();  // Show Cart Menu
+                    break;
+                case 2:
+                    orderController.displayMenu();  // Show Order Menu
+                    break;
+                case 3:
+                    System.out.println("Exiting... 👋");
+                    SqliteConnectionManger.closeConnection();  // Close DB connection before exit
+                    return;
+                default:
+                    System.out.println("❌ Invalid option. Try again.");
+            }
+        }
     }
 }
-

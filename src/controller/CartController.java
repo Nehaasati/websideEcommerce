@@ -3,75 +3,90 @@ package controller;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
+
 import model.CartItem;
+import repository.impl.OrderRepository;
 import service.CartService;
+//import service.OrderService;
 
 public class CartController {
     private final CartService cartService;
+    private final OrderRepository orderRepository;
     private final Scanner scanner = new Scanner(System.in);
     private int customerId;
-    public CartController(CartService cartService) {
+
+    public CartController(CartService cartService, OrderRepository orderRepository) {
         this.cartService = cartService;
+        this.orderRepository = orderRepository;
     }
 
     public void start() throws SQLException {
         // Ask for Customer ID at the start
         System.out.print("Enter your Customer ID: ");
-        customerId = scanner.nextInt();
+        customerId = getIntInput();
+
         while (true) {
-            System.out.println("\n 🛒1. Add Product to Cart");
-            System.out.println("🛒2. Remove Product from Cart");
-            System.out.println("🛒3. Update Product Quantity");
-            System.out.println("🛒4. View Cart");
-            System.out.println("🛒5. Clear Cart");
-            System.out.println("🛒6  Show total price");
-            System.out.println("🛒7 Replace product in cart");
-            System.out.println("8. Exit");
+            System.out.println("\n🛒 Cart Menu:");
+            System.out.println("1. Add Product to Cart");
+            System.out.println("2. Remove Product from Cart");
+            System.out.println("3. Update Product Quantity");
+            System.out.println("4. View Cart");
+            System.out.println("5. Clear Cart");
+            System.out.println("6. Show Total Price");
+            System.out.println("7. Apply Discountt");
+            System.out.println("8. Place Order ✅");
+            System.out.println("9. Process Payment");
+            System.out.println("10. Exit");
             System.out.print("Choose an option: ");
 
-            int choice = scanner.nextInt();
+            int choice = getIntInput();
 
             switch (choice) {
-                case 1 -> addProduct(customerId);
-                case 2 -> removeProduct(customerId);
-                case 3 -> updateProductQuantity(customerId);
-                case 4 -> viewCart(customerId);
-                case 5-> clearCart(customerId);
+                case 1 -> addProduct();
+                case 2 -> removeProduct();
+                case 3 -> updateProductQuantity();
+                case 4 -> viewCart();
+                case 5 -> clearCart();
                 case 6 -> showTotalCartPrice();
-                case 7-> updateProductIncart(customerId);
-                case 8 -> {
+                case 7 -> applyDiscount();
+                case 8 -> placeOrderWithDiscount();
+                case 9 -> processPayment();
+                case 10 -> {
                     System.out.println("Exiting...");
                     return;
                 }
-                default -> System.out.println("Invalid choice. Try again.");
+                default -> System.out.println("❌ Invalid choice. Try again.");
             }
         }
     }
 
-    private void addProduct(int customerId) {
+    private void addProduct() {
         System.out.print("Enter Product ID: ");
-        int productId = scanner.nextInt();
+        int productId = getIntInput();
         System.out.print("Enter Quantity: ");
-        int quantity = scanner.nextInt();
+        int quantity = getIntInput();
 
-        System.out.println(cartService.addProductToCart(customerId, productId, quantity));
+        String result = cartService.addProductToCart(customerId, productId, quantity);
+        System.out.println(result);
     }
 
-    private void removeProduct(int customerId) {
+    private void removeProduct() {
         System.out.print("Enter Product ID to remove: ");
-        int productId = scanner.nextInt();
-        System.out.println(cartService.removeProductFromCart(customerId, productId));
+        int productId = getIntInput();
+
+        String result = cartService.removeProductFromCart(customerId, productId);
+        System.out.println(result);
     }
 
-    private void clearCart(int customerId) {
-        System.out.println(cartService.clearCart(customerId));
+    private void clearCart() {
+        String result = cartService.clearCart(customerId);
+        System.out.println(result);
     }
 
-
-    private void viewCart(int customerId) {
+    private void viewCart() {
         List<CartItem> items = cartService.getCartItems(customerId);
         if (items.isEmpty()) {
-            System.out.println("Cart is empty.");
+            System.out.println("🛒 Your cart is empty.");
         } else {
             System.out.println("\n+------------+------------+");
             System.out.println("| Product ID | Quantity   |");
@@ -86,51 +101,76 @@ public class CartController {
         }
     }
 
-    public void showTotalCartPrice() throws SQLException {
-        System.out.print("Enter Customer ID: ");
-        int customerId = scanner.nextInt();
-
+    private void showTotalCartPrice() throws SQLException {
         double totalPrice = cartService.getTotalCartPrice(customerId);
         if (totalPrice > 0) {
-            System.out.println("\n🛒 Total Cart Price: KR"  + totalPrice);
+            System.out.println("\n🛒 Total Cart Price: KR" + totalPrice);
         } else {
             System.out.println("\n⚠️ Error: Unable to fetch cart total. Please try again.");
         }
     }
-    public void updateProductQuantity(int customerId) {
-        System.out.print("Enter Customer ID: ");
-        customerId = scanner.nextInt();
 
+    private void updateProductQuantity() {
         System.out.print("Enter Product ID: ");
-        int productId = scanner.nextInt();
+        int productId = getIntInput();
 
         System.out.print("Enter New Quantity: ");
-        int newQuantity = scanner.nextInt();
+        int newQuantity = getIntInput();
 
         String response = cartService.updateProductQuantity(customerId, productId, newQuantity);
         System.out.println(response);
     }
-   public void updateProductIncart(int customerId){
-       System.out.print("Enter Product ID: ");
-       int productId = scanner.nextInt();
-       System.out.print("Enter NewProduct ID: ");
-       productId = scanner.nextInt();
-       System.out.print("Enter New Quantity: ");
-       int quantity = scanner.nextInt();
-       System.out.println(cartService.updateProductQuantity(customerId, productId, quantity));
-   }
 
-}
+    private void applyDiscount() {
+        try {
+            System.out.print("Enter Discount Percentage: ");
+            double discountPercentage = getDoubleInput();
 
-    /*
-    private void viewCart(int customerId) {
-        List<CartItem> items = cartService.getCartItems(customerId);
-        if (items.isEmpty()) {
-            System.out.println("Cart is empty.");
-        } else {
-            System.out.println("Cart Items: " + items);
+            double totalCartPrice = cartService.getTotalCartPrice(customerId);
+            double discountedTotal = cartService.applyDiscount(customerId, discountPercentage);
+
+            System.out.println("Original Total: KR" + totalCartPrice);
+            System.out.println("Discounted Total: KR" + discountedTotal);
+        } catch (SQLException e) {
+            System.out.println("❌ Error applying discount: " + e.getMessage());
         }
-    }*/
+    }
+    private void placeOrderWithDiscount() throws SQLException {
+        System.out.print("Enter Discount Percentage: ");
+        double discountPercentage = getDoubleInput();
+
+        int orderId = cartService.placeOrder(customerId, discountPercentage);
+        if (orderId > 0) {
+            System.out.println("✅ Order placed successfully! Order ID: " + orderId);
+        } else {
+            System.out.println("❌ Failed to place order. Please try again.");
+        }
+    }
+
+    private void processPayment() throws SQLException {
+        System.out.print("Enter Discount Percentage: ");
+        double discountPercentage = getDoubleInput();
+        System.out.print("Enter Payment Method: ");
+        String paymentMethod = scanner.next();
+
+        boolean paymentSuccess = cartService.processPayment(customerId, paymentMethod, discountPercentage);
+        System.out.println(paymentSuccess ? "✅ Payment processed successfully." : "❌ Payment failed.");
+    }
 
 
+    private int getIntInput() {
+        while (!scanner.hasNextInt()) {
+            System.out.println("❌ Invalid input. Please enter a number.");
+            scanner.next();
+        }
+        return scanner.nextInt();
+    }
 
+    private double getDoubleInput() {
+        while (!scanner.hasNextDouble()) {
+            System.out.println("❌ Invalid input. Please enter a valid number.");
+            scanner.next();
+        }
+        return scanner.nextDouble();
+    }
+}

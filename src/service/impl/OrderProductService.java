@@ -15,8 +15,8 @@ public class OrderProductService implements IOrderProductService {
     }
 
     @Override
-    public boolean addOrderProduct(int orderId, int productId, int quantity, double unitPrice) {
-        return orderProductRepository.addOrderProduct(orderId, productId, quantity, unitPrice);
+    public boolean addOrderProduct(int orderId, int productId, int quantity, double unit_price) {
+        return orderProductRepository.addOrderProduct(orderId, productId, quantity, unit_price);
     }
 
     @Override

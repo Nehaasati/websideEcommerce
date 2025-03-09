@@ -21,23 +21,23 @@ public class OrderController {
     public void displayMenu() {
         while (true) {
             System.out.println("\n=== Order Management ===");
-            System.out.println("1. Place Order");
-            System.out.println("2. Get All Orders");
-            System.out.println("3. Cancel Order");
-            System.out.println("4. Update Order");
-            System.out.println("5. View Order History");
-            System.out.println("6. Back to Main Menu");
+            //System.out.println("1. Place Order");
+            System.out.println("1. Get All Orders");
+            System.out.println("2. Cancel Order");
+            System.out.println("3. Update Order");
+            System.out.println("4. View Order History");
+            System.out.println("5. Back to Main Menu");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
             switch (choice) {
-                case 1:
+                /*case 1:
                     System.out.print("Enter Customer ID: ");
                     int customerId = scanner.nextInt();
                     int orderId = orderService.placeOrder(customerId);
                     System.out.println(orderId > 0 ? "Order placed successfully! Order ID: " + orderId : "Failed to place order.");
-                    break;
-                case 2:
+                    break;*/
+                case 1:
                     List<String> orders = orderService.getAllOrders();
                     if (orders.isEmpty()) {
                         System.out.println("No orders found.");
@@ -45,19 +45,19 @@ public class OrderController {
                         orders.forEach(System.out::println);
                     }
                     break;
-                case 3:
+                case 2:
                     System.out.print("Enter Order ID to cancel: ");
                     int cancelOrderId = scanner.nextInt();
                     System.out.println(orderService.cancelOrder(cancelOrderId) ? "Order Cancelled!" : "Cancel Failed!");
                     break;
-                case 4:
+                case 3:
                     System.out.print("Enter Order ID to Update: ");
                     int updateOrderId = scanner.nextInt();
                     System.out.print("Enter New Customer ID: ");
                     int newCustomerId = scanner.nextInt();
                     System.out.println(orderService.updateOrder(updateOrderId, newCustomerId) ? "Order Updated!" : "Update Failed!");
                     break;
-                case 5:
+                case 4:
                     System.out.print("Enter Customer ID: ");
                     int viewCustomerId = scanner.nextInt();
                     List<String> history = orderService.getOrderHistory(viewCustomerId);
@@ -67,7 +67,7 @@ public class OrderController {
                         history.forEach(System.out::println);
                     }
                     break;
-                case 6:
+                case 5:
                     System.out.println("Returning to main menu...");
                     return;
                 default:
