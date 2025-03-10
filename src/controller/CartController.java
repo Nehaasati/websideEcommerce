@@ -27,7 +27,7 @@ public class CartController {
        /* // Ask for Customer ID at the start
         System.out.print("Enter your Customer ID: ");
         customerId = getIntInput();*/   // Now no need to ask customerId in cart as it will be declared in customerController so that the customer
-                                          // will be logged in throughout the application until logout
+        // will be logged in throughout the application until logout
         while (true) {
             System.out.println("\n🛒  === CART MANAGEMENT ===");
             System.out.println("1. Add Product to Cart");
@@ -36,14 +36,19 @@ public class CartController {
             System.out.println("4. View Cart");
             System.out.println("5. Clear Cart");
             System.out.println("6. Show Total Price");
-            System.out.println("7. Apply Discountt");
+            System.out.println("7. Apply Discount");
             System.out.println("8. Place Order ✅");
             System.out.println("9. Process Payment");
             System.out.println("10. Exit");
             System.out.print("Choose an option: ");
 
             try {
-                int choice = Integer.parseInt(scanner.nextLine());
+                String input = scanner.nextLine().trim();
+                if (input.isEmpty()) {
+                    System.out.println("🚨 Please enter a valid option number");
+                    continue;
+                }
+                int choice = Integer.parseInt(input);
                 switch (choice) {
                     case 1 -> addProduct(customerId);
                     case 2 -> removeProduct(customerId);
@@ -59,10 +64,17 @@ public class CartController {
                     }
                     default -> System.out.println("Exiting...");
                 }
-                } catch(Exception e){
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid input. Please enter a number between 1-10");
+                LOGGER.log(Level.WARNING, "Invalid menu input", e);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Cart operation error", e);
+                System.out.println("🚨 Error processing cart operation");
+            }
+               /* } catch(Exception e){
                     LOGGER.log(Level.SEVERE, "Cart operation error", e);
                     System.out.println("🚨 Error processing cart operation");
-            }
+            }*/
         }
     }
 
@@ -142,6 +154,7 @@ public class CartController {
             System.out.println("❌ Error applying discount: " + e.getMessage());
         }
     }
+
     private void placeOrderWithDiscount(int customerId) throws SQLException {
         System.out.print("Enter Discount Percentage: ");
         double discountPercentage = getDoubleInput();
@@ -157,8 +170,9 @@ public class CartController {
     private void processPayment(int customerId) throws SQLException {
         System.out.print("Enter Discount Percentage: ");
         double discountPercentage = getDoubleInput();
+
         System.out.print("Enter Payment Method: ");
-        String paymentMethod = scanner.next();
+        String paymentMethod = scanner.nextLine();
 
         boolean paymentSuccess = cartService.processPayment(customerId, paymentMethod, discountPercentage);
         System.out.println(paymentSuccess ? "✅ Payment processed successfully." : "❌ Payment failed.");
@@ -166,18 +180,37 @@ public class CartController {
 
 
     private int getIntInput() {
-        while (!scanner.hasNextInt()) {
+        while (true) {
+            try {
+                String input = scanner.nextLine().trim();
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid input. Please enter a valid number:");
+            }
+        }
+    }
+
+       /* while (!scanner.hasNextInt()) {
             System.out.println("❌ Invalid input. Please enter a number.");
             scanner.next();
         }
         return scanner.nextInt();
-    }
+    }*/
 
     private double getDoubleInput() {
-        while (!scanner.hasNextDouble()) {
+        while (true) {
+            try {
+                String input = scanner.nextLine().trim();
+                return Double.parseDouble(input);
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid input. Please enter a valid number:");
+            }
+        }
+    }
+       /* while (!scanner.hasNextDouble()) {
             System.out.println("❌ Invalid input. Please enter a valid number.");
             scanner.next();
         }
         return scanner.nextDouble();
-    }
+    }*/
 }

@@ -10,13 +10,15 @@ public class CustomerController {
     private final CustomerService customerService;
     private final ProductController productController;
     private final CartController cartController;
+    private final OrderController orderController;
     private final Scanner scanner;
     private int loggedInCustomerId = -1;   //Track Logged-in user
 
-    public CustomerController(CustomerService customerService, ProductController productController, CartController cartController) {
+    public CustomerController(CustomerService customerService, ProductController productController, CartController cartController, OrderController orderController) {
         this.customerService = customerService;
         this.productController = productController;
         this.cartController = cartController;
+        this.orderController = orderController;
         this.scanner = new Scanner(System.in);
     }
 
@@ -26,8 +28,8 @@ public class CustomerController {
             System.out.println("1. 📝 Register");
             System.out.println("2. 🔑 Login");
             System.out.println("3. 👀 Continue as Guest");
-            System.out.println("4. ↩️ Return to Main.Main Menu");
-            System.out.print("🔀 Choose option: ");
+            System.out.println("4. ↩️ Return to Main Menu");
+            System.out.print(" Choose option: ");
 
             int choice = getIntInput();
             switch (choice) {
@@ -67,6 +69,12 @@ public class CustomerController {
         } catch (Exception e) {
             System.out.println("Registration error: " + e.getMessage());
         }
+
+        System.out.println("Do you want to login now? (yes/no)");
+        String response = scanner.nextLine();
+        if (response.equalsIgnoreCase("yes")) {
+            handleLogin();
+        }
     }
 
     private void handleLogin() {
@@ -101,17 +109,19 @@ public class CustomerController {
         while (loggedInCustomerId != -1) {
             System.out.println("\n🏠 === CUSTOMER PORTAL ===");
             System.out.println("1. 🛍️ Browse Products");
-            System.out.println("2. 🛒 View Cart");
-            System.out.println("3. 🔐 Account Management");
-            System.out.println("4. 🚪 Logout");
+            System.out.println("2. 🛒 Cart Management");
+            System.out.println("3. 📦 Order Management");
+            System.out.println("4. 🔐 Account Management");
+            System.out.println("5. 🚪 Logout");
             System.out.print("🔀 Choose option: ");
 
             int choice = getIntInput();
             switch (choice) {
                 case 1-> productController.showCustomerMenu();
-                case 2 -> cartController.start(loggedInCustomerId);
-                case 3-> showAccountManagement();
-                case 4-> {
+                case 2-> cartController.start(loggedInCustomerId);
+                case 3-> orderController.displayMenu(loggedInCustomerId);
+                case 4-> showAccountManagement();
+                case 5-> {
                     loggedInCustomerId = -1;
                     System.out.println("👋 Logged out successfully!");
                 }

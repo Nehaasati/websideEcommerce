@@ -34,7 +34,7 @@ public class MainMenu {
 
             switch (choice) {
                 case 1 -> customerController.start(); // Call start() on the instance
-                case 2 -> adminController.showAdminMenu();  // Call showAdminMenu() on the instance
+                case 2 -> adminController.start();  // Call showAdminMenu() on the instance
                 case 3 -> guestMenu.show();  // Call show() on the instance
                 case 4 -> {
                     System.out.println("👋 Goodbye!");

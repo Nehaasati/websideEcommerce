@@ -1,5 +1,7 @@
 package controller;
 
+import service.CategoryService;
+import service.ManufacturerService;
 import service.ProductService;
 import model.Product;
 
@@ -13,14 +15,20 @@ public class AdminController {
     private static final Logger logger = Logger.getLogger(AdminController.class.getName());
     private final ProductService productService;
     private final ProductController productController;
+    private final ManufacturerController manufacturerController;
+    private final CategoryController categoryController;
     private final Scanner scanner;
 
     private AdminRole currentAdminRole = AdminRole.BASIC;
 
-    public AdminController(ProductService productService, ProductController productController, Scanner scanner) {
-        this.productService = productService;
-        this.productController = productController;
-        this.scanner = new Scanner(System.in);
+    public AdminController(ProductService productService, ProductController productController,  ManufacturerController manufacturerController, CategoryController categoryController, Scanner scanner) {
+        {
+            this.productService = productService;
+            this.productController = productController;
+            this.manufacturerController = manufacturerController;
+            this.categoryController = categoryController;
+            this.scanner = new Scanner(System.in);
+        }
     }
 
     //  Hardcoded admin credentials
@@ -81,6 +89,9 @@ public class AdminController {
             System.out.println("3. View Low Stock Alerts");
             System.out.println("4. Check Stock Status");
             System.out.println("5. Check Product Price");
+            System.out.println("6. Manufacturer Management");
+            System.out.println("7. Category Management");
+            System.out.println("8. Return to Main Menu");
 
             /*if (authenticate(password)) {
                 logger.info("Admin login successful");
@@ -112,9 +123,11 @@ public class AdminController {
                     case 3 -> displayLowStockAlerts();
                     case 4 -> handleStockCheck();
                     case 5 -> handlePriceCheck();
-                    case 6 -> handleSuperAdminAction();
-                    case 7 -> {
-                        System.out.println("Returning to Main.Main Menu...");
+                    case 6 -> manufacturerController.start();
+                    case 7 -> categoryController.start();
+                    case 8 -> handleSuperAdminAction();
+                    case 9 -> {
+                        System.out.println("Returning to Main Menu...");
                         return;  // Exit the admin menu
                     }
                     default -> System.out.println("Invalid choice. Please try again.");
@@ -199,6 +212,8 @@ public class AdminController {
             System.out.println("Error: " + e.getMessage());
         }
     }
+
+
 
     private void handleSuperAdminAction() {
         System.out.println("Performing super admin action");

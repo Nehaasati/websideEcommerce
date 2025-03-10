@@ -12,12 +12,11 @@ public class OrderController {
     private final Scanner scanner = new Scanner(System.in);
 
     // Constructor to properly initialize OrderService with OrderRepositoryImpl
-    public OrderController() {
-
+    public OrderController(IOrderService orderService) {
         this.orderService = new OrderService(new OrderRepository());
     }
 
-    public void displayMenu() {
+    public void displayMenu(int customerId) {
         while (true) {
             System.out.println("\n=== Order Management ===");
             System.out.println("1. Place Order");

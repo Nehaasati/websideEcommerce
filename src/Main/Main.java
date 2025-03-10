@@ -7,6 +7,7 @@ import repository.impl.OrderProductRepository;
 import repository.impl.OrderRepository;
 import service.*;
 import service.impl.CustomerServiceImpl;
+import service.impl.OrderService;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -25,16 +26,32 @@ public class Main {
         OrderRepository orderRepo = new OrderRepository();
         OrderProductRepository orderProductRepository = new OrderProductRepository();
 
+
         // Initialize services
         ProductService productService = new ProductService(productRepo);
         CartService cartService = new CartService(cartRepository, productService, orderRepo, orderProductRepository);  // Include orderRepo and orderProductRepository
         CustomerService customerService = new CustomerServiceImpl(customerRepo);
+        IOrderService orderService = new OrderService(orderRepo);
+        ManufacturerService manufacturerService = new ManufacturerService();
+        CategoryService categoryService = new CategoryService();
 
         // Initialize controllers
         ProductController productController = new ProductController(productService);
         CartController cartController = new CartController(cartService, orderRepo);  // Include orderRepo
-        CustomerController customerController = new CustomerController(customerService, productController, cartController);
-        AdminController adminController = new AdminController(productService, productController, scanner);  // Include productController and scanner
+        OrderController orderController = new OrderController(orderService);
+        ManufacturerController manufacturerController = new ManufacturerController();
+        CategoryController categoryController = new CategoryController();
+        CustomerController customerController = new CustomerController(
+                customerService,
+                new ProductController(productService),
+                cartController,
+                orderController
+        );
+
+        //CustomerController customerController = new CustomerController(customerService, productController, cartController,orderController);
+        AdminController adminController = new AdminController(productService, productController, manufacturerController,
+                categoryController, scanner);  // Include productController and scanner
+
         GuestMenu guestMenu = new GuestMenu(productService, scanner); // Include scanner
 
         MainMenu mainMenu = new MainMenu(customerController, adminController, guestMenu, scanner);  // Include guestMenu and scanner
@@ -54,64 +71,36 @@ public class Main {
 
 
 
-
-/*public class Main.Main {
-    public static void main(String[] args) throws SQLException {
-
-        // Initialize repositories
-        ProductRepository productRepo = new ProductRepository();
-        CartRepository cartRepository = new CartRepository();
-        CustomerRepository customerRepo = new CustomerRepositoryImpl();
-        OrderRepository orderRepo = new OrderRepository();
-        OrderProductRepository orderProductRepo = new OrderProductRepository();
-
-
-        // Initialize services
-        ProductService productService = new ProductService(productRepo);
-        CartService cartService = new CartService(cartRepository, productService, orderRepo, orderProductRepo);
-        CustomerService customerService = new CustomerServiceImpl(customerRepo);
-
-        // Initialize controllers
-        ProductController productController = new ProductController(productService);
-        CartController cartController = new CartController(cartService, orderRepo);
-        CustomerController customerController = new CustomerController(customerService, productController, cartController);
-        AdminController adminController = new AdminController(productService, productController);
-
-        // Start application
-        new MainMenu(customerController, adminController).start();
-
-
-
-
-        //Start the manufacturer menu
-       /* ManufacturerController manufacturerController = new ManufacturerController();
+//Start the manufacturer menu
+        /*ManufacturerController manufacturerController = new ManufacturerController();
         try {
             manufacturerController.start();
         } catch (Exception e) {
             System.out.println("There are error with" + e.getMessage());
-        }*/
+        }
+    }
 
         // Start the Categories
-       /*CategoryController categoryController = new CategoryController();
+       CategoryController categoryController = new CategoryController();
           try{
               categoryController.start();
           } catch (Exception e) {
               System.out.println("There are error with"+ e.getMessage());
-          }*/
+          }
 
         // Customer setup
-       /* CustomerRepository repository = new CustomerRepositoryImpl();
+       CustomerRepository repository = new CustomerRepositoryImpl();
         CustomerService service = new CustomerServiceImpl(repository);
         CustomerController controller = new CustomerController(service);
-        controller.start();*/
+        controller.start();
 
 
         // Order setup
-        /*OrderController orderController = new OrderController();
-        orderController.displayMenu();*/
+        OrderController orderController = new OrderController();
+        orderController.displayMenu();
 
-        /*OrderProductController orderProductController = new OrderProductController();
-        orderProductController.displayMenu();*/
+        OrderProductController orderProductController = new OrderProductController();
+        orderProductController.displayMenu();
 
 
         // Product management
@@ -135,7 +124,7 @@ public class Main {
         }
     }*/
 
-       /* try {
+        /*try {
             // Initialize repositories
              ProductRepository productRepository = new ProductRepository();
              CartRepository cartRepository = new CartRepository();
@@ -159,7 +148,7 @@ public class Main {
         } catch (Exception e) {
             System.err.println("Cart application failed to start: " + e.getMessage());
         }
-    }
+    }*/
            /* // Call methods to see the output
            /* reviewsController.displayProductReviews();  // To see reviews for a product
             reviewsController.displayCustomerReviews(); // To see reviews by a customer
@@ -182,7 +171,7 @@ public class Main {
         OrderController orderController = new OrderController();*/
 
         // 🚀 Show the Main.Main Menu (Loop until exit)
-        /*while (true) {
+       /* while (true) {
             System.out.println("\n=== 🛍️ Main.Main Menu ===");
             System.out.println("1. 🛒 Cart Management");
             System.out.println("2. 📦 Order Management");
