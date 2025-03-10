@@ -1,9 +1,9 @@
-package repository;
+package service;
 
 import java.util.List;
 
-public interface OrderRepository {
-    int placeOrder(int customerId);
+public interface IOrderService {
+   // int placeOrder(int customerId);
     List<String> getAllOrders();
     boolean cancelOrder(int orderId);
     boolean updateOrder(int orderId, int customerId);

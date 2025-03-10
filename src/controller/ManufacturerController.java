@@ -17,7 +17,7 @@ public class ManufacturerController {
         this.scanner = new Scanner(System.in);
     }
 
-    // Main menu entry point
+    // Main.Main menu entry point
     public void start() {
         while (true) {
             System.out.println("\n--- Manufacturer Management ---");

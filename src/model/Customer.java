@@ -15,7 +15,7 @@ public class Customer {
     private String password;
     private List<Reviews> reviews;
 
-    public Customer(int customerId, String name) {  // this constructor is created in connection with reviews
+    public Customer(int customerId, String name) {  // this  Overload constructor is created in connection with reviews
         this.customerId = customerId;
         this.name = name;
     }

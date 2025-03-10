@@ -1,9 +1,12 @@
 package repository;
 
 import model.CartItem;
+import util.SqliteConnection;
 
+import java.sql.*;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 
@@ -37,13 +40,59 @@ public class CartRepository {
         return true;
     }
 
-    /**
-     * Calculates the total price of all items in a customer's cart.
-     *@parameter customerId The ID of the customer whose cart total is to be calculated.
-     * @return The total price of the cart.
-     */
-    // Get all cart items
+    public boolean updateProductQuantity(int customerId, int productId, int newQuantity) {
+        if (!cartData.containsKey(customerId)) return false;
 
+        List<CartItem> items = cartData.get(customerId);
+        for (CartItem item : items) {
+            if (item.getProductId() == productId) {
+                if (newQuantity <= 0) {
+                    items.remove(item); // Remove product if quantity is 0
+                } else {
+                    item.setQuantity(newQuantity); // Update quantity
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int createOrder(int customerId) {
+        String sql = "INSERT INTO orders (customer_id) VALUES (?)";
+        int orderId = -1;
+
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            conn.setAutoCommit(false);
+            pstmt.setInt(1, customerId);
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating order failed, no rows affected.");
+            }
+
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    orderId = rs.getInt(1);
+                }
+            }
+
+            conn.commit();
+            LOGGER.info("Order placed successfully. Order ID: " + orderId);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error placing order: " + e.getMessage(), e);
+        }
+        return orderId;
+    }
+
+
+    // Simulate payment processing
+    public boolean processPayment(int customerId, double amount, String paymentMethod) {
+        LOGGER.info("Processing payment for Customer ID: " + customerId + " via " + paymentMethod + " for amount: KR" + amount);
+        // Simulate a successful payment
+        return true;
+    }
 }
 
 

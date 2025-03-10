@@ -76,8 +76,6 @@ public class ProductRepository {
         }
     }
 
-
-
     public void updateStock(int productId, int quantityChange) throws SQLException {
         String sql = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE product_id = ?";
         try (Connection conn = SqliteConnection.getConnection();

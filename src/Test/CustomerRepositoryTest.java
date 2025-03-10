@@ -100,7 +100,7 @@ public class CustomerRepositoryTest {
        /* String testName = "Nitu Mishra";
         String testEmail = "nitumshr@example.com";  // Make sure this email is unique
         String testPhone = "0701234567";
-        String testAddress = "Main Street 10, City";
+        String testAddress = "Main.Main Street 10, City";
         String testPassword = "hashed_password_test";
 
         CustomerRepositoryImpl repository = new CustomerRepositoryImpl();

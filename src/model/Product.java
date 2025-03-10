@@ -16,7 +16,7 @@ public class Product {
     private int manufacturerId;
     private List<Reviews> reviews;
 
-    // Main Constructor
+    // Main.Main Constructor
     public Product(int productId, int manufacturerId, String name, String description,
                    double price, int stockQuantity) {
         if (name == null || name.isBlank()) {

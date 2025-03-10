@@ -1,6 +1,7 @@
 package repository.impl;
 
-import repository.OrderRepository;
+import repository.IOrderRepository;
+import service.CartService;
 import util.SqliteConnection;
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,11 +9,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class OrderRepositoryImpl implements OrderRepository {
-    private static final Logger logger = Logger.getLogger(OrderRepository.class.getName());
+public class OrderRepository implements IOrderRepository {
+    private static final Logger logger = Logger.getLogger(IOrderRepository.class.getName());
+    private CartService cartService;
 
-    @Override
-    public int placeOrder(int customerId) {
+    public int createOrder(int customerId) {
         String sql = "INSERT INTO orders (customer_id) VALUES (?)";
         int orderId = -1;
 
@@ -40,6 +41,20 @@ public class OrderRepositoryImpl implements OrderRepository {
         }
         return orderId;
     }
+
+    public double applyDiscount(int orderId, double discountPercentage) {
+        double totalAmount = 100.0; // Assume total is retrieved from cart
+        double discountAmount = (discountPercentage / 100) * totalAmount;
+        double finalAmount = totalAmount - discountAmount;
+        logger.info("Discount applied. Final amount: " + finalAmount);
+        return finalAmount;
+    }
+
+    public boolean processPayment(int orderId, String paymentMethod, double amount) {
+        logger.info("Processing payment for Order ID: " + orderId + " via " + paymentMethod + " for amount: " + amount);
+        return true;
+    }
+
 
     @Override
     public List<String> getAllOrders() {
@@ -108,5 +123,5 @@ public class OrderRepositoryImpl implements OrderRepository {
         }
         return orders;
     }
-}
 
+}

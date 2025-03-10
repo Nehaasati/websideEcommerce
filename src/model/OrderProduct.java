@@ -5,21 +5,21 @@ public class OrderProduct {
     private int orderId;
     private int productId;
     private int quantity;
-    private double unitPrice;
+    private double unit_price;
 
     public OrderProduct(int orderProductId, int orderId, int productId, int quantity, double unitPrice) {
         this.orderProductId = orderProductId;
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
-        this.unitPrice = unitPrice;
+        this.unit_price = unit_price;
     }
 
     public int getOrderProductId() { return orderProductId; }
     public int getOrderId() { return orderId; }
     public int getProductId() { return productId; }
     public int getQuantity() { return quantity; }
-    public double getUnitPrice() { return unitPrice; }
+    public double getUnit_price() { return unit_price; }
 
     @Override
     public String toString() {
@@ -28,7 +28,7 @@ public class OrderProduct {
                 ", Order ID=" + orderId +
                 ", Product ID=" + productId +
                 ", Quantity=" + quantity +
-                ", Unit Price=" + unitPrice +
+                ", unit Price=" + unit_price +
                 '}';
     }
 }

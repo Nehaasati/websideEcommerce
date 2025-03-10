@@ -1,19 +1,19 @@
 package controller;
 
 import model.OrderProduct;
-import repository.impl.OrderProductRepositoryImpl;
-import service.OrderProductService;
-import service.impl.OrderProductServiceImpl;
+import repository.impl.OrderProductRepository;
+import service.IOrderProductService;
+import service.impl.OrderProductService;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class OrderProductController {
-    private final OrderProductService orderProductService;
+    private final IOrderProductService orderProductService;
     private final Scanner scanner = new Scanner(System.in);
 
     public OrderProductController() {
-        this.orderProductService = new OrderProductServiceImpl(new OrderProductRepositoryImpl());
+        this.orderProductService = new OrderProductService(new OrderProductRepository());
     }
 
     public void displayMenu() {

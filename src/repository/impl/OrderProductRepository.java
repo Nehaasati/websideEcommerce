@@ -1,7 +1,7 @@
 package repository.impl;
 
 import model.OrderProduct;
-import repository.OrderProductRepository;
+import repository.IOrderProductRepository;
 import util.SqliteConnection;
 
 import java.sql.*;
@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class OrderProductRepositoryImpl implements OrderProductRepository {
-    private static final Logger logger = Logger.getLogger(OrderProductRepository.class.getName());
+public class OrderProductRepository implements IOrderProductRepository {
+    private static final Logger logger = Logger.getLogger(IOrderProductRepository.class.getName());
 
     @Override
     public boolean addOrderProduct(int orderId, int productId, int quantity, double unitPrice) {
         String sql = "INSERT INTO orders_products (order_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)";
+
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, orderId);

@@ -1,25 +1,17 @@
 package service.impl;
 
 import model.OrderProduct;
-import service.OrderProductService;
-import repository.OrderProductRepository;
+import repository.IOrderProductRepository;
+import service.IOrderProductService;
 
 import java.util.List;
 import java.util.logging.Logger;
 
-/*public class OrderProductServiceImpl implements OrderProductService {
-    private final OrderProductRepository orderProductRepository;
+public class OrderProductService implements IOrderProductService {
+    private final IOrderProductRepository orderProductRepository;
     private static final Logger logger = Logger.getLogger(OrderProductService.class.getName());
 
-    public OrderProductService(OrderProductRepository orderProductRepository) {
-        this.orderProductRepository = orderProductRepository;
-    }*/
-
-public class OrderProductServiceImpl implements OrderProductService {
-    private final OrderProductRepository orderProductRepository;
-    private static final Logger logger = Logger.getLogger(OrderProductService.class.getName());
-
-    public OrderProductServiceImpl(OrderProductRepository orderProductRepository) {
+    public OrderProductService(IOrderProductRepository orderProductRepository) {
         this.orderProductRepository = orderProductRepository;
     }
 
