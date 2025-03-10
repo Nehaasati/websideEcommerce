@@ -8,10 +8,14 @@ import java.util.Scanner;
 
 public class ProductController {
     private ProductService service;
+    private final ReviewsController reviewsController;
     private Scanner scanner = new Scanner(System.in);
 
-    public ProductController(ProductService service) {
+    public ProductController(ProductService service, ReviewsController reviewsController) {
         this.service = service;
+        this.reviewsController = reviewsController;
+        this.scanner = new Scanner(System.in);
+
     }
 
     public void displayProducts(List<Product> products) {
@@ -108,6 +112,7 @@ public class ProductController {
         }
     }
 
+
     private void handleProductDetails() {
         try {
             System.out.print("Enter product ID: ");
@@ -122,12 +127,17 @@ public class ProductController {
             System.out.printf("Price: $%.2f\n", product.getPrice());
             System.out.println("Current Stock: " + product.getStockQuantity());
             System.out.println("Categories: " + product.getCategoryIds());
-
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("\nWould you like to see reviews? (y/n)");
+            if (scanner.nextLine().equalsIgnoreCase("y")) {
+                reviewsController.displayProductReviews(productId);
+            }
+        }catch(Exception e){
+                System.out.println("Error: " + e.getMessage());
+            }
         }
     }
-}
+
+
 
 
 

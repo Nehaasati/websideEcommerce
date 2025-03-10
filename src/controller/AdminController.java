@@ -1,7 +1,5 @@
 package controller;
 
-import service.CategoryService;
-import service.ManufacturerService;
 import service.ProductService;
 import model.Product;
 
@@ -17,17 +15,19 @@ public class AdminController {
     private final ProductController productController;
     private final ManufacturerController manufacturerController;
     private final CategoryController categoryController;
-    private final Scanner scanner;
+    private final ReviewsController reviewsController;
+    //private final Scanner scanner;
 
     private AdminRole currentAdminRole = AdminRole.BASIC;
 
-    public AdminController(ProductService productService, ProductController productController,  ManufacturerController manufacturerController, CategoryController categoryController, Scanner scanner) {
+    public AdminController(ProductService productService, ProductController productController, ManufacturerController manufacturerController, CategoryController categoryController, Scanner reviewsController) {
         {
             this.productService = productService;
             this.productController = productController;
             this.manufacturerController = manufacturerController;
             this.categoryController = categoryController;
-            this.scanner = new Scanner(System.in);
+            this.reviewsController = reviewsController;
+            //this.scanner = new Scanner(System.in);
         }
     }
 
@@ -91,7 +91,8 @@ public class AdminController {
             System.out.println("5. Check Product Price");
             System.out.println("6. Manufacturer Management");
             System.out.println("7. Category Management");
-            System.out.println("8. Return to Main Menu");
+            System.out.println("8. 🗣️ Manage Reviews");
+            System.out.println("9. Return to Main Menu");
 
             /*if (authenticate(password)) {
                 logger.info("Admin login successful");
@@ -125,8 +126,9 @@ public class AdminController {
                     case 5 -> handlePriceCheck();
                     case 6 -> manufacturerController.start();
                     case 7 -> categoryController.start();
-                    case 8 -> handleSuperAdminAction();
-                    case 9 -> {
+                    case 8 -> handleReviewManagement();
+                    case 9 -> handleSuperAdminAction();
+                    case 10-> {
                         System.out.println("Returning to Main Menu...");
                         return;  // Exit the admin menu
                     }
@@ -213,6 +215,11 @@ public class AdminController {
         }
     }
 
+    private void handleReviewManagement() {
+        System.out.println("\n=== REVIEW MANAGEMENT ===");
+        System.out.println("1. View All Product Reviews");
+        System.out.println("2. Remove Inappropriate Review");
+    }
 
 
     private void handleSuperAdminAction() {

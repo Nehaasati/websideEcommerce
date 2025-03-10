@@ -25,28 +25,38 @@ public class Main {
         CustomerRepository customerRepo = new CustomerRepositoryImpl();
         OrderRepository orderRepo = new OrderRepository();
         OrderProductRepository orderProductRepository = new OrderProductRepository();
-
+        ReviewsRepository reviewsRepo = new ReviewsRepository();
 
         // Initialize services
         ProductService productService = new ProductService(productRepo);
         CartService cartService = new CartService(cartRepository, productService, orderRepo, orderProductRepository);  // Include orderRepo and orderProductRepository
         CustomerService customerService = new CustomerServiceImpl(customerRepo);
+        ReviewService reviewService = new ReviewService(reviewsRepo);
         IOrderService orderService = new OrderService(orderRepo);
         ManufacturerService manufacturerService = new ManufacturerService();
         CategoryService categoryService = new CategoryService();
 
+
         // Initialize controllers
-        ProductController productController = new ProductController(productService);
         CartController cartController = new CartController(cartService, orderRepo);  // Include orderRepo
         OrderController orderController = new OrderController(orderService);
         ManufacturerController manufacturerController = new ManufacturerController();
         CategoryController categoryController = new CategoryController();
+        ReviewsController reviewsController = new ReviewsController(
+                reviewService,
+                productService,
+                customerService
+        );
+        ProductController productController = new ProductController(productService, reviewsController);
         CustomerController customerController = new CustomerController(
                 customerService,
-                new ProductController(productService),
+                productController,
                 cartController,
-                orderController
+                orderController,
+                reviewsController
         );
+
+
 
         //CustomerController customerController = new CustomerController(customerService, productController, cartController,orderController);
         AdminController adminController = new AdminController(productService, productController, manufacturerController,

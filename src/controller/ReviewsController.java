@@ -23,11 +23,8 @@ public class ReviewsController {
         this.scanner = new Scanner(System.in);
     }
 
-    public void displayProductReviews() {
+    public void displayProductReviews(int productId) {
         try {
-            System.out.print("Enter Product ID: ");
-            int productId = Integer.parseInt(scanner.nextLine());
-
             Product product = productService.getProductDetails(productId);
             if (product == null) {
                 System.out.println("⚠️ Error: Product not found");
@@ -52,11 +49,8 @@ public class ReviewsController {
         }
     }
 
-    public void displayCustomerReviews() {
+    public void displayCustomerReviews(int customerId) {
         try{
-            System.out.println("Enter Customer ID: ");
-            int customerId = Integer.parseInt(scanner.nextLine());
-
             Customer customer = customerService.getCustomer(customerId);
             if (customer == null) {
                 System.out.println("⚠️ Error: Customer not found");
@@ -65,6 +59,7 @@ public class ReviewsController {
 
             System.out.println("\nReviews for: " + customer.getName());
             List<Reviews> reviews = reviewService.getReviewsByCustomer(customerId);
+
             if (reviews.isEmpty()) {
                 System.out.println("No reviews available for this product.");
             } else {

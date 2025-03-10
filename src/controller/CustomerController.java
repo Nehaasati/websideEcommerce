@@ -11,14 +11,16 @@ public class CustomerController {
     private final ProductController productController;
     private final CartController cartController;
     private final OrderController orderController;
+    private final ReviewsController reviewsController;
     private final Scanner scanner;
     private int loggedInCustomerId = -1;   //Track Logged-in user
 
-    public CustomerController(CustomerService customerService, ProductController productController, CartController cartController, OrderController orderController) {
+    public CustomerController(CustomerService customerService, ProductController productController, CartController cartController, OrderController orderController, ReviewsController reviewsController) {
         this.customerService = customerService;
         this.productController = productController;
         this.cartController = cartController;
         this.orderController = orderController;
+        this.reviewsController = reviewsController;
         this.scanner = new Scanner(System.in);
     }
 
@@ -109,19 +111,23 @@ public class CustomerController {
         while (loggedInCustomerId != -1) {
             System.out.println("\n🏠 === CUSTOMER PORTAL ===");
             System.out.println("1. 🛍️ Browse Products");
-            System.out.println("2. 🛒 Cart Management");
-            System.out.println("3. 📦 Order Management");
-            System.out.println("4. 🔐 Account Management");
-            System.out.println("5. 🚪 Logout");
+            System.out.println("2. 📝 Product Reviews");
+            System.out.println("3. 👀 My Reviews");
+            System.out.println("4. 🛒 Cart Management");
+            System.out.println("5. 📦 Order Management");
+            System.out.println("6. 🔐 Account Management");
+            System.out.println("7. 🚪 Logout");
             System.out.print("🔀 Choose option: ");
 
             int choice = getIntInput();
             switch (choice) {
                 case 1-> productController.showCustomerMenu();
-                case 2-> cartController.start(loggedInCustomerId);
-                case 3-> orderController.displayMenu(loggedInCustomerId);
-                case 4-> showAccountManagement();
-                case 5-> {
+                case 2-> handleProductReviews();
+                case 3-> handleCustomerReviews();
+                case 4-> cartController.start(loggedInCustomerId);
+                case 5-> orderController.displayMenu(loggedInCustomerId);
+                case 6-> showAccountManagement();
+                case 7-> {
                     loggedInCustomerId = -1;
                     System.out.println("👋 Logged out successfully!");
                 }
@@ -129,6 +135,17 @@ public class CustomerController {
             }
         }
     }
+
+            private void handleProductReviews() {
+                System.out.println("\n=== PRODUCT REVIEWS ===");
+                reviewsController.displayProductReviews(productId);
+            }
+
+            private void handleCustomerReviews() {
+                System.out.println("\n=== MY REVIEWS ===");
+                reviewsController.displayCustomerReviews(loggedInCustomerId);
+            }
+
 
             private void showAccountManagement () {
                 while (true) {

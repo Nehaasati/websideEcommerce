@@ -13,9 +13,6 @@ public class ReviewService {
         this.reviewsRepository = reviewsRepository;
     }
 
-
-
-
     // Get all reviews for a specific reviews
     public List<Reviews> getProductReviews(int productId) throws SQLException {
         return reviewsRepository.getReviewsByProduct(productId);
