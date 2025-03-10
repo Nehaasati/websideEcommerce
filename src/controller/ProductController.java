@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 
 public class ProductController {
-    private ProductService service;
+    private final ProductService service;
     private final ReviewsController reviewsController;
     private Scanner scanner = new Scanner(System.in);
 

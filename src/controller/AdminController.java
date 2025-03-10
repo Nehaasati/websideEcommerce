@@ -15,19 +15,17 @@ public class AdminController {
     private final ProductController productController;
     private final ManufacturerController manufacturerController;
     private final CategoryController categoryController;
-    private final ReviewsController reviewsController;
-    //private final Scanner scanner;
+    private final Scanner scanner;
 
     private AdminRole currentAdminRole = AdminRole.BASIC;
 
-    public AdminController(ProductService productService, ProductController productController, ManufacturerController manufacturerController, CategoryController categoryController, Scanner reviewsController) {
+    public AdminController(ProductService productService, ProductController productController, ManufacturerController manufacturerController, CategoryController categoryController, ReviewsController reviewsController, Scanner scanner) {
         {
             this.productService = productService;
             this.productController = productController;
             this.manufacturerController = manufacturerController;
             this.categoryController = categoryController;
-            this.reviewsController = reviewsController;
-            //this.scanner = new Scanner(System.in);
+            this.scanner = new Scanner(System.in);
         }
     }
 
@@ -41,6 +39,7 @@ public class AdminController {
 
     public void start() {
         System.out.print("🔑 Enter username: ");
+
         String username = scanner.nextLine();
 
         System.out.print("🔑 Enter admin password: ");

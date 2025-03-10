@@ -24,7 +24,7 @@ public class OrderController {
             System.out.println("3. Cancel Order");
             System.out.println("4. Update Order");
             System.out.println("5. View Order History");
-            System.out.println("6. Back to Main.Main Menu");
+            System.out.println("6. Back to Main Menu");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();

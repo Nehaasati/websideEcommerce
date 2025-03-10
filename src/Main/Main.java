@@ -60,7 +60,7 @@ public class Main {
 
         //CustomerController customerController = new CustomerController(customerService, productController, cartController,orderController);
         AdminController adminController = new AdminController(productService, productController, manufacturerController,
-                categoryController, scanner);  // Include productController and scanner
+                categoryController, reviewsController,scanner);  // Include productController and scanner
 
         GuestMenu guestMenu = new GuestMenu(productService, scanner); // Include scanner
 

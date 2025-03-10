@@ -138,6 +138,8 @@ public class CustomerController {
 
             private void handleProductReviews() {
                 System.out.println("\n=== PRODUCT REVIEWS ===");
+                System.out.print("Enter Product ID: ");
+                int productId = getIntInput();  // Get product ID from user input
                 reviewsController.displayProductReviews(productId);
             }
 
