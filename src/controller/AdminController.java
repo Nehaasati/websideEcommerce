@@ -3,6 +3,10 @@ package controller;
 import service.ProductService;
 import model.Product;
 
+import java.io.Console;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +21,9 @@ public class AdminController {
     private final CategoryController categoryController;
     private final Scanner scanner;
 
+    // Representing admin roles (Basic Admin or Super Admin)
     private AdminRole currentAdminRole = AdminRole.BASIC;
+    //private AdminRole currentAdminRole;
 
     public AdminController(ProductService productService, ProductController productController, ManufacturerController manufacturerController, CategoryController categoryController, ReviewsController reviewsController, Scanner scanner) {
         {
@@ -29,17 +35,19 @@ public class AdminController {
         }
     }
 
-    //  Hardcoded admin credentials
+    //  Hardcoded admin credentials for login
     private static final Map<String, String> ADMIN_CREDENTIALS = new HashMap<>();
 
     static {
-        ADMIN_CREDENTIALS.put("admin", "hashed_admin_password");  // BASIC admin
-        ADMIN_CREDENTIALS.put("superadmin", "hashed_superadmin_password");  //SUPER admin
+        ADMIN_CREDENTIALS.put("admin", "hashed_admin_password");           // Basic Admin
+        ADMIN_CREDENTIALS.put("superadmin", "hashed_superadmin_password"); // Super Admin
     }
 
-    public void start() {
-        System.out.print("🔑 Enter username: ");
 
+    // * Entry point for Admin authentication.
+    public void start() {
+
+        System.out.print("🔑 Enter username: ");
         String username = scanner.nextLine();
 
         System.out.print("🔑 Enter admin password: ");
@@ -47,42 +55,37 @@ public class AdminController {
 
         if (authenticate(username, password)) {
             logger.info("Admin login successful");
-            this.currentAdminRole = AdminRole.BASIC;  // ✅ BASIC admin role
+            this.currentAdminRole = AdminRole.BASIC;
+            System.out.println("Login successful, Welcome" + " " + username);  // ✅ BASIC admin role
             showAdminMenu();
         } else if (authenticateSuperAdmin(username, password)) {
             logger.info("Super Admin login successful");
-            this.currentAdminRole = AdminRole.SUPER;  // ✅ SUPER admin role
-            showAdminMenu();
+            this.currentAdminRole = AdminRole.SUPER;
+            System.out.println("Login successful, Welcome" + " " + username); // ✅ SUPER admin role
+            showSuperAdminMenu();
         } else {
             System.out.println("❌ Access denied! Invalid credentials");
             logger.warning("Failed admin login attempt");
         }
     }
 
-    /*public boolean authenticate(String password) {
-        return ADMIN_CREDENTIALS.equals(password);
-    }
-
-    public boolean authenticateSuperAdmin(String password){
-        return ADMIN_CREDENTIALS.equals(password);
-    }*/
-
-    // Authenticate a regular admin
+    // Authenticate a BASIC admin
     public boolean authenticate(String username, String password) {
         String storedPassword = ADMIN_CREDENTIALS.get(username);
         return username.equals("admin") && storedPassword != null && storedPassword.equals(password); // Replace plain text password check
     }
 
-    // Authenticate a super admin
+    // Authenticate a SUPER admin
     public boolean authenticateSuperAdmin(String username, String password) {
         String storedPassword = ADMIN_CREDENTIALS.get(username);
         return username.equals("superadmin") && storedPassword != null && storedPassword.equals(password);  //Replace plain text password check
     }
 
 
+    //Basic Admin Menu - Handles Product, Category, Manufacturer, and Review management.
     public void showAdminMenu() {
         while (true) {
-            System.out.println("\n=== ADMIN MENU ===");
+            System.out.println("\n🛠️ === BASIC ADMIN MENU === 🛠️");
             System.out.println("1. Restock Product");
             System.out.println("2. Update Stock After Order");
             System.out.println("3. View Low Stock Alerts");
@@ -90,33 +93,13 @@ public class AdminController {
             System.out.println("5. Check Product Price");
             System.out.println("6. Manufacturer Management");
             System.out.println("7. Category Management");
-            System.out.println("8. 🗣️ Manage Reviews");
-            System.out.println("9. Return to Main Menu");
+            System.out.println("8. Manage Reviews");
+            System.out.println("9. Logout & Return to Main Menu");
 
-            /*if (authenticate(password)) {
-                logger.info("Admin login successful");
-                showAdminMenu();
-            } else if(authenticateSuperAdmin(password)) {
-                logger.info("Super Admin login successful");
-                this.currentAdminRole = AdminRole.SUPER;
-                showAdminMenu();
-            }
-            else {
-                System.out.println("❌ Access denied! Invalid credentials");
-                logger.warning("Failed admin login attempt");
-            }
-        }*/
-
-            if (this.currentAdminRole == AdminRole.SUPER) {
-                System.out.println("6. Special Admin Action (Super Admin Only)");
-                System.out.println("7. Return to Main.Main Menu");
-            } else {
-                System.out.println("6. Return to Main.Main Menu");
-            }
-            System.out.print("Enter choice: ");
-
+            System.out.print("➡️ Enter choice: ");
             try {
                 int choice = Integer.parseInt(scanner.nextLine());
+
                 switch (choice) {
                     case 1 -> handleRestock();
                     case 2 -> handleOrderUpdate();
@@ -126,9 +109,9 @@ public class AdminController {
                     case 6 -> manufacturerController.start();
                     case 7 -> categoryController.start();
                     case 8 -> handleReviewManagement();
-                    case 9 -> handleSuperAdminAction();
-                    case 10-> {
-                        System.out.println("Returning to Main Menu...");
+                    //case 9 -> handleSuperAdminAction();
+                    case 9-> {
+                        System.out.println("\uD83D\uDD1A Logging out...Returning to Main Menu...");
                         return;  // Exit the admin menu
                     }
                     default -> System.out.println("Invalid choice. Please try again.");
@@ -220,10 +203,70 @@ public class AdminController {
         System.out.println("2. Remove Inappropriate Review");
     }
 
+    //Super Admin Menu - Manages Admins and performs Super Admin level actions.
+    public void showSuperAdminMenu() {
+        while (true) {
+            System.out.println("\n👑 === SUPER ADMIN MENU ===");
+            System.out.println("1. ➕ Add Admin");
+            System.out.println("2. ➖ Remove Admin");
+            System.out.println("3. 👁️ View Admin List");
+            System.out.println("4. 🔒 Logout");
 
-    private void handleSuperAdminAction() {
-        System.out.println("Performing super admin action");
+            System.out.print("➡️ Enter choice: ");
+
+            try {
+                int choice = Integer.parseInt(scanner.nextLine());
+
+                switch (choice) {
+                    case 1 -> handleAddAdmin();
+                    case 2 -> handleRemoveAdmin();
+                    case 3 -> handleViewAdminList();
+                    case 4 -> {
+                        System.out.println("Logging out... Returning to Gizmo Grid");
+                        return;  // Exit to main menu
+                    }
+                    default -> System.out.println("❗ Invalid choice. Please try again.");
+                }
+            } catch (NumberFormatException e) {
+                logger.warning("Invalid input: " + e.getMessage());
+                System.out.println("❗ Invalid input. Please enter a number.");
+            }
+        }
     }
+
+    private void handleAddAdmin() {
+        System.out.print("Enter new admin username: ");
+        String newAdmin = scanner.nextLine();
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+
+        ADMIN_CREDENTIALS.put(newAdmin, password);
+        System.out.println("✅ New admin added: " + newAdmin);
+    }
+
+
+    private void handleRemoveAdmin() {
+        System.out.print("Enter admin username to remove: ");
+        String removeAdmin = scanner.nextLine();
+
+        if (ADMIN_CREDENTIALS.containsKey(removeAdmin)) {
+            ADMIN_CREDENTIALS.remove(removeAdmin);
+            System.out.println("❌ Admin removed: " + removeAdmin);
+        } else {
+            System.out.println("⚠️ Admin not found.");
+        }
+    }
+
+    private void handleViewAdminList() {
+        System.out.println("📋 Current Admins:");
+        for (String admin : ADMIN_CREDENTIALS.keySet()) {
+            System.out.println("- " + admin);
+        }
+    }
+
+    /*private void handleSuperAdminAction() {
+        System.out.println("Performing super admin action");
+    }*/
 
     enum AdminRole {
         BASIC,

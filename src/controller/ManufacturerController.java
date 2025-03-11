@@ -70,7 +70,7 @@ public class ManufacturerController {
 
                 for (Manufacturer manufacturer : manufacturers) {
                     // Format each row with fixed width columns
-                    System.out.printf("| %-13d | %-23s |\n",
+                    System.out.printf("| %-13d | %-20s |\n",
                             manufacturer.getManufacturerId(),
                             manufacturer.getName());
                 }

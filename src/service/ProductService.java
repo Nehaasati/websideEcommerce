@@ -186,6 +186,7 @@ public class ProductService {
         }
     }
 
+
     private void handleDatabaseError(SQLException e) {
         System.err.println("Database error: " + e.getMessage());
         System.err.println("SQL State: " + e.getSQLState());

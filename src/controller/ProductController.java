@@ -32,7 +32,7 @@ public class ProductController {
         products.forEach(p -> {
             String status = p.getStockQuantity() == 0 ? "Out of Stock" :
                     p.getStockQuantity() < 10 ? "Low Stock" : "In Stock";
-            System.out.printf("| %-3d | %-14d | %-20s | %-20s | %-9.2f | %-5d | %-11s |\n",
+            System.out.printf("| %-3d | %-14d | %-20s | %-30s | %-9.2f | %-5d | %-11s |\n",
                     p.getProductId(), p.getManufacturerId(), p.getName(), p.getDescription(),
                     p.getPrice(), p.getStockQuantity(), status);
         });
@@ -46,7 +46,7 @@ public class ProductController {
             System.out.println("3. Search Products by Price Range");
             System.out.println("4. Search Products By Category");
             System.out.println("5. View Product Details");
-            System.out.println("6. Exit");
+            System.out.println("6. Return to Customer Menu");
             System.out.print("Enter choice: ");
 
             try {
@@ -57,7 +57,9 @@ public class ProductController {
                     case 3 -> handlePriceSearch();
                     case 4 -> handleCategorySearch();
                     case 5 -> handleProductDetails();
-                    case 6 -> System.exit(0);
+                    case 6 -> {
+                        return;
+                    }
                     default -> System.out.println("Invalid choice!");
                 }
             } catch (NumberFormatException e) {

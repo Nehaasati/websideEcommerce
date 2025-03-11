@@ -12,10 +12,12 @@ public class GuestMenu {
     private final ProductService productService;
     private final Scanner scanner;
 
+
     public GuestMenu(ProductService productService, Scanner scanner) {
         this.productService = productService;
         this.scanner = scanner;
     }
+
 
     public void show() {
         while (true) {
@@ -48,9 +50,25 @@ public class GuestMenu {
 
     private void displayProducts(List<Product> products) {
         System.out.println("\n🛍️ Available Products:");
-        products.forEach(p ->
-                System.out.printf("| %-20s | $%-8.2f | Stock: %-3d |\n",
-                        p.getName(), p.getPrice(), p.getStockQuantity())
-        );
+        System.out.println("| ID  | Name                 | Price     |");
+        System.out.println("|-----|----------------------|-----------|");
+
+        products.stream()
+                .filter(p -> p.getStockQuantity() > 0) // Only display available products
+                .forEach(p -> {
+                    System.out.printf("| %-3d | %-20s | %-9.2f |\n", p.getProductId(), p.getName(), p.getPrice());
+                });
+
+        if (products.isEmpty()) {
+            System.out.println("No products available matching your search term.");
+        }
     }
+
+
+        /*System.out.println("\n🛍️ Available Products:");
+        products.forEach(p ->
+                System.out.printf("| %-20s | $%-8.2f |\n",
+                        p.getName(), p.getPrice())
+        );
+    }*/
 }

@@ -20,7 +20,7 @@ public class CategoryController {
             System.out.println("\n------Category Management------");
             System.out.println("1. List All Categories");
             System.out.println("2. Get Category by ID");
-            System.out.println("3. Exit");
+            System.out.println("3. Return to Admin Menu");
             System.out.println("Enter your choice: ");
 
             String choice = scanner.nextLine();
@@ -31,8 +31,7 @@ public class CategoryController {
                     displayCategoryById();
                     break;
                 case "3":
-                    System.out.println("Exiting...");
-                    System.exit(0);
+                    return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
