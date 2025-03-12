@@ -122,6 +122,7 @@ public class ProductService {
         }
     }
 
+
     public List<Product> getLowStockProducts() {
         try{
             return repository.findAllProducts().stream()
@@ -187,6 +188,14 @@ public class ProductService {
         System.err.println("Database error: " + e.getMessage());
         System.err.println("SQL State: " + e.getSQLState());
         System.err.println("Error Code: " + e.getErrorCode());
+    }
+    public Product getProductById(int productId) {
+        try {
+            return repository.getProductById(productId);
+        } catch (SQLException e) {
+            System.err.println("Error fetching product: " + e.getMessage());
+            return null;
+        }
     }
 
 }

@@ -118,4 +118,16 @@ public class ProductRepository {
 
         return product;
     }
+    public Product getProductById(int productId) throws SQLException {
+        String sql = SELECT_BASE + "WHERE p.product_id = ? GROUP BY p.product_id";
+        try (Connection conn = SqliteConnectionManger.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, productId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return mapProduct(rs);
+            }
+        }
+        return null; // Return null if no product is found
+    }
 }
