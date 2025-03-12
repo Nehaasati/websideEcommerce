@@ -1,111 +1,86 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
+
+
 
 public class Product {
-    private int productId;
-    private String name;
+
+    private final int productId;
+    private final String name;
     private String description;
     private double price;
     private int stockQuantity;
-    private Manufacturer manufacturers;
-    private List<Category> categories = new ArrayList<>();
-    //private List<ProductCategory> categories = new ArrayList<>();          // Categories associated with the product
+    private List<Integer> categoryIds = new ArrayList<>();
+    private int manufacturerId;
+    private List<Reviews> reviews;
 
-    public Product() {}  // a no-arg constructor needed for the repository
-
-    public Product(int productId, String name, String description, double price, int stockQuantity, Manufacturer manufacturers) {
-            this.productId = productId;
-            this.name = name;
-            this.description = description;
-            this.price = price;
-            this.stockQuantity = stockQuantity;
-            this.manufacturers = manufacturers;
-           // this.categories = categories;
+    // Main.Main Constructor
+    public Product(int productId, int manufacturerId, String name, String description,
+                   double price, int stockQuantity) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Product name cannot be empty");
+        }
+        if (price < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
+        this.productId = productId;
+        this.manufacturerId = manufacturerId;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
     }
+
+    // Overload construtor
+    public Product(int productId, String name) {
+        this.productId = productId;
+        this.name = name;
+    }
+
+
+    // Getters
     public int getProductId() {
         return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public int getStockQuantity() {
         return stockQuantity;
     }
 
-    public void setStockQuantity(int stockQuantity) {
-        this.stockQuantity = stockQuantity;
+    public List<Integer> getCategoryIds() {
+        return categoryIds;
     }
 
-    public Manufacturer getManufacturers() {
-        return manufacturers;
+    public void addCategoryId(int categoryId) {
+        categoryIds.add(categoryId);
     }
 
-    public void setManufacturers(Manufacturer manufacturers) {
-        this.manufacturers = manufacturers;
+    public int getManufacturerId() {
+        return manufacturerId;
     }
 
-    // Proper Category list handling
-    public List<Category> getCategories() {
-        return categories;
-    }
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
+    public List<Reviews> getReviews() {
+        if (reviews == null) reviews = new ArrayList<>();
+        return reviews;
     }
 
-    /*public List<ProductCategory> getCategories() {
-        if (categories == null) {
-            categories = new ArrayList<>();
-        }
-        return categories;
-    }
-    public void setCategories(List<ProductCategory> categories) {
-        this.categories = categories != null ? categories : new ArrayList<>();
-    }*/
-
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "productId=" + productId +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", manufacturer=" + (manufacturers != null ? manufacturers.getName() : "N/A") +
-                ", categories=" + categories  +
-                '}';
-
-    }
-
-    public void setManufacturer(Manufacturer manufacturer) {
-    }
+        // setters only
+    public void setStockQuantity(int quantity) { stockQuantity = quantity; }
 }
+
 
 

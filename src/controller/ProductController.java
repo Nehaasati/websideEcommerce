@@ -1,209 +1,158 @@
 package controller;
 
 import model.Product;
-import model.Manufacturer;
 import service.ProductService;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 
-public class ProductController{
-    private final ProductService productService;
+
+public class ProductController {
+    private final ProductService service;
+    private final ReviewsController reviewsController;
     private final Scanner scanner;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-        this.scanner =  new Scanner(System.in);
+    public ProductController(ProductService service, ReviewsController reviewsController) {
+        this.service = service;
+        this.reviewsController = reviewsController;
+        this.scanner = new Scanner(System.in);
+
     }
 
-    public void displayProductMenu() {  // Moved outside constructor
-        while (true) {
-            System.out.println("\n=====Product Management Menu=====");
-            System.out.println("1. View All Products");
-            System.out.println("2. Search Product by Name");
-            System.out.println("3. Search Product by Category");
-            System.out.println("4. Search Product by Price Range");
-            System.out.println("9. Exit");
-            System.out.print("Enter your choice: ");
-
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            switch (choice) {
-                case 1:
-                    viewAllProducts();
-                    break;
-                case 2:
-                    searchProductByName();
-                    break;
-                case 3:
-                    searchProductByCategory();
-                    break;
-                case 4:
-                    searchProductByPriceRange();
-                    break;
-                case 5:
-                    System.out.println("Exiting...");
-                    return;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        }
-    }
-
-    private void viewAllProducts() {
-        List<Product> products = productService.getAllProducts();
+    public void displayProducts(List<Product> products) {
         if (products.isEmpty()) {
-            System.out.println("No products found.");
-        } else {
-            for (Product product : products) {
-                System.out.println(product);
-            }
-        }
-    }
-
-    private void searchProductByName() {
-        System.out.print("Enter product name: ");
-        String name = scanner.nextLine();
-        List<Product> products = productService.searchProductByName(name);
-        if (products.isEmpty()) {
-            System.out.println("No products found.");
-        } else {
-            for (Product product : products) {
-                System.out.println(product);
-            }
-        }
-    }
-
-    private void searchProductByCategory() {
-        System.out.print("Enter category name: ");
-        String categoryName = scanner.nextLine();
-        List<Product> products = productService.searchProductByCategory(categoryName);
-        if (products.isEmpty()) {
-            System.out.println("No products found.");
-        } else {
-            for (Product product : products) {
-                System.out.println(product);
-            }
-        }
-    }
-
-    private void searchProductByPriceRange() {
-        System.out.print("Enter minimum price: ");
-        double minPrice = scanner.nextDouble();
-        System.out.print("Enter maximum price: ");
-        double maxPrice = scanner.nextDouble();
-        List<Product> products = productService.searchProductByPriceRange(minPrice, maxPrice);
-        if (products.isEmpty()) {
-            System.out.println("No products found.");
-        } else {
-            for (Product product : products) {
-                System.out.println(product);
-            }
-        }
-    }
-
-    private void addNewProduct() {
-        Product product = new Product();
-
-        System.out.print("Enter product name: ");
-        product.setName(scanner.nextLine());
-
-        System.out.print("Enter description: ");
-        product.setDescription(scanner.nextLine());
-
-        System.out.print("Enter price: ");
-        product.setPrice(scanner.nextDouble());
-
-        System.out.print("Enter stock quantity: ");
-        product.setStockQuantity(scanner.nextInt());
-        scanner.nextLine();
-
-        //  need to implement manufacturer selection
-
-        System.out.print("Enter Manufacturer ID: ");
-        int manufacturerId = scanner.nextInt();
-        Manufacturer manufacturer = new Manufacturer();
-        manufacturer.setManufacturerId(manufacturerId);
-        product.setManufacturers(manufacturer);
-
-        productService.createProduct(product);
-        System.out.println("Product created successfully!");
-    }
-
-
-    private void updateProduct() {
-        System.out.print("Enter product ID to update: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();  // Clear the newline character
-
-        // Get product wrapped in Optional
-        Optional<Product> optionalProduct = productService.getProductById(id);
-
-        // Check if product exists
-        if (!optionalProduct.isPresent()) {
-            System.out.println("Product not found!");
+            System.out.println("No products found");
             return;
         }
 
-        // Extract actual Product object from Optional
-        Product product = optionalProduct.get();
+        // Print table header
+        System.out.println("\n| ID  | Manufacturer ID | Name                 | Description           | Price     | Stock | Status      |");
+        System.out.println("|-----|----------------|----------------------|----------------------|-----------|-------|-------------|");
 
-        // Update name
-        System.out.print("Enter new name (" + product.getName() + "): ");
-        product.setName(scanner.nextLine());
-
-        // Update description
-        System.out.print("Enter new description (" + product.getDescription() + "): ");
-        product.setDescription(scanner.nextLine());
-
-        // Update price
-        System.out.print("Enter new price (" + product.getPrice() + "): ");
-        product.setPrice(scanner.nextDouble());
-        scanner.nextLine();  // Clear the newline after double input
-
-        // Update stock quantity
-        System.out.print("Enter new stock quantity (" + product.getStockQuantity() + "): ");
-        product.setStockQuantity(scanner.nextInt());
-        scanner.nextLine();  // Clear the newline after int input
-
-        // Save changes
-        productService.updateProduct(product);
-        System.out.println("Product updated successfully!");
+        // Print each product in table format
+        products.forEach(p -> {
+            String status = p.getStockQuantity() == 0 ? "Out of Stock" :
+                    p.getStockQuantity() < 10 ? "Low Stock" : "In Stock";
+            System.out.printf("| %-3d | %-14d | %-20s | %-30s | %-9.2f | %-5d | %-11s |\n",
+                    p.getProductId(), p.getManufacturerId(), p.getName(), p.getDescription(),
+                    p.getPrice(), p.getStockQuantity(), status);
+        });
     }
 
-    private void updateProductCategories() {
-        System.out.print("Enter product ID to update categories: ");
-        int productId = scanner.nextInt();
+    public void showCustomerMenu() {
+        while (true) {
+            System.out.println("\n=== CUSTOMER MENU ===");
+            System.out.println("1. View All Products");
+            System.out.println("2. Search Products by Name");
+            System.out.println("3. Search Products by Price Range");
+            System.out.println("4. Search Products By Category");
+            System.out.println("5. View Product Details");
+            System.out.println("6. Return to Customer Menu");
+            System.out.print("Enter choice: ");
 
-        System.out.print("Enter number of categories: ");
-        int categoryCount = scanner.nextInt();
-
-        int[] categoryIds = new int[categoryCount];
-        for (int i = 0; i < categoryCount; i++) {
-            System.out.print("Enter category ID: ");
-            categoryIds[i] = scanner.nextInt();
+            try {
+                int choice = Integer.parseInt(scanner.nextLine());
+                switch (choice) {
+                    case 1 -> displayProducts(service.getAllProducts());
+                    case 2 -> handleNameSearch();
+                    case 3 -> handlePriceSearch();
+                    case 4 -> handleCategorySearch();
+                    case 5 -> handleProductDetails();
+                    case 6 -> {
+                        return;
+                    }
+                    default -> System.out.println("Invalid choice!");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number!");
+            }
         }
+    }
 
-        boolean success = productService.updateProductCategories(productId, categoryIds);
-        if (success) {
-            System.out.println("Product categories updated successfully!");
+    private void handleNameSearch() {
+        System.out.print("Enter product name: ");
+        String name = scanner.nextLine().trim();
+        List<Product> results = service.searchProductsByName(name);
+
+        if (results.isEmpty()) {
+            System.out.println("\nNo products found matching '" + name + "'");
         } else {
-            System.out.println("Product not found!");
+            System.out.println("\nFound " + results.size() + " matching products:");
+            displayProducts(results);
         }
     }
 
-    private void deleteProduct() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter product ID to delete: ");
-        int id = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+    private void handlePriceSearch() {
+        boolean validInput = false;
 
-        productService.deleteProduct(id);
-        System.out.println("Product deleted successfully!");
+        while (!validInput) {
+            try {
+                System.out.print("Enter minimum price: ");
+                double min = Double.parseDouble(scanner.nextLine());
+
+                System.out.print("Enter maximum price: ");
+                double max = Double.parseDouble(scanner.nextLine());
+
+                List<Product> results = service.searchProductsByPriceRange(min, max);
+                displayProducts(results);
+                validInput = true;   // Exit loop on success
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid price. Please enter a valid number!");
+            } catch (IllegalArgumentException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
     }
-}
+
+    private void handleCategorySearch() {
+        try {
+            System.out.print("Enter category ID: ");
+            int categoryId = Integer.parseInt(scanner.nextLine());
+            displayProducts(service.searchProductsByCategory(categoryId));
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid category ID!");
+        }
+    }
+
+
+    private void handleProductDetails() {
+        try {
+            System.out.print("Enter product ID: ");
+            int productId = Integer.parseInt(scanner.nextLine());
+            Product product = service.getProductDetails(productId);
+
+            System.out.println("\n=== PRODUCT DETAILS ===");
+            System.out.println("ID: " + product.getProductId());
+            System.out.println("Manufacturer: " + product.getManufacturerId());
+            System.out.println("Name: " + product.getName());
+            System.out.println("Description: " + product.getDescription()); // ADD THIS LINE
+            System.out.printf("Price: $%.2f\n", product.getPrice());
+            System.out.println("Current Stock: " + product.getStockQuantity());
+            System.out.println("Categories: " + product.getCategoryIds());
+            System.out.println("\nWould you like to see reviews? (y/n)");
+            if (scanner.nextLine().equalsIgnoreCase("y")) {
+                reviewsController.displayProductReviews(productId);
+            }
+        }catch(Exception e){
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

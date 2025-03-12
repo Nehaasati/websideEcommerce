@@ -1,6 +1,6 @@
 package model;
-import java.sql.Date;
 
+import java.sql.Date;
 import java.sql.Date;
 
 public class Order {
@@ -18,7 +18,7 @@ public class Order {
     public Order(int orderId, int customerId) {
         this.orderId = orderId;
         this.customerId = customerId;
-       // this.order_Date = order_Date;
+        // this.order_Date = order_Date;
     }
 
     // Getters and Setters
@@ -50,3 +50,4 @@ public class Order {
                 '}';
     }
 }
+

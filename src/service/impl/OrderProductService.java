@@ -1,47 +1,33 @@
 package service.impl;
 
 import model.OrderProduct;
+import repository.IOrderProductRepository;
 import service.IOrderProductService;
-import repository.OrderProductRepository;
 
+import java.util.List;
+import java.util.logging.Logger;
 
 public class OrderProductService implements IOrderProductService {
-    private final OrderProductRepository orderProductRepository = new OrderProductRepository();
+    private final IOrderProductRepository orderProductRepository;
+    private static final Logger logger = Logger.getLogger(OrderProductService.class.getName());
 
-    @Override
-    public boolean addOrderProduct(OrderProduct op) {
-        if (op == null) {
-            System.err.println("Order product cannot be null.");
-            return false;
-        }
-        if (op.getOrderId() <= 0) {
-            System.err.println("Invalid order ID for order product.");
-            return false;
-        }
-        if (op.getProductId() <= 0) {
-            System.err.println("Invalid product ID for order product.");
-            return false;
-        }
-        if (op.getQuantity() <= 0) {
-            System.err.println("Quantity must be greater than zero for order product.");
-            return false;
-        }
-        if (op.getUnitPrice() < 0) {
-            System.err.println("Price cannot be negative for order product.");
-            return false;
-        }
-        return orderProductRepository.addOrderProduct(op);
+    public OrderProductService(IOrderProductRepository orderProductRepository) {
+        this.orderProductRepository = orderProductRepository;
     }
 
 
     @Override
-    public boolean deleteOrderProductsByOrderId(int orderId) {
-        if (orderId <= 0) {
-            System.err.println("Invalid order ID.");
-            return false;
-        }
-        return orderProductRepository.deleteOrderProductsByOrderId(orderId);
+    public boolean addOrderProduct(int orderId, int productId, int quantity, double unitPrice) {
+        return orderProductRepository.addOrderProduct(orderId, productId, quantity, unitPrice);
     }
 
+    @Override
+    public List<OrderProduct> getOrderProducts(int orderId) {
+        return orderProductRepository.getOrderProducts(orderId);
     }
 
+    @Override
+    public boolean removeOrderProduct(int orderProductId) {
+        return orderProductRepository.removeOrderProduct(orderProductId);
+    }
+}
