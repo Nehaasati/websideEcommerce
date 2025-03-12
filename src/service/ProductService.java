@@ -86,7 +86,7 @@ public class ProductService {
         }
     }
 
-    public void updateProductPrice(int productId, double newPrice) {
+    public void updateProductPrice(int productId, double newPrice) {    // FINANCE MANAGEMENT PART supervised by Admin
         if (newPrice < 0) {
             throw new IllegalArgumentException("Price cannot be negative");
         }
@@ -167,8 +167,8 @@ public class ProductService {
         adjustStock(productId, quantity);
     }
 
-    /*public void restockProduct(int productId, int quantity) {
-        try{
+    //public void restockProduct(int productId, int quantity) {
+       /* try{
             repository.updateStock(productId, quantity);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to restock product: " + e.getMessage());
@@ -203,6 +203,17 @@ public class ProductService {
             throw new RuntimeException("Database error: " + e.getMessage());
         }
     }*/
+
+// 3. Error Handling:
+// - Catches SQLException, logs detailed messages (message, SQLState, error code).
+// - Rethrows RuntimeException to propagate critical failures to higher layers.
+
+// 4. Validation:
+// - Validates product price is not negative before updating.
+// - Checks stock availability before reducing stock.
+// - Ensures product exists before performing operations.
+
+
 
 // COMMENT OUT - Redundant with reduceStock
 // Update stock after Order

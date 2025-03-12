@@ -84,15 +84,14 @@ public class AdminController {
         while (true) {
             System.out.println("\n🛠️ === BASIC ADMIN MENU === 🛠️");
             System.out.println("1. Restock Product");
-            System.out.println("2. Update Stock After Order");
-            System.out.println("3. View Low Stock Alerts");
-            System.out.println("4. Check Stock Status");
-            System.out.println("5. Check Product Price");
-            System.out.println("6. Update Product Price"); // New option
-            System.out.println("7. Manufacturer Management");
-            System.out.println("8. Category Management");
-            System.out.println("9. Manage Reviews");
-            System.out.println("10.Logout & Return to Main Menu");
+            System.out.println("2. View Low Stock Alerts");
+            System.out.println("3. Check Stock Status");
+            System.out.println("4. Check Product Price");
+            System.out.println("5. Update Product Price"); // New option
+            System.out.println("6. Manufacturer Management");
+            System.out.println("7. Category Management");
+            System.out.println("8. Manage Reviews");
+            System.out.println("9.Logout & Return to Main Menu");
 
             System.out.print("➡️ Enter choice: ");
             try {
@@ -100,16 +99,16 @@ public class AdminController {
 
                 switch (choice) {
                     case 1 -> handleRestock();
-                    case 2 -> handleStockDeductionForOrder();
-                    case 3 -> displayLowStockAlerts();
-                    case 4 -> handleStockCheck();
-                    case 5 -> handlePriceCheck();
-                    case 6 -> handlePriceUpdate();
-                    case 7 -> manufacturerController.start();
-                    case 8 -> categoryController.start();
-                    case 9 -> handleReviewManagement();
+                    //case 2 -> handleStockDeductionForOrder();
+                    case 2 -> displayLowStockAlerts();
+                    case 3 -> handleStockCheck();
+                    case 4 -> handlePriceCheck();
+                    case 5 -> handlePriceUpdate();
+                    case 6 -> manufacturerController.start();
+                    case 7-> categoryController.start();
+                    case 8 -> handleReviewManagement();
                     //case 9 -> handleSuperAdminAction();
-                    case 10-> {
+                    case 9-> {
                         System.out.println("\uD83D\uDD1A Logging out...Returning to Main Menu...");
                         return;  // Exit the admin menu
                     }
@@ -144,7 +143,7 @@ public class AdminController {
         }
     }
 
-    private void handleStockDeductionForOrder() {        //Rename handleOrderUpdate() for more clarification
+    /*private void handleStockDeductionForOrder() {        //Rename handleOrderUpdate() for more clarification
         try {
             System.out.print("Enter product ID: ");
             int productId = Integer.parseInt(scanner.nextLine());
@@ -168,7 +167,7 @@ public class AdminController {
             System.out.println("Error: " + e.getMessage());
             logger.severe("Error during stock update: " + e.getMessage());
         }
-    }
+    }*/
 
 
    /* private void handleOrderUpdate() {

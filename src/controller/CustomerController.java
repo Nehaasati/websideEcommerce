@@ -13,7 +13,8 @@ public class CustomerController {
     private final OrderController orderController;
     private final ReviewsController reviewsController;
     private final Scanner scanner;
-    private int loggedInCustomerId = -1;   //Track Logged-in user
+    private int loggedInCustomerId = -1;   //Tracks whether a user is logged in (-1 = no one is logged in).
+
 
     public CustomerController(CustomerService customerService, ProductController productController, CartController cartController, OrderController orderController, ReviewsController reviewsController) {
         this.customerService = customerService;
@@ -268,14 +269,15 @@ public class CustomerController {
                 }
             }
 
-    private int getIntInput() {
-        try {
-            return Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input. Please enter a number.");
-            return -1;
-        }
-    }
+            //Handles input parsing and prevents crashes on invalid input.
+            private int getIntInput() {
+                try {
+                    return Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("❌ Invalid input. Please enter a number.");
+                    return -1;
+                }
+            }
 
             private void printCustomerDetails (Customer customer){
                 System.out.println("\n+------------+----------------------+");
@@ -291,3 +293,19 @@ public class CustomerController {
     }
 
 
+/*
+Example Flow
+➡ start() → chooses Register
+➡Registers → Option to login
+➡ Logs in → Enters Customer Portal
+➡ Manages cart, reviews, or account
+➡ Logs out or deletes the account
+ */
+
+/*
+Possible Improvements
+ Add password encryption
+ Add email format validation
+ Use Dependency Injection frameworks (e.g., Spring) in future
+ Implement Unit Tests for controllers and services
+ */

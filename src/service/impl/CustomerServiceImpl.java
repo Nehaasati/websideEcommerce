@@ -8,21 +8,23 @@ import java.sql.SQLException;
 import java.util.logging.*;
 
 public class CustomerServiceImpl implements CustomerService {
-    private static final Logger logger = Logger.getLogger(CustomerServiceImpl.class.getName());
-    private final CustomerRepository customerRepository;
+    private static final Logger logger = Logger.getLogger(CustomerServiceImpl.class.getName());  //logger is used for logging messages (info, warning, severe errors).
+    private final CustomerRepository customerRepository;  //it is a dependency-injected through the constructor. This promotes loose coupling and makes the class easier to test and maintain.
 
+   //Constructor Injection adheres to the Dependency Inversion Principle (D in SOLID).
     public CustomerServiceImpl(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
 
     @Override
+
     public Customer registerCustomer(String name, String email, String phone,
                                      String address, String password) {
 
         // Validate password first
         if (password == null || password.trim().isEmpty()) {
             logger.warning("Registration attempt with empty password");
-            throw new IllegalArgumentException("Password cannot be empty");
+            throw new IllegalArgumentException("Password cannot be empty");  //Throws IllegalArgumentException if user input is invalid.
         }
         if (password.length() < 8) {
             logger.warning("Registration attempt with short password");
@@ -37,7 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
             return customerRepository.createCustomer(name, email, phone, address, password);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Registration failed for: " + email, e);
-            throw new RuntimeException("Registration failed: " + e.getMessage());
+            throw new RuntimeException("Registration failed: " + e.getMessage());  //Logs failures and rethrows exceptions as RuntimeException if registration fails.
         }
     }
 
@@ -111,6 +113,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    //Uses loginCustomer() to check if login works (returns true if successful).
     public boolean validateCredentials(String email, String password) {
         try {
             return customerRepository.loginCustomer(email, password) != null;
@@ -120,3 +123,22 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 }
+
+
+/* ERROR HANDLING
+try-catch blocks around risky code (repository calls that can throw SQLException).
+Logs warnings and severe errors.
+Throws meaningful exceptions:
+IllegalArgumentException for validation errors (user fault).
+RuntimeException wraps SQL/database failures (system fault).
+Logs help to trace issues quickly.
+*/
+
+/*
+Input validation for:
+Password (null/empty, length check).
+Email (duplicate email check, assuming additional validation in controller layer or repository).
+Before updates and deletes, checks:
+If a customer exists.
+If email already exists when updating.
+ */

@@ -6,10 +6,14 @@ import util.SqliteConnection;
 import java.sql.*;
 import java.util.logging.*;
 
+
+// Implementation of CustomerRepository interface
 public class CustomerRepositoryImpl implements CustomerRepository {
+    // Logger for logging important information and errors
     private static final Logger logger = Logger.getLogger(CustomerRepositoryImpl.class.getName());
 
     @Override
+    // Creates a new customer and returns the Customer object if successful
     public Customer createCustomer(String name, String email, String phone, String address, String password) throws SQLException {
 
         logger.info("Attempting to create customer:" + email);
@@ -23,26 +27,30 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
+            // Set all input values in SQL statement
             stmt.setString(1, name);
             stmt.setString(2, email);
             stmt.setString(3, phone);
             stmt.setString(4, address);
             stmt.setString(5, password);
 
-            int affectedRows = stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();  // Execute insert query
             if (affectedRows == 0) {
                 logger.severe("Failed to create customer: " + email);
                 throw new SQLException("Creating customer failed, no rows affected");
             }
 
+            // Get the generated customer ID
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int newId = generatedKeys.getInt(1);
                     logger.info("Successfully created customer with id: " + newId);
+                    // Return new customer object
                     return new Customer(newId, name, email, phone, address, password);
                 }
             }
         } catch (SQLException e) {
+            // Handling duplicate email error (constraint failure)
             if (e.getMessage().contains("UNIQUE constraint failed: customers.email")) {
                 logger.warning("Duplicate email registration attempt: " + email);
                 throw new SQLException("Email already exists", e);
@@ -50,10 +58,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             logger.log(Level.SEVERE, "Database error creating customer", e);
             throw e;
         }
+
+        // Fallback exception if ID was not obtained
         throw new SQLException("Creating customer failed, no ID obtained.");
     }
 
     @Override
+    // Authenticates a customer using email and password
     public Customer loginCustomer(String email, String password) throws SQLException {
         logger.info("Login attempt for: " + email);
         String sql = "SELECT * FROM customers WHERE email = ? AND password = ?";
@@ -67,6 +78,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     logger.info("Successful login: " + email);
+                    // Return Customer object with fetched data
                     return new Customer(
                             rs.getInt("customer_id"),
                             rs.getString("name"),
@@ -81,11 +93,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             logger.log(Level.SEVERE, "Database error during login", e);
             throw e;
         }
+        // If no match found, login failed
         logger.warning("Failed login attempt for: " + email);
         return null;
     }
 
     @Override
+    // Gets customer details by customer ID
     public Customer getCustomerDetails(int customerId) throws SQLException {
         logger.info("Fetching details for customer: " + customerId);
         String sql =  "SELECT * FROM customers WHERE customer_id = ?";
@@ -134,12 +148,12 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             logger.log(Level.SEVERE, "Database error fetching customer", e);
             throw e;
         }
+        // No customer found
         return null;
     }
 
-
-
     @Override
+    // Updates customer details using a Customer object
     public void updateCustomerDetails(Customer customer) throws SQLException {
         logger.info("Updating customer: " + customer.getEmail());
         String sql = "UPDATE customers SET name = ?, email = ?, phone = ?, address = ? "
@@ -161,6 +175,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             }
             logger.info("Successfully updated customer: " + customer.getCustomerId());
         } catch (SQLException e) {
+            // Handle duplicate email constraint on update
             if (e.getMessage().contains("UNIQUE constraint failed")) {
                 logger.warning("Duplicate email update attempt: " + customer.getEmail());
                 throw new SQLException("Email already in use", e);
@@ -171,6 +186,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    // Deletes a customer by ID
     public void deleteCustomer(int customerId) throws SQLException {
         logger.info("Attempting to delete customer ID: " + customerId);
         String sql = "DELETE FROM customers WHERE customer_id = ?";
@@ -194,6 +210,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    // Checks if an email already exists in the database(used during registration or update)
     public boolean emailExists(String email) throws SQLException {
         logger.info("Checking email existence: " + email);
         String sql = "SELECT 1 FROM customers WHERE email = ?";
@@ -203,7 +220,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
             stmt.setString(1, email);
             try (ResultSet rs = stmt.executeQuery()) {
-                return rs.next();
+                return rs.next(); // true if email exists
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Database error checking email existence", e);
@@ -213,6 +230,22 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 }
 
 
+/*
+This is the Customer Repository Implementation, where each method communicates directly with the database through SQL queries.
+It uses prepared statements for security (to prevent SQL injection) and logging to trace activities, successful operations, and errors.
+The code follows OOP and Separation of Concerns, where repository classes focus only on data access.
+ */
+/*
+ * ERROR HANDLING:
+ * - Each database operation is wrapped in try-catch blocks.
+ * - SQLException is caught, logged, and rethrown to inform higher layers.
+ * - Specific checks are made for duplicate emails (UNIQUE constraint violation).
+ *
+ * VALIDATION:
+ * - After fetching customer details, fields like 'name' are checked for validity (not null/empty).
+ * - Before insert/update, values are assumed validated by service/controller layer (could be improved).
+ * - Email duplication is checked via DB constraints and error handling.
+ */
 
 
 
