@@ -2,41 +2,46 @@ package Test;
 
 import repository.impl.CustomerRepositoryImpl;
 import model.Customer;
-import util.SqliteConnection;
+import service.impl.CustomerServiceImpl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-public class CustomerRepositoryTest {
-    private static final Logger logger = Logger.getLogger(CustomerRepositoryTest.class.getName());
+public class CustomersTest {
+    private static final Logger logger = Logger.getLogger(CustomersTest.class.getName());
+
 
     public static void main(String[] args) {
         logger.info("\n🔍 **Testing createCustomer Method** 🔍");
+
+        // Instantiate the repository AND the service.
         CustomerRepositoryImpl repo = new CustomerRepositoryImpl();
+        CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl(repo);
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println("\n--- Customer Test Menu ---");
             System.out.println("1. Register New Customer");
             System.out.println("2. View Customer Details");
-            System.out.println("3. Exit");
+            System.out.println("3. Validate Credentials");  // Added option for validation
+            System.out.println("4. Exit");
             System.out.print("Enter choice: ");
 
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1:
+               case 1:
                     registerCustomer(repo, scanner);
                     break;
                 case 2:
                     viewCustomer(repo, scanner);
                     break;
                 case 3:
+                    validateCredentials(customerServiceImpl, scanner); // Call the new method
+                    break;
+                case 4:
                     System.out.println("Exiting test...");
                     return;
                 default:
@@ -91,7 +96,26 @@ public class CustomerRepositoryTest {
             logger.severe("Error retrieving customer details: " + e.getMessage());
         }
     }
+
+    // New method to test validateCredentials
+    private static void validateCredentials(CustomerServiceImpl customerServiceImpl, Scanner scanner) {
+        System.out.print("Enter Email to validate: ");
+        String email = scanner.nextLine();
+        System.out.print("Enter Password to validate: ");
+        String password = scanner.nextLine();
+
+        boolean isValid = customerServiceImpl.validateCredentials(email, password);
+
+        if (isValid) {
+            System.out.println("Credentials are VALID.");
+            logger.info("Credentials validated successfully for email: " + email);
+        } else {
+            System.out.println("Credentials are INVALID.");
+            logger.warning("Credentials validation failed for email: " + email);
+        }
+    }
 }
+
 
 
 

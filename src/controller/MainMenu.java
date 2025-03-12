@@ -6,7 +6,7 @@ import Main.Main;
 
 
 public class MainMenu {
-    private static final Logger LOGGER = Logger.getLogger(MainMenu.class.getName());
+    //private static final Logger LOGGER = Logger.getLogger(MainMenu.class.getName());
     private final CustomerController customerController;
     private final AdminController adminController;
     private final GuestMenu guestMenu;  // Add GuestMenu
@@ -45,16 +45,6 @@ public class MainMenu {
         }
     }
 }
-
-
-    /*private int getIntInput() {
-        try {
-
-            return Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input. Please enter a number.");
-            return -1;
-        }*/
 
 
 

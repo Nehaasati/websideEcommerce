@@ -7,12 +7,11 @@ import java.util.logging.Logger;
 public class Customer {
     private static final Logger logger = Logger.getLogger(Customer.class.getName());
 
-    private int customerId;
+    private final int customerId;
     private String name;
     private String email;
     private String phone;
     private String address;
-    private String password;
     private List<Reviews> reviews;
 
     public Customer(int customerId, String name) {  // this  Overload constructor is created in connection with reviews
@@ -61,7 +60,7 @@ public class Customer {
     public String getEmail() {return email;}
     public String getPhone() {return phone;}
     public String getAddress() {return address;}
-    public String getPassword() {return password;}
+    //public String getPassword() {return password;}
 
     public List<Reviews> getReviews() {
         if (reviews == null) reviews = new ArrayList<Reviews>();
@@ -112,13 +111,11 @@ public class Customer {
             logger.warning("Attempt to set empty password for customer: " + customerId);
             throw new IllegalArgumentException("Password cannot be empty");
         }
-        this.password = newPassword;
-        /*if (newPassword.length() < 8) {
+        if (newPassword.length() < 8) {
             logger.warning("Password too short for customer: " + customerId);
             throw new IllegalArgumentException("Password must be at least 8 characters");
         }
-        this.password = newPassword;
-        logger.info("Updated password for customer: " + customerId);*/
+        logger.info("Updated password for customer: " + customerId);
     }
 
 

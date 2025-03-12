@@ -19,7 +19,7 @@ public class OrderProduct {
     public int getOrderId() { return orderId; }
     public int getProductId() { return productId; }
     public int getQuantity() { return quantity; }
-    public double getUnit_price() { return unit_price; }
+    public double getunit_price() { return unit_price; }
 
     @Override
     public String toString() {

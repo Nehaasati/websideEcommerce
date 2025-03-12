@@ -3,10 +3,7 @@ package controller;
 import service.ProductService;
 import model.Product;
 
-import java.io.Console;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,10 +88,11 @@ public class AdminController {
             System.out.println("3. View Low Stock Alerts");
             System.out.println("4. Check Stock Status");
             System.out.println("5. Check Product Price");
-            System.out.println("6. Manufacturer Management");
-            System.out.println("7. Category Management");
-            System.out.println("8. Manage Reviews");
-            System.out.println("9. Logout & Return to Main Menu");
+            System.out.println("6. Update Product Price"); // New option
+            System.out.println("7. Manufacturer Management");
+            System.out.println("8. Category Management");
+            System.out.println("9. Manage Reviews");
+            System.out.println("10.Logout & Return to Main Menu");
 
             System.out.print("➡️ Enter choice: ");
             try {
@@ -102,15 +100,16 @@ public class AdminController {
 
                 switch (choice) {
                     case 1 -> handleRestock();
-                    case 2 -> handleOrderUpdate();
+                    case 2 -> handleStockDeductionForOrder();
                     case 3 -> displayLowStockAlerts();
                     case 4 -> handleStockCheck();
                     case 5 -> handlePriceCheck();
-                    case 6 -> manufacturerController.start();
-                    case 7 -> categoryController.start();
-                    case 8 -> handleReviewManagement();
+                    case 6 -> handlePriceUpdate();
+                    case 7 -> manufacturerController.start();
+                    case 8 -> categoryController.start();
+                    case 9 -> handleReviewManagement();
                     //case 9 -> handleSuperAdminAction();
-                    case 9-> {
+                    case 10-> {
                         System.out.println("\uD83D\uDD1A Logging out...Returning to Main Menu...");
                         return;  // Exit the admin menu
                     }
@@ -145,7 +144,34 @@ public class AdminController {
         }
     }
 
-    private void handleOrderUpdate() {
+    private void handleStockDeductionForOrder() {        //Rename handleOrderUpdate() for more clarification
+        try {
+            System.out.print("Enter product ID: ");
+            int productId = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter quantity to deduct: ");
+            int quantity = Integer.parseInt(scanner.nextLine());
+
+            boolean success = productService.reduceStock(productId, quantity);
+
+            if (success) {
+                System.out.println("Stock updated successfully!");
+                logger.info("Reduced stock for product ID " + productId + " by quantity " + quantity);
+            } else {
+                System.out.println("Not enough stock available or product not found!");
+                logger.warning("Failed to reduce stock for product ID " + productId);
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input format!");
+            logger.warning("Invalid input for product ID or quantity: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            logger.severe("Error during stock update: " + e.getMessage());
+        }
+    }
+
+
+   /* private void handleOrderUpdate() {
         try {
             System.out.print("Enter product ID: ");
             int productId = Integer.parseInt(scanner.nextLine());
@@ -158,7 +184,7 @@ public class AdminController {
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
-    }
+    }*/
 
     private void displayLowStockAlerts() {
         List<Product> lowStock = productService.getLowStockProducts();
@@ -194,6 +220,29 @@ public class AdminController {
             System.out.println("Invalid product ID!");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    // AdminController.java
+    private void handlePriceUpdate() {
+        try {
+            System.out.print("Enter Product ID: ");
+            int productId = Integer.parseInt(scanner.nextLine());
+
+            System.out.print("Enter New Price: ");
+            double newPrice = Double.parseDouble(scanner.nextLine());
+
+            productService.updateProductPrice(productId, newPrice);
+            System.out.println("✅ Price updated successfully!");
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Invalid numeric input");
+            logger.warning("Invalid price input: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+            logger.warning("Price update validation failed: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("❌ Failed to update price: " + e.getMessage());
+            logger.severe("Price update failed: " + e.getMessage());
         }
     }
 
@@ -234,6 +283,7 @@ public class AdminController {
         }
     }
 
+    // SUPER ADMIN OPERATIONS
     private void handleAddAdmin() {
         System.out.print("Enter new admin username: ");
         String newAdmin = scanner.nextLine();

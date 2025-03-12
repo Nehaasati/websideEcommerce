@@ -1,8 +1,8 @@
 package repository;
 
 import model.Product;
-
 import util.SqliteConnection;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,19 +11,19 @@ import java.util.Optional;
 
 public class ProductRepository {
     private static final String SELECT_BASE =
-                "SELECT  p.product_id, p.manufacturer_id, p.name, p.description, " +
-                        "p.price, p.stock_quantity, GROUP_CONCAT(pc.category_id) AS categories " +
-                        "FROM products p " +
-                        "LEFT JOIN products_categories pc ON p.product_id = pc.product_id ";
+            "SELECT  p.product_id, p.manufacturer_id, p.name, p.description, " +
+                    "p.price, p.stock_quantity, GROUP_CONCAT(pc.category_id) AS categories " +
+                    "FROM products p " +
+                    "LEFT JOIN products_categories pc ON p.product_id = pc.product_id ";
 
     public Optional<Product> findProductById(int productId) throws SQLException {
         String sql = SELECT_BASE + "WHERE p.product_id = ? GROUP BY p.product_id";
-         try (Connection conn = SqliteConnection.getConnection();
+        try (Connection conn = SqliteConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-             stmt.setInt(1, productId);
-             ResultSet rs = stmt.executeQuery();
-             return rs.next() ? Optional.of(mapProduct(rs)) : Optional.empty();
-         }
+            stmt.setInt(1, productId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() ? Optional.of(mapProduct(rs)) : Optional.empty();
+        }
     }
 
     public List<Product> findAllProducts() throws SQLException {
@@ -31,13 +31,13 @@ public class ProductRepository {
         try (Connection conn = SqliteConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(SELECT_BASE + "GROUP BY p.product_id"))
-             {
+        {
 
-                while (rs.next()) {
-                    products.add(mapProduct(rs));
-                }
-             }
-            return products;
+            while (rs.next()) {
+                products.add(mapProduct(rs));
+            }
+        }
+        return products;
     }
 
     public List<Product> findProductByName(String name) throws SQLException {
@@ -76,6 +76,20 @@ public class ProductRepository {
         }
     }
 
+    public void updateProductPrice(int productId, double newPrice) throws SQLException {
+        String sql = "UPDATE products SET price = ? WHERE product_id = ?";
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDouble(1, newPrice);
+            stmt.setInt(2, productId);
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Updating price failed, no rows affected.");
+            }
+        }
+    }
+
     public void updateStock(int productId, int quantityChange) throws SQLException {
         String sql = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE product_id = ?";
         try (Connection conn = SqliteConnection.getConnection();
@@ -97,27 +111,26 @@ public class ProductRepository {
         return products;
     }
 
-        private Product mapProduct(ResultSet rs) throws SQLException {
-            Product product = new Product(
-                    rs.getInt("product_id"),
-                    rs.getInt("manufacturer_id"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getDouble("price"),
-                    rs.getInt("stock_quantity")
-            );
+    private Product mapProduct(ResultSet rs) throws SQLException {
+        Product product = new Product(
+                rs.getInt("product_id"),
+                rs.getInt("manufacturer_id"),
+                rs.getString("name"),
+                rs.getString("description"),
+                rs.getDouble("price"),
+                rs.getInt("stock_quantity")
+        );
 
-            String categories = rs.getString("categories");
-            if (categories != null) {
-                Arrays.stream(categories.split(","))
-                        .map(Integer::parseInt)
-                        .forEach(product::addCategoryId);
-            }
-
-            return product;
+        String categories = rs.getString("categories");
+        if (categories != null) {
+            Arrays.stream(categories.split(","))
+                    .map(Integer::parseInt)
+                    .forEach(product::addCategoryId);
         }
-    }
 
+        return product;
+    }
+}
 
 
 

@@ -11,11 +11,9 @@ import service.impl.OrderService;
 
 import java.sql.SQLException;
 import java.util.Scanner;
-import java.util.logging.Logger;
+
 
 public class Main {
-    //private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
-
     public static void main(String[] args) throws SQLException {
         Scanner scanner = new Scanner(System.in);
 
@@ -33,8 +31,8 @@ public class Main {
         CustomerService customerService = new CustomerServiceImpl(customerRepo);
         ReviewService reviewService = new ReviewService(reviewsRepo);
         IOrderService orderService = new OrderService(orderRepo);
-        ManufacturerService manufacturerService = new ManufacturerService();
-        CategoryService categoryService = new CategoryService();
+        //ManufacturerService manufacturerService = new ManufacturerService();
+        //CategoryService categoryService = new CategoryService();
 
 
         // Initialize controllers

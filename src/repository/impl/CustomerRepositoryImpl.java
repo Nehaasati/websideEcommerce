@@ -119,6 +119,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                             logger.severe("Empty name for customer ID: " + customerId);
                             throw new SQLException("Invalid customer data: empty name");
                       }*/
+
                     return new Customer(
                             rs.getInt("customer_id"),
                             name,

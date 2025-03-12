@@ -17,6 +17,8 @@ public class ProductService {
         this.repository = repository;
     }
 
+
+    // FOR CUSTOMER PURPOSE
     // Product Retrieval Methods
     public List<Product> getAllProducts() {
         try {
@@ -44,11 +46,6 @@ public class ProductService {
             handleDatabaseError(e);
             return Collections.emptyList();
         }
-    }
-
-    // Modified search methods to use category IDs list
-    public List<Product> getProductsInCategory(int categoryId) {
-       return searchProductsByCategory(categoryId);
     }
 
     public List<Product> searchProductsByPriceRange(double min, double max) {
@@ -89,20 +86,23 @@ public class ProductService {
         }
     }
 
-    public String getProductNameById(int productId) {                              // connect cart for name of product Totalcartprice
+    public void updateProductPrice(int productId, double newPrice) {
+        if (newPrice < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
+
         try {
-            return repository.findProductById(productId)
-                    .map(Product::getName)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+            repository.updateProductPrice(productId, newPrice);
         } catch (SQLException e) {
-            throw new RuntimeException("Database error: " + e.getMessage());
+            handleDatabaseError(e);
+            throw new RuntimeException("Failed to update product price", e);
         }
     }
 
 
+    // 2. Stock Availability Methods----INVENTORY MANAGEMENT
 
-    // 2. Stock Availability Methods
-
+    // Get exact stock quantity
     public int getStockStatus(int productId) {
         try{
             return repository.findProductById(productId)
@@ -113,7 +113,7 @@ public class ProductService {
         }
     }
 
-    // Check stock availability
+    // Check if stock meets required quantity
     public boolean checkStockAvailability(int productId, int quantity) {
         try {
             return repository.findProductById(productId)
@@ -124,29 +124,18 @@ public class ProductService {
             return false;
         }
     }
-
-    public List<Product> getLowStockProducts() {
-        try{
-            return repository.findAllProducts().stream()
-                    .filter(p -> p.getStockQuantity() < LOW_STOCK_THRESHOLD)
-                    .toList();
-        } catch (SQLException e) {
-            handleDatabaseError(e);
-            return Collections.emptyList();
-        }
-    }
-
     // 3. Stock Update Methods
 
-    // Update stock after Order
-    public void updateStockAfterOrder( int productId, int quantity) {
+    // Generic stock adjustment method (internal)
+    private void adjustStock(int productId, int adjustment) {
         try {
-            repository.updateStock(productId, -quantity);
+            repository.updateStock(productId, adjustment);
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to update stock: " + e.getMessage());
+            throw new RuntimeException("Failed to adjust stock: " + e.getMessage());
         }
     }
 
+    // Reduce stock with validation
     public boolean reduceStock(int productId, int quantity) {
         try{
             if(!checkStockAvailability(productId, quantity)) return false;
@@ -158,24 +147,36 @@ public class ProductService {
         }
     }
 
-    // Restore stock when removing product from cart
-    public void addStock(int productId, int quantity) {
-        try {
-            repository.updateStock(productId, quantity);
+    // These methods are not directly used for cart management
+// but still might be useful for admin functionality
+
+    // Get products with low stock for inventory management
+    public List<Product> getLowStockProducts() {
+        try{
+            return repository.findAllProducts().stream()
+                    .filter(p -> p.getStockQuantity() < LOW_STOCK_THRESHOLD)
+                    .toList();
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to add stock: " + e.getMessage());
+            handleDatabaseError(e);
+            return Collections.emptyList();
         }
     }
 
-   public void restockProduct(int productId, int quantity) {
+    // Restock product (for admin operations)
+    public void restockProduct(int productId, int quantity) {
+        adjustStock(productId, quantity);
+    }
+
+    /*public void restockProduct(int productId, int quantity) {
         try{
             repository.updateStock(productId, quantity);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to restock product: " + e.getMessage());
         }
-   }
+   }*/
 
-   public boolean isProductInStock(int productId) {
+    // Check if product has any stock
+    public boolean isProductInStock(int productId) {
         try {
             return repository.findProductById(productId)
                     .map(p -> p.getStockQuantity() > 0)
@@ -186,12 +187,44 @@ public class ProductService {
         }
     }
 
-
     private void handleDatabaseError(SQLException e) {
         System.err.println("Database error: " + e.getMessage());
         System.err.println("SQL State: " + e.getSQLState());
         System.err.println("Error Code: " + e.getErrorCode());
     }
-
-
 }
+
+ /*public String getProductNameById(int productId) {                              // connect cart for name of product Totalcartprice
+        try {
+            return repository.findProductById(productId)
+                    .map(Product::getName)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error: " + e.getMessage());
+        }
+    }*/
+
+// COMMENT OUT - Redundant with reduceStock
+// Update stock after Order
+    /*public void updateStockAfterOrder( int productId, int quantity) {
+        try {
+            repository.updateStock(productId, -quantity);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update stock: " + e.getMessage());
+        }
+    }*/
+
+// Add stock when removing from cart
+  /*  public void addStock(int productId, int quantity) {
+        try {
+            repository.updateStock(productId, quantity);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to add stock: " + e.getMessage());
+        }
+    }*
+    // Legacy method - should be removed or merged with reduceStock
+public void updateStockAfterOrder(int productId, int quantity) {
+    reduceStock(productId, quantity);
+}*/
+
+

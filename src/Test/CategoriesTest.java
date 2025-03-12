@@ -58,5 +58,6 @@ public class CategoriesTest {
             System.out.println("❌ Error: " + e.getMessage());
         }
     }
+
 }
 

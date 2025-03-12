@@ -29,7 +29,21 @@ public class CartService {
         this.orderProductRepository = orderProductRepository;
     }
 
+    // Modified addProductToCart method in CartService
     public String addProductToCart(int customerId, int productId, int quantity) {
+        if (quantity <= 0) return "Error: Quantity must be greater than zero.";
+
+        // Check if stock is available but DON'T reduce it yet
+        if (!productService.checkStockAvailability(productId, quantity))
+            return "Error: Not enough stock available.";
+
+        if (cartRepository.addProductToCart(customerId, productId, quantity)) {
+            // Don't reduce stock here anymore
+            return "✅ Product added to cart successfully!";
+        }
+        return "❌ Error: Failed to add product to cart.";
+    }
+   /* public String addProductToCart(int customerId, int productId, int quantity) {
         if (quantity <= 0) return "Error: Quantity must be greater than zero.";
 
         if (!productService.checkStockAvailability(productId, quantity))
@@ -40,9 +54,19 @@ public class CartService {
             return "✅ Product added to cart successfully!";
         }
         return "❌ Error: Failed to add product to cart.";
+    }*/
+
+    // Modified removeProductFromCart method in CartService
+    public String removeProductFromCart(int customerId, int productId) {
+        // No need to track quantity for stock restoration
+        if (cartRepository.removeProductFromCart(customerId, productId)) {
+            // Don't restore stock here anymore
+            return "✅ Product removed from cart successfully!";
+        }
+        return "❌ Error: Product not in cart.";
     }
 
-    public String removeProductFromCart(int customerId, int productId) {
+    /*public String removeProductFromCart(int customerId, int productId) {
         List<CartItem> cartItems = cartRepository.getCartItems(customerId);
         int quantity = cartItems.stream()
                 .filter(item -> item.getProductId() == productId)
@@ -54,7 +78,7 @@ public class CartService {
             return "✅ Product removed from cart successfully!";
         }
         return "❌ Error: Product not in cart.";
-    }
+    }*/
 
     public List<CartItem> getCartItems(int customerId) {
         return cartRepository.getCartItems(customerId);
@@ -137,7 +161,12 @@ public class CartService {
             return -1;
         }
 
+        // Check stock availability for all items at order time
         for (CartItem item : cartItems) {
+           /* if (!productService.checkStockAvailability(item.getProductId(), item.getQuantity())) {
+                LOGGER.warning("❌ Not enough stock for Product ID: " + item.getProductId());
+                return -1;
+            }*/
             int availableStock = productService.getStockStatus(item.getProductId());
             if (availableStock < item.getQuantity()) {
                 LOGGER.warning("❌ Not enough stock for Product ID: " + item.getProductId());
@@ -158,6 +187,7 @@ public class CartService {
                 LOGGER.warning("❌ Failed to add Product ID " + item.getProductId() + " to order.");
                 allItemsAdded = false;
             } else {
+                // NOW reduce stock when order is finalized
                 productService.reduceStock(item.getProductId(), item.getQuantity());
             }
         }
