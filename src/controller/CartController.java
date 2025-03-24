@@ -2,11 +2,14 @@ package controller;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import model.CartItem;
+import model.Product;
+import repository.ProductRepository;
 import repository.impl.OrderRepository;
 import service.CartService;
 
@@ -14,19 +17,21 @@ public class CartController {
     private static final Logger LOGGER = Logger.getLogger(CartController.class.getName());
     private final CartService cartService;
     private final OrderRepository orderRepository;
+   // private final ProductRepository productRepo;
     private final Scanner scanner = new Scanner(System.in);
-    //private int customerId;
+    private int customerId;
 
     public CartController(CartService cartService, OrderRepository orderRepository) {
         this.cartService = cartService;
         this.orderRepository = orderRepository;
-        //this.customerId = customerId;
+       // this.productRepo = productRepository;
+       // this.customerId = customerId;
     }
 
     public void start(int customerId) {
        /* // Ask for Customer ID at the start
-        System.out.print("Enter your Customer ID: ");
-        customerId = getIntInput();*/   // Now no need to ask customerId in cart as it will be declared in customerController so that the customer
+        //System.out.print("Enter your Customer ID: ");
+        // customerId = getIntInput();*/  // Now no need to ask customerId in cart as it will be declared in customerController so that the customer
         // will be logged in throughout the application until logout
         while (true) {
             System.out.println("\n🛒  === CART MANAGEMENT ===");
@@ -49,6 +54,7 @@ public class CartController {
                     continue;
                 }
                 int choice = Integer.parseInt(input);
+                //int choice = getIntInput();
                 switch (choice) {
                     case 1 -> addProduct(customerId);
                     case 2 -> removeProduct(customerId);
@@ -75,14 +81,14 @@ public class CartController {
                     LOGGER.log(Level.SEVERE, "Cart operation error", e);
                     System.out.println("🚨 Error processing cart operation");
             }*/
+
         }
     }
-
 
     private void addProduct(int customerId) {
         System.out.print("Enter Product ID: ");
         int productId = getIntInput();
-        System.out.print("Enter Quantity: ");
+        System.out.print("Enter Quantity: "); // Log customerId
         int quantity = getIntInput();
 
         String result = cartService.addProductToCart(customerId, productId, quantity);
@@ -100,6 +106,35 @@ public class CartController {
     private void clearCart(int customerId) {
         String result = cartService.clearCart(customerId);
         System.out.println(result);
+    }
+
+    /*private void viewCart(int customerId)  {
+        //System.out.println("[DEBUG] Viewing cart for customer ID: " + customerId);
+        List<CartItem> items = cartService.getCartItems(customerId);
+        if (items.isEmpty()) {
+            System.out.println("🛒 Your cart is empty.");
+        } else {
+            System.out.println("\n+------------+----------------------+------------+------------+-------------+");
+            System.out.println("| Product ID | Product Name         | Quantity   | Price (KR) | Total (KR)  |");
+            System.out.println("+------------+----------------------+------------+------------+-------------+");
+
+            for (CartItem item : items) {
+                System.out.printf("| %-10d | %-10d |\n",
+                        item.getProductId(), item.getQuantity());
+            }
+
+            System.out.println("+------------+------------+");
+        }
+    }*/
+
+
+    private void showTotalCartPrice(int customerId) throws SQLException {
+        double totalPrice = cartService.getTotalCartPrice(customerId);
+        if (totalPrice > 0) {
+            System.out.println("\n🛒 Total Cart Price: KR" + totalPrice);
+        } else {
+            System.out.println("\n⚠️ Error: Unable to fetch cart total. Please try again.");
+        }
     }
 
     private void viewCart(int customerId) {
@@ -120,14 +155,14 @@ public class CartController {
         }
     }
 
-    private void showTotalCartPrice(int customerId) throws SQLException {
+    /*private void showTotalCartPrice(int customerId) throws SQLException {
         double totalPrice = cartService.getTotalCartPrice(customerId);
         if (totalPrice > 0) {
             System.out.println("\n🛒 Total Cart Price: KR" + totalPrice);
         } else {
             System.out.println("\n⚠️ Error: Unable to fetch cart total. Please try again.");
         }
-    }
+    }*/
 
     private void updateProductQuantity(int customerId) {
         System.out.print("Enter Product ID: ");
@@ -166,6 +201,19 @@ public class CartController {
             System.out.println("❌ Failed to place order. Please try again.");
         }
     }
+
+
+    /*private void placeOrderWithDiscount(int customerId) throws SQLException {
+        System.out.print("Enter Discount Percentage: ");
+        double discountPercentage = getDoubleInput();
+
+        int orderId = cartService.placeOrder(customerId, discountPercentage);
+        if (orderId > 0) {
+            System.out.println("✅ Order placed successfully! Order ID: " + orderId);
+        } else {
+            System.out.println("❌ Failed to place order. Please try again.");
+        }
+    }*/
 
     private void processPayment(int customerId) throws SQLException {
         System.out.print("Enter Discount Percentage: ");

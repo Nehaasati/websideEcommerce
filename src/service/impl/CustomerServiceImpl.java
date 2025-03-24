@@ -29,12 +29,14 @@ public class CustomerServiceImpl implements CustomerService {
         if (password.length() < 8) {
             logger.warning("Registration attempt with short password");
             throw new IllegalArgumentException("Password must be at least 8 characters");
+
         }
 
         try {
             if (customerRepository.emailExists(email)) {
                 logger.warning("Duplicate email registration attempt: " + email);
                 throw new IllegalArgumentException("Email already registered");
+
             }
             return customerRepository.createCustomer(name, email, phone, address, password);
         } catch (SQLException e) {

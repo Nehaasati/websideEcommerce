@@ -18,7 +18,7 @@ public class CartRepository {
     // Add product to cart
     public boolean addProductToCart(int customerId, int productId, int quantity) {
         cartData.putIfAbsent(customerId, new ArrayList<>());
-        cartData.get(customerId).add(new CartItem(customerId, productId, quantity));
+        cartData.get(customerId).add(new CartItem(customerId,productId, quantity));
         return true;
     }
 
@@ -30,7 +30,7 @@ public class CartRepository {
 
     // Get all cart items for a customer
     public List<CartItem> getCartItems(int customerId) {
-        return cartData.getOrDefault(customerId, new ArrayList<>());
+        return cartData.getOrDefault(customerId,Collections.emptyList() /*new ArrayList<>()*/);
     }
 
     // Clear entire cart for a customer
@@ -40,6 +40,7 @@ public class CartRepository {
         return true;
     }
 
+    // Update product quantity
     public boolean updateProductQuantity(int customerId, int productId, int newQuantity) {
         if (!cartData.containsKey(customerId)) return false;
 

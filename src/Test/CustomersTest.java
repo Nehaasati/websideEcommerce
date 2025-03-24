@@ -3,7 +3,11 @@ package Test;
 import repository.impl.CustomerRepositoryImpl;
 import model.Customer;
 import service.impl.CustomerServiceImpl;
+import util.SqliteConnection;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.logging.Logger;
@@ -11,43 +15,43 @@ import java.util.logging.Logger;
 public class CustomersTest {
     private static final Logger logger = Logger.getLogger(CustomersTest.class.getName());
 
-
     public static void main(String[] args) {
         logger.info("\n🔍 **Testing createCustomer Method** 🔍");
 
-        // Instantiate the repository AND the service.
         CustomerRepositoryImpl repo = new CustomerRepositoryImpl();
-        CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl(repo);
         Scanner scanner = new Scanner(System.in);
+        boolean exit = false;
 
-        while (true) {
+        while (!exit) {
             System.out.println("\n--- Customer Test Menu ---");
             System.out.println("1. Register New Customer");
             System.out.println("2. View Customer Details");
-            System.out.println("3. Validate Credentials");  // Added option for validation
+            System.out.println("3. VerifyCustomerinDB");  // Added option for validation
             System.out.println("4. Exit");
             System.out.print("Enter choice: ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
             switch (choice) {
-               case 1:
+                case 1:
                     registerCustomer(repo, scanner);
                     break;
                 case 2:
                     viewCustomer(repo, scanner);
                     break;
                 case 3:
-                    validateCredentials(customerServiceImpl, scanner); // Call the new method
+                    verifyCustomerInDB(scanner);
                     break;
                 case 4:
+                    exit = true;
                     System.out.println("Exiting test...");
                     return;
                 default:
                     System.out.println("Invalid choice. Try again.");
             }
         }
+        scanner.close();
     }
 
     private static void registerCustomer(CustomerRepositoryImpl repo, Scanner scanner) {
@@ -97,8 +101,99 @@ public class CustomersTest {
         }
     }
 
+    // ✅ Verify Customer in DB (using scanner input)
+    private static void verifyCustomerInDB(Scanner scanner) {
+        System.out.print("Enter Customer Email to Verify: ");
+        String email = scanner.nextLine();
+
+        verifyCustomerInDB(email);
+    }
+
+
+    private static void verifyCustomerInDB(String email) {
+        String sql = "SELECT * FROM customers WHERE email = ?";
+
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                logger.info("✅ Customer Found in Database: " + rs.getString("email"));
+            } else {
+                logger.warning("⚠️ Customer Not Found in Database!");
+            }
+        } catch (SQLException e) {
+            logger.severe("❌ Database Error: " + e.getMessage());
+        }
+    }
+}
+
+
+   /* // Test Data
+        String testName = "Nitu Mishra";
+        String testEmail = "nitumshr@example.com";  // Make sure this email is unique
+        String testPhone = "0701234567";
+        String testAddress = "Main.Main Street 10, City";
+        String testPassword = "hashed_password_test";
+
+        CustomerRepositoryImpl repository = new CustomerRepositoryImpl();
+        //Scanner scanner = new Scanner(System.in);
+
+        try {
+            // Call createCustomer method
+            //Customer newCustomer = repository.createCustomer(testName, testEmail, testPhone, testAddress, testPassword);
+
+            // Log success message
+            // logger.info("✅ Customer Created: " + newCustomer.getEmail());
+
+            // Verify in database
+            verifyCustomerInDB(testEmail);
+
+            // Delete Customer
+            // deleteTestCustomer(testEmail);
+
+        } catch (SQLException e) {
+            logger.severe("❌ Test failed: " + e.getMessage());
+        }
+    }
+
+
+    /*private static void deleteTestCustomer(String email) {
+        String sql = "DELETE FROM customers WHERE email = ?";
+
+        try (Connection conn = SqliteConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            int rowsDeleted = stmt.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                logger.info("🗑️ Deleted test customer: " + email);
+            }
+        } catch (SQLException e) {
+            logger.severe("❌ Error deleting test customer: " + e.getMessage());
+        }
+    }*/
+
+
+
+/*// Instantiate the repository AND the service.
+        CustomerRepositoryImpl repo = new CustomerRepositoryImpl();
+        CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl(repo);
+        Scanner scanner = new Scanner(System.in);*/
+
+
+
+
+
+
+
+
+
     // New method to test validateCredentials
-    private static void validateCredentials(CustomerServiceImpl customerServiceImpl, Scanner scanner) {
+    /*private static void validateCredentials(CustomerServiceImpl customerServiceImpl, Scanner scanner) {
         System.out.print("Enter Email to validate: ");
         String email = scanner.nextLine();
         System.out.print("Enter Password to validate: ");
@@ -114,14 +209,14 @@ public class CustomersTest {
             logger.warning("Credentials validation failed for email: " + email);
         }
     }
-}
+}*/
 
 
 
 
 
-// Test Data
-       /* String testName = "Nitu Mishra";
+/*// Test Data
+       String testName = "Nitu Mishra";
         String testEmail = "nitumshr@example.com";  // Make sure this email is unique
         String testPhone = "0701234567";
         String testAddress = "Main.Main Street 10, City";
@@ -130,18 +225,18 @@ public class CustomersTest {
         CustomerRepositoryImpl repository = new CustomerRepositoryImpl();
         Scanner scanner = new Scanner(System.in);
 
-       /* try {
+        try {
             // Call createCustomer method
-           Customer newCustomer = repository.createCustomer(testName, testEmail, testPhone, testAddress, testPassword);
+           //Customer newCustomer = repository.createCustomer(testName, testEmail, testPhone, testAddress, testPassword);
 
             // Log success message
            // logger.info("✅ Customer Created: " + newCustomer.getEmail());
 
             // Verify in database
-           // verifyCustomerInDB(testEmail);
+            verifyCustomerInDB(testEmail);
 
             // Delete Customer
-            deleteTestCustomer(testEmail);
+           // deleteTestCustomer(testEmail);
 
         } catch (SQLException e) {
             logger.severe("❌ Test failed: " + e.getMessage());
@@ -167,7 +262,7 @@ public class CustomersTest {
         }
     }
 
-    private static void deleteTestCustomer(String email) {
+    /*private static void deleteTestCustomer(String email) {
         String sql = "DELETE FROM customers WHERE email = ?";
 
         try (Connection conn = SqliteConnection.getConnection();
@@ -182,7 +277,7 @@ public class CustomersTest {
         } catch (SQLException e) {
             logger.severe("❌ Error deleting test customer: " + e.getMessage());
         }
-    }
-}*/
+    }*/
+
 
 

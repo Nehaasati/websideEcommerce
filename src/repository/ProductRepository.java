@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProductRepository {
+
     private static final String SELECT_BASE =
             "SELECT  p.product_id, p.manufacturer_id, p.name, p.description, " +
                     "p.price, p.stock_quantity, GROUP_CONCAT(pc.category_id) AS categories " +
@@ -23,6 +24,16 @@ public class ProductRepository {
             stmt.setInt(1, productId);
             ResultSet rs = stmt.executeQuery();
             return rs.next() ? Optional.of(mapProduct(rs)) : Optional.empty();
+        }
+    }
+
+    public Product getProductById(int productId) throws SQLException {
+        Optional<Product> optionalProduct = findProductById(productId);
+
+        if (optionalProduct.isPresent()) {
+            return optionalProduct.get();
+        } else {
+            throw new IllegalArgumentException("Product with ID " + productId + " not found");
         }
     }
 
